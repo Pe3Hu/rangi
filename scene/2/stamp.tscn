@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://cy8rw2x1154a7"]
+
+[ext_resource type="Script" path="res://scene/2/stamp.gd" id="1_ldslt"]
+
+[node name="Stamp" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_ldslt")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.447059, 0.188235, 0.945098, 1)
+
+[node name="Tool" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
