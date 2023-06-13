@@ -1,1 +1,1 @@
-![image](https://github.com/Pe3Hu/kirima/assets/34793005/5e4083bc-78a2-4229-ade7-ba8b57b55939)
+![image](https://github.com/Pe3Hu/rangi/assets/34793005/ec8c0d57-529d-4981-a733-d2663e244400)
