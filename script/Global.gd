@@ -12,10 +12,29 @@ var vec = {}
 var scene = {}
 
 
+func _ready() -> void:
+	init_arr()
+	init_num()
+	init_dict()
+	init_node()
+	init_vec()
+	init_scene()
+
+
+func init_arr() -> void:
+	arr.sequence = {}
+	arr.color = ["Red","Green","Blue","Yellow"]
+	arr.windrose = ["NE","E","SE","S","SW","W","NW","N"]
+	arr.polyhedron = [3,4,5,6]
+	arr.spec = ["arm","brain","heart"]
+	arr.module = ["gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
+
+
 func init_num() -> void:
 	num.index = {}
-	num.index.stadion = 0
-	num.index.athleten = 0
+	num.index.schematic = 0
+	num.index.sector = 0
+	num.index.cluster = 0
 	
 	num.factory = {}
 	num.factory.count = {}
@@ -40,6 +59,19 @@ func init_num() -> void:
 	num.size.spielkarte.d = num.size.spielkarte.a * 2
 	num.size.spielkarte.r = num.size.spielkarte.a * sqrt(2)
 	num.size.spielkarte.font = 28
+	
+	num.size.sector = {}
+	num.size.sector.a = 8
+	num.size.sector.d = num.size.sector.a * 2
+	num.size.sector.r = num.size.sector.a * sqrt(2)
+	
+	num.size.cluster = {}
+	num.size.cluster.n = 3
+	
+	num.size.continent = {}
+	num.size.continent.cluster = 9
+	num.size.continent.col = num.size.continent.cluster * num.size.cluster.n
+	num.size.continent.row = num.size.continent.col
 
 
 func init_dict() -> void:
@@ -51,10 +83,10 @@ func init_dict() -> void:
 		Vector3(-1, 0,  0)
 	]
 	dict.neighbor.linear2 = [
-		Vector2( 0,-1),
 		Vector2( 1, 0),
 		Vector2( 0, 1),
-		Vector2(-1, 0)
+		Vector2(-1, 0),
+		Vector2( 0,-1)
 	]
 	dict.neighbor.diagonal = [
 		Vector2( 1,-1),
@@ -88,6 +120,7 @@ func init_dict() -> void:
 	]
 	
 	init_corner()
+	init_schematic()
 
 
 func init_corner() -> void:
@@ -116,12 +149,100 @@ func init_corner() -> void:
 				dict.corner.vector[corners_][order_][_i] = vertex
 
 
-func init_arr() -> void:
-	arr.sequence = {}
-	arr.color = ["Red","Green","Blue","Yellow"]
-	arr.wind_rose = ["N","NE","E","SE","S","SW","W","NW"]
-	arr.polyhedron = [3,4,5,6]
-	arr.spec = ["arm","brain","heart"]
+func init_schematic() -> void:
+	dict.schematic = {}
+	dict.schematic.title = {}
+	dict.schematic.rarity = {}
+	dict.schematic.association = {}
+	
+	for module in arr.module:
+		pass
+	
+	var size = pow(num.size.cluster.n, 2) - 1
+	var index = {}
+	index.max = pow(2, size)
+	index.current = 0
+	var datas = []
+	var weight = {}
+	weight.windrose = {}
+	weight.windrose[1] = 1
+	weight.windrose[2] = 2
+	weight.max = 0
+	
+	while index.current < index.max:
+		var data = {}
+		data.title = str(index.current)
+		data.rarity = 0
+		data.indexs = []
+		var value = int(index.current)
+		
+		while value > 0:
+			var temp = value % 2
+			data.indexs.append(temp)
+			value /= 2
+		
+		while data.indexs.size() < size:
+			data.indexs.append(0)
+		
+		data.indexs.reverse()
+		data.associations = []
+		var _i = 0
+		
+		while _i < data.indexs.size():
+			if data.indexs[_i] == 1:
+				var association = [_i]
+				var _j = _i + 1
+				
+				while _j < data.indexs.size() and data.indexs[_j] == 1:
+					association.append(_j)
+					_j += 1
+				
+				_i = _j
+				
+				if _j == data.indexs.size():
+					_j = 0
+					
+					if data.indexs[_j] == 1 and !association.has(_j):
+						data.associations.front().append_array(association)
+					else:
+						data.associations.append(association)
+				else:
+					data.associations.append(association)
+			
+			_i += 1
+		
+		for _j in data.associations.size():
+			var rarity = -1
+			
+			for _l in data.associations[_j]:
+				var windrose = arr.windrose[_l]
+				rarity += weight.windrose[windrose.length()]
+			
+			data.rarity += rarity
+		
+		data.rarity *= data.associations.size()
+		
+		if weight.max < data.rarity:
+			weight.max = data.rarity
+		
+		datas.append(data)
+		index.current += 1
+	
+	for data in datas:
+		data.rarity = weight.max - data.rarity + 1
+		var association = data.associations.size()
+		
+		if association > 0:
+			dict.schematic.title[data.title] = data
+			
+			if !dict.schematic.association.has(association):
+				dict.schematic.association[association] = {}
+			
+			if !dict.schematic.rarity.has(data.rarity):
+				dict.schematic.rarity[data.rarity] = []
+			
+			dict.schematic.association[association][data.title] = data.title
+			dict.schematic.rarity[data.rarity].append(data.title)
 
 
 func init_node() -> void:
@@ -146,6 +267,7 @@ func init_window_size():
 func init_scene() -> void:
 	scene.cosmos = load("res://scene/0/cosmos.tscn")
 	scene.planet = load("res://scene/0/planet.tscn")
+	scene.continent = load("res://scene/0/continent.tscn")
 	scene.director = load("res://scene/1/director.tscn")
 	scene.factory = load("res://scene/2/factory.tscn")
 	scene.stamp = load("res://scene/2/stamp.tscn")
@@ -153,15 +275,11 @@ func init_scene() -> void:
 	scene.design = load("res://scene/3/design.tscn")
 	scene.tool = load("res://scene/3/tool.tscn")
 	scene.storage = load("res://scene/4/storage.tscn")
+	scene.sector = load("res://scene/6/sector.tscn")
+	scene.frontière = load("res://scene/6/frontière.tscn")
+	scene.pilier = load("res://scene/6/pilier.tscn")
+	#scene.palette = load("res://scene/7/palette.tscn")
 
-
-func _ready() -> void:
-	init_arr()
-	init_num()
-	init_dict()
-	init_node()
-	init_vec()
-	init_scene()
 
 
 func get_random_element(arr_: Array):

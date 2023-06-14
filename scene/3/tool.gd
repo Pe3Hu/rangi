@@ -15,12 +15,12 @@ func update_rec_size() -> void:
 
 
 func set_label() -> void:
-	$Label.set("horizontal_alignment", "Center")
-	$Label.set("vertical_alignment", "Center")
-	#$Label.set("size_flags_horizontal", "Shrink Center")
+	$HBox/Label.set("horizontal_alignment", "Center")
+	$HBox/Label.set("vertical_alignment", "Center")
+	#$HBox/Label.set("size_flags_horizontal", "Shrink Center")
 	#var font = get("res://asset/font/metal lord ot.otf")
-	#$Label.set("theme_override_fonts/font", Font.
-	$Label.text = parent.word.spec[0].to_upper() + str(parent.num.value)
+	#$HBox/Label.set("theme_override_fonts/font", Font.
+	$HBox/Label.text = parent.word.abbreviation
 
 
 func remove_bg() -> void:

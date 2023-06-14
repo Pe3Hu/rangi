@@ -32,4 +32,4 @@ class Storage:
 
 
 	func apply_tool(tool_: Classes_3.Tool) -> void:
-		num.count[tool_.word.spec] += tool_.num.value
+		num.count[tool_.word.specialty] += tool_.num.value

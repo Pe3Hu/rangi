@@ -1,73 +1,6 @@
 extends Node
 
 
-#Директор director
-class Director:
-	var arr = {}
-	var obj = {}
-	var scene = {}
-
-
-	func _init(input_: Dictionary) -> void:
-		obj.corporation = input_.corporation
-		init_scene()
-		init_base_design()
-		init_album()
-
-
-	func init_scene() -> void:
-		scene.myself = Global.scene.director.instantiate()
-		scene.myself.set_parent(self)
-
-
-	func init_base_design() -> void:
-		arr.design = []
-		var data = {}
-		data["arm"] = 9
-		data["brain"] = 6
-		data["heart"] = 3
-		
-		for spec in data.keys():
-			for _i in data[spec]:
-				var input = {}
-				input.bureau = null
-				input.corporation = obj.corporation
-				input.tools = []
-				
-				for _j in 1:
-					var input_ = {}
-					input_.spec = spec
-					input_.target = "storage"
-					input_.value = 1
-					var tool = Classes_3.Tool.new(input_)
-					input.tools.append(tool)
-				
-				var design = Classes_3.Design.new(input)
-				arr.design.append(design)
-
-
-	func init_storage() -> void:
-		var input = {}
-		input.director = self
-		obj.storage = Classes_4.Storage.new(input)
-
-
-	func init_album() -> void:
-		var input = {}
-		input.director = self
-		obj.album = Classes_5.Album.new(input)
-
-
-	func reset_section(section_: String) -> void:
-		obj.album.pull_full_section(section_)
-		scene.myself.remove_spielkartes_from(section_)
-
-
-	func reset_after_stadion() -> void:
-		obj.album.full_reset()
-		scene.myself.reset_spielkartes()
-
-
 #Корпорация corporation
 class Corporation:
 	var arr = {}
@@ -102,13 +35,97 @@ class Corporation:
 		obj.storage = Classes_4.Storage.new(input)
 
 
-	func init_athletens() -> void:
-		arr.athleten = []
-		var n = 1
+#Директор director
+class Director:
+	var arr = {}
+	var obj = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.corporation = input_.corporation
+		init_scene()
+		init_base_design()
+		init_album()
+		put_schematic_above_on_archive()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.director.instantiate()
+		scene.myself.set_parent(self)
+
+
+	func init_base_design() -> void:
+		arr.design = []
+		var datas = []
+		var data = {}
+		data.target = "storage"
+		data.category = "drone"
+		data.specialty = "arm"
+		data.value = 1
+		data.count = 9
+		datas.append(data)
+		data = {}
+		data.target = "storage"
+		data.category = "drone"
+		data.specialty = "brain"
+		data.value = 1
+		data.count = 6
+		datas.append(data)
+		data = {}
+		data.target = "storage"
+		data.category = "drone"
+		data.specialty = "heart"
+		data.value = 1
+		data.count = 3
+		datas.append(data)
+		data = {}
+		data.category = "schematic"
+		data.target = "outpost"
+		data.title = "1"
+		data.count = 1
+		datas.append(data)
 		
-		for credo in Global.dict.credo.title.keys():
-			var input = {}
-			input.corporation = self
-			input.credo = credo
-			var athleten = Classes_2.Athleten.new(input)
-			arr.athleten.append(athleten)
+		for data_ in datas:
+			for _i in data_.count:
+				var input = {}
+				input.bureau = null
+				input.corporation = obj.corporation
+				input.tools = []
+				
+				for _j in 1:
+					var tool = Classes_3.Tool.new(data_)
+					input.tools.append(tool)
+				
+				var design = Classes_3.Design.new(input)
+				arr.design.append(design)
+
+
+	func init_storage() -> void:
+		var input = {}
+		input.director = self
+		obj.storage = Classes_4.Storage.new(input)
+
+
+	func init_album() -> void:
+		var input = {}
+		input.director = self
+		obj.album = Classes_5.Album.new(input)
+
+
+	func put_schematic_above_on_archive() -> void:
+		for spielkarte in obj.album.arr.spielkarte.archive:
+			for tool in spielkarte.obj.design.arr.tool:
+				if tool.word.category == "schematic":
+					obj.album.put_above_on_archive(spielkarte)
+					return
+
+
+	func reset_section(section_: String) -> void:
+		obj.album.pull_full_section(section_)
+		scene.myself.remove_spielkartes_from(section_)
+
+
+	func reset_after_stadion() -> void:
+		obj.album.full_reset()
+		scene.myself.reset_spielkartes()

@@ -1,20 +1,6 @@
 extends Node
 
 
-#Игральная карта spielkarte
-class Spielkarte:
-	var arr = {}
-	var obj = {}
-	var num = {}
-	var word = {}
-	var scene = {}
-
-
-	func _init(input_: Dictionary) -> void:
-		obj.album = input_.album
-		obj.design = input_.design
-
-
 #Альбом album
 class Album:
 	var num = {}
@@ -55,6 +41,8 @@ class Album:
 			input.design = design
 			var spielkarte = Classes_5.Spielkarte.new(input)
 			arr.spielkarte.archive.append(spielkarte)
+		
+		arr.spielkarte.archive.shuffle()
 
 
 	func pull_full_section(section_: String) -> void:
@@ -71,7 +59,7 @@ class Album:
 
 
 	func pull_spielkarte_from_archive() -> void:
-		arr.spielkarte.archive.shuffle()
+		#arr.spielkarte.archive.shuffle()
 		var spielkarte = arr.spielkarte.archive.pop_front()
 		arr.spielkarte.thought.append(spielkarte)
 		obj.director.obj.factory.scene.myself.set_free_stamp_by_design(spielkarte.obj.design)
@@ -96,3 +84,30 @@ class Album:
 		
 		for section in sections:
 			pull_full_section(section)
+		
+		arr.spielkarte.archive.shuffle()
+
+
+	func put_above_on_archive(spielkarte_: Spielkarte) -> void:
+		var index = arr.spielkarte.archive.find(spielkarte_)
+		
+		if index != -1:
+			arr.spielkarte.archive.pop_at(index)
+			arr.spielkarte.archive.push_front(spielkarte_)
+		else:
+			print("archive doesn't have ", spielkarte_)
+
+
+#Игральная карта spielkarte
+class Spielkarte:
+	var arr = {}
+	var obj = {}
+	var num = {}
+	var word = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.album = input_.album
+		obj.design = input_.design
+

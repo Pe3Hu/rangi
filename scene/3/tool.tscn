@@ -21,7 +21,11 @@ script = ExtResource("1_27ku6")
 layout_mode = 2
 color = Color(0.65098, 0.223529, 0.207843, 1)
 
-[node name="Label" type="Label" parent="."]
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBox"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0, 0, 0, 1)

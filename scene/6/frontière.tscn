@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://jeuo1ud1aei4"]
+
+[ext_resource type="Script" path="res://scene/6/frontière.gd" id="1_xkl4e"]
+
+[node name="Frontière" type="Line2D"]
+width = 2.0
+default_color = Color(0, 0, 0, 1)
+script = ExtResource("1_xkl4e")

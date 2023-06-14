@@ -32,8 +32,9 @@ class Bureau:
 			
 			for _j in 1:
 				var input_ = {}
-				input_.spec = "Arm"
 				input_.target = "storage"
+				input_.category = "drone"
+				input_.specialty = "arm"
 				input_.value = 1
 				var tool = Classes_3.Tool.new(input_)
 				input.tools.append(tool)
@@ -88,13 +89,41 @@ class Tool:
 
 
 	func _init(input_: Dictionary) -> void:
-		num.value = input_.value
-		word.spec = input_.spec
-		word.target = input_.target
 		obj.design = null
+		
+		word.category = input_.category
+		word.target = input_.target
+		
+		match input_.category:
+			"drone":
+				num.value = input_.value
+				word.specialty = input_.specialty
+				word.abbreviation = word.category[0].to_upper() + word.specialty[0].to_upper() + str(num.value)
+			"schematic":
+				word.title = input_.title
+				word.abbreviation = word.category[0].to_upper() + word.title[0].to_upper()
+		
 		init_scene()
 
 
 	func init_scene() -> void:
 		scene.myself = Global.scene.tool.instantiate()
+		scene.myself.set_parent(self)
+
+
+#Значок icon
+class Icon:
+	var num = {}
+	var obj = {}
+	var word = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.design = null
+		#init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.icon.instantiate()
 		scene.myself.set_parent(self)

@@ -20,7 +20,7 @@ script = ExtResource("1_hcntl")
 
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.956863, 0.678431, 0.980392, 1)
+color = Color(0.588235, 0.588235, 0.588235, 1)
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2

@@ -30,11 +30,11 @@ func recolor() -> void:
 	
 	match parent.word.status:
 		"default":
-			s = 0.1
+			s = 0.3
 		"selected":
 			s = 0.9
 		"line":
-			s = 0.5
+			s = 0.6
 	
 	$BG.color = Color.from_hsv(h, s, v)
 

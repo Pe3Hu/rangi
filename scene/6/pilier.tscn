@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqsahlivcoah6"]
+
+[ext_resource type="Script" path="res://scene/6/pilier.gd" id="1_f5kry"]
+
+[node name="Pilier" type="Polygon2D"]
+script = ExtResource("1_f5kry")

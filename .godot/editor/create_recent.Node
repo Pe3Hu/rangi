@@ -1,7 +1,8 @@
-VBoxContainer
 MarginContainer
+GridContainer
+HBoxContainer
+Polygon2D
+VBoxContainer
 Control
 Label
-HBoxContainer
 ColorRect
-GridContainer
