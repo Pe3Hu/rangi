@@ -6,13 +6,7 @@ var parent = null
 
 func set_parent(parent_) -> void:
 	parent = parent_
-	position = parent.vec.grid * Global.num.size.sector.d
-	
-	if parent.obj.continent != null:
-		position += parent.obj.continent.vec.offset
-	if parent.obj.palette != null:
-		position += parent.obj.palette.vec.offset
-	
+	position = parent.vec.grid * Global.num.size.sector.d + parent.obj.continent.vec.offset
 	set_vertexs()
 
 

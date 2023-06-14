@@ -5,6 +5,7 @@ func _ready() -> void:
 	Global.obj.cosmos = Classes_0.Cosmos.new()
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
 	#012
+	Global.obj.cosmos.arr.corporation.front().obj.outpost.place_core()
 
 func _input(event) -> void:
 	var factory = Global.obj.cosmos.arr.corporation.front().obj.factory

@@ -13,6 +13,7 @@ class Corporation:
 		obj.cosmos = input_.cosmos
 		obj.planet = null
 		init_director()
+		init_outpost()
 		init_factory()
 		init_storage()
 
@@ -21,6 +22,12 @@ class Corporation:
 		var input = {}
 		input.corporation = self
 		obj.director = Classes_1.Director.new(input)
+
+
+	func init_outpost() -> void:
+		var input = {}
+		input.corporation = self
+		obj.outpost = Classes_7.Outpost.new(input)
 
 
 	func init_factory() -> void:
@@ -82,7 +89,7 @@ class Director:
 		data = {}
 		data.category = "schematic"
 		data.target = "outpost"
-		data.title = "1"
+		data.title = Global.dict.schematic.title.keys().pick_random()
 		data.count = 1
 		datas.append(data)
 		

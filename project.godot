@@ -25,6 +25,7 @@ Classes_3="*res://script/Classes_3.gd"
 Classes_4="*res://script/Classes_4.gd"
 Classes_5="*res://script/Classes_5.gd"
 Classes_6="*res://script/Classes_6.gd"
+Classes_7="*res://script/Classes_7.gd"
 
 [display]
 

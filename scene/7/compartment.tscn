@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://1anxgrpeiu76"]
+
+[ext_resource type="Script" path="res://scene/7/compartment.gd" id="1_kqaef"]
+
+[node name="Compartment" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_kqaef")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2

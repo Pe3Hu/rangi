@@ -31,3 +31,7 @@ res://script/Classes_2.gd
 res://scene/2/stamp.gd
 res://scene/3/icon.tscn
 res://scene/3/icon.gd
+res://scene/7/compartment.tscn
+res://scene/7/compartment.gd
+res://scene/3/bureau.gd
+res://scene/Game.gd

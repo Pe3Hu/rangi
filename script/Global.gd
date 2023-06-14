@@ -25,10 +25,10 @@ func init_arr() -> void:
 	arr.sequence = {}
 	arr.color = ["Red","Green","Blue","Yellow"]
 	arr.windrose = ["NE","E","SE","S","SW","W","NW","N"]
+	arr.windrose_shifted = ["NW","N","NE","W","E","SW","S","SE"]
 	arr.polyhedron = [3,4,5,6]
 	arr.spec = ["arm","brain","heart"]
-	arr.module = ["gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
-
+	
 
 func init_num() -> void:
 	num.index = {}
@@ -119,8 +119,33 @@ func init_dict() -> void:
 		]
 	]
 	
+	dict.windrose = {}
+	dict.windrose["NE"] = Vector2(1, -1)
+	dict.windrose["E"] = Vector2(1, 0)
+	dict.windrose["SE"] = Vector2(1, 1)
+	dict.windrose["S"] = Vector2(0, 1)
+	dict.windrose["SW"] = Vector2(-1, 1)
+	dict.windrose["W"] = Vector2(-1, 0)
+	dict.windrose["NW"] = Vector2(-1, -1)
+	dict.windrose["N"] = Vector2(1, -1)
+	
+	dict.compartment = {}
+	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
+	dict.compartment.active = ["power generator", "protective field generator", "research station"]
+	
 	init_corner()
 	init_schematic()
+
+
+func get_windrose(diretion_: Vector2) -> String:
+	var windrose = ""
+	
+	for windrose_ in dict.windrose:
+		if dict.windrose[windrose_] == diretion_:
+			windrose = windrose_
+			break
+	
+	return windrose
 
 
 func init_corner() -> void:
@@ -155,9 +180,6 @@ func init_schematic() -> void:
 	dict.schematic.rarity = {}
 	dict.schematic.association = {}
 	
-	for module in arr.module:
-		pass
-	
 	var size = pow(num.size.cluster.n, 2) - 1
 	var index = {}
 	index.max = pow(2, size)
@@ -184,7 +206,7 @@ func init_schematic() -> void:
 		while data.indexs.size() < size:
 			data.indexs.append(0)
 		
-		data.indexs.reverse()
+		#data.indexs.reverse()
 		data.associations = []
 		var _i = 0
 		
@@ -211,21 +233,34 @@ func init_schematic() -> void:
 			
 			_i += 1
 		
+		var flag = true
+		
 		for _j in data.associations.size():
+			var flag_only_diagonal = true
 			var rarity = -1
 			
 			for _l in data.associations[_j]:
 				var windrose = arr.windrose[_l]
 				rarity += weight.windrose[windrose.length()]
+				flag_only_diagonal = flag_only_diagonal and windrose.length() == 2
+				
+				if !flag_only_diagonal:
+					break
 			
 			data.rarity += rarity
+			flag = flag and !flag_only_diagonal
+			
+			if !flag:
+				break
 		
-		data.rarity *= data.associations.size()
+		if flag:
+			data.rarity *= data.associations.size()
+			
+			if weight.max < data.rarity:
+				weight.max = data.rarity
+			
+			datas.append(data)
 		
-		if weight.max < data.rarity:
-			weight.max = data.rarity
-		
-		datas.append(data)
 		index.current += 1
 	
 	for data in datas:
@@ -274,11 +309,13 @@ func init_scene() -> void:
 	scene.bureau = load("res://scene/3/bureau.tscn")
 	scene.design = load("res://scene/3/design.tscn")
 	scene.tool = load("res://scene/3/tool.tscn")
+	scene.icon = load("res://scene/3/icon.tscn")
 	scene.storage = load("res://scene/4/storage.tscn")
 	scene.sector = load("res://scene/6/sector.tscn")
 	scene.frontière = load("res://scene/6/frontière.tscn")
 	scene.pilier = load("res://scene/6/pilier.tscn")
-	#scene.palette = load("res://scene/7/palette.tscn")
+	scene.compartment = load("res://scene/7/compartment.tscn")
+	
 
 
 

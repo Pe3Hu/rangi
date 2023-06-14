@@ -73,6 +73,7 @@ class Planet:
 	func add_corporation(corporation_: Classes_1.Corporation) -> void:
 		arr.corporation.append(corporation_)
 		corporation_.obj.planet = self
+		corporation_.obj.outpost.obj.continent = obj.continent
 		scene.myself.get_node("VBox/Director").add_child(corporation_.obj.director.scene.myself)
 
 

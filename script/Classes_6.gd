@@ -45,6 +45,7 @@ class Sector:
 	func _init(input_):
 		obj.continent = input_.continent
 		obj.cluster = null
+		obj.compartment = null
 		vec.grid = input_.grid
 		num.index = Global.num.index.sector
 		Global.num.index.sector += 1
@@ -57,7 +58,6 @@ class Sector:
 	func init_scene() -> void:
 		scene.myself = Global.scene.sector.instantiate()
 		obj.continent.scene.myself.get_node("Sector").add_child(scene.myself)
-		
 		scene.myself.set_parent(self)
 
 
@@ -71,15 +71,6 @@ class Sector:
 			var index_windrose = _i * 2
 			var windrose = Global.arr.windrose[index_windrose]
 			dict.pilier[pilier] = windrose
-
-
-	func set_terrain() -> void:
-		var terrains = Global.get_random_element(Global.dict.terrain.index)
-		print(terrains)
-		for _i in dict.terres.keys().size():
-			var terres = dict.terres.keys()[_i]
-			print(terres, terrains[_i])
-			terres.set_terrain(terrains[_i])
 
 
 #Граница frontière
@@ -102,7 +93,6 @@ class Frontière:
 	func init_scene() -> void:
 		scene.myself = Global.scene.frontière.instantiate()
 		obj.continent.scene.myself.get_node("Frontière").add_child(scene.myself)
-		
 		scene.myself.set_parent(self)
 
 
@@ -142,7 +132,6 @@ class Pilier:
 	func init_scene() -> void:
 		scene.myself = Global.scene.pilier.instantiate()
 		obj.continent.scene.myself.get_node("Pilier").add_child(scene.myself)
-		
 		scene.myself.set_parent(self)
 
 

@@ -40,6 +40,10 @@ func update_color_by_cluster() -> void:
 	set_color(color_)
 
 
+func recolor_based_on_compartment() -> void:
+	set_color(parent.obj.compartment.color.bg)
+
+
 func update_color_by_terrain() -> void:
 	var max_h = 360.0
 	var s = 0.25

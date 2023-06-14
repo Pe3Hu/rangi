@@ -5,8 +5,7 @@
 [node name="Icon" type="GridContainer"]
 offset_right = 40.0
 offset_bottom = 40.0
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
 columns = 3
 script = ExtResource("1_553wu")
-
-[node name="Compartment" type="MarginContainer" parent="."]
-layout_mode = 2

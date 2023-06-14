@@ -82,6 +82,7 @@ class Design:
 
 #Инструмент tool
 class Tool:
+	var arr = {}
 	var num = {}
 	var obj = {}
 	var word = {}
@@ -90,7 +91,6 @@ class Tool:
 
 	func _init(input_: Dictionary) -> void:
 		obj.design = null
-		
 		word.category = input_.category
 		word.target = input_.target
 		
@@ -104,6 +104,8 @@ class Tool:
 				word.abbreviation = word.category[0].to_upper() + word.title[0].to_upper()
 		
 		init_scene()
+		fill_based_on_tool()
+		init_icon()
 
 
 	func init_scene() -> void:
@@ -111,19 +113,39 @@ class Tool:
 		scene.myself.set_parent(self)
 
 
+	func fill_based_on_tool() -> void:
+		match word.category:
+			"schematic":
+				var input = {}
+				input.tool = self
+				input.title = word.title
+				input.types = []
+				input.core = false
+				obj.schematic = Classes_7.Schematic.new(input)
+
+
+	func init_icon() -> void:
+		match word.category:
+			"schematic":
+				var input = {}
+				input.tool = self
+				obj.icon = Classes_3.Icon.new(input)
+
+
 #Значок icon
 class Icon:
-	var num = {}
+	var arr = {}
 	var obj = {}
-	var word = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
-		obj.design = null
-		#init_scene()
+		obj.tool = input_.tool
+		init_scene()
 
 
 	func init_scene() -> void:
 		scene.myself = Global.scene.icon.instantiate()
 		scene.myself.set_parent(self)
+		obj.tool.scene.myself.get_node("HBox").add_child(scene.myself)
+		obj.tool.scene.myself.get_node("HBox").move_child(scene.myself, 0)
