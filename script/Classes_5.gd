@@ -52,10 +52,6 @@ class Album:
 		while arr.spielkarte[from].size() > 0:
 			var spielkarte = arr.spielkarte[from].pop_front()
 			arr.spielkarte[where].append(spielkarte)
-			
-			match section_:
-				"memoir":
-					obj.croupier.dict.out[spielkarte.num.rank].append(spielkarte.word.kind)
 
 
 	func pull_spielkarte_from_archive() -> void:
@@ -68,10 +64,19 @@ class Album:
 			pull_full_section("memoir")
 
 
-	func convert_thought_into_dream(spielkarte_: Spielkarte) -> void:
-		arr.spielkarte.thought.erase(spielkarte_)
-		arr.spielkarte.dream.append(spielkarte_)
-		obj.croupier.scene.myself.convert_thought_into_dream(spielkarte_)
+	func apply_dream() -> void:
+		while arr.spielkarte.dream.size() > 0:
+			var spielkarte = arr.spielkarte.dream.front()
+			spielkarte.push_into_next_section()
+		
+			for tool in spielkarte.obj.design.arr.tool:
+				match tool.word.target:
+					"storage":
+						obj.director.obj.storage.apply_tool(tool)
+					"outpost":
+						obj.director.obj.outpost.obj.conveyor.apply_tool(tool)
+		
+		fill_thought()
 
 
 	func fill_thought() -> void:
@@ -110,4 +115,21 @@ class Spielkarte:
 	func _init(input_: Dictionary) -> void:
 		obj.album = input_.album
 		obj.design = input_.design
+		obj.design.obj.spielkarte = self
 
+
+	func push_into_next_section() -> void:
+		for current_section in obj.album.dict.link:
+			if obj.album.arr.spielkarte[current_section].has(self):
+				var next_section = obj.album.dict.link[current_section]
+				
+				match current_section:
+					"dream":
+						if obj.design.flag.exile:
+							next_section = "forgotten"
+						
+						obj.design.obj.owner.scene.myself.pop_design(obj.design)
+				
+				obj.album.arr.spielkarte[current_section].erase(self)
+				obj.album.arr.spielkarte[next_section].append(self)
+				return

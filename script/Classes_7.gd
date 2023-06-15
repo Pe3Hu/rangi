@@ -9,9 +9,17 @@ class Outpost:
 
 	func _init(input_: Dictionary):
 		obj.corporation = input_.corporation
+		obj.director = obj.corporation.obj.director
+		obj.director.obj.outpost = self
 		obj.planet = null
 		arr.edifice = []
-		#place_core()
+		init_conveyor()
+
+
+	func init_conveyor() -> void:
+		var input = {}
+		input.outpost = self
+		obj.conveyor = Classes_7.Conveyor.new(input)
 
 
 	func place_core() -> void:
@@ -39,6 +47,33 @@ class Outpost:
 		input.schematic = schematic_
 		input.cluster = cluster_
 		var edifice = Classes_7.Edifice.new(input)
+
+
+#Конвейер conveyor 
+class Conveyor:
+	var arr = {}
+	var obj = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary):
+		obj.outpost = input_.outpost
+		arr.schematic = []
+		init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.conveyor.instantiate()
+		scene.myself.set_parent(self)
+		obj.outpost.obj.director.scene.myself.get_node("VBox").add_child(scene.myself)
+
+
+	func apply_tool(tool_: Classes_3.Tool) -> void:
+		arr.schematic.append(tool_.obj.schematic)
+		scene.myself.add_tool(tool_)
+		var a = scene.myself.get_node("Schematic")
+		print(a)
+
 
 
 #сооружение edifice 

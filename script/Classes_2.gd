@@ -21,6 +21,7 @@ class Factory:
 		scene.myself = Global.scene.factory.instantiate()
 		scene.myself.set_parent(self)
 		obj.corporation.obj.director.scene.myself.get_node("VBox").add_child(scene.myself)
+		obj.corporation.obj.director.scene.myself.get_node("VBox").move_child(scene.myself, 0)
 
 
 	func init_stamps() -> void:
@@ -84,6 +85,7 @@ class Factory:
 				if pressed.has(stamp.word.status):
 					stamp.press()
 		
+		obj.director.obj.album.apply_dream()
 		obj.director.obj.storage.scene.myself.update_labels()
 
 
@@ -110,6 +112,4 @@ class Stamp:
 
 
 	func press() -> void:
-		for tool in obj.design.arr.tool:
-			if tool.word.target == "storage":
-				obj.factory.obj.director.obj.storage.apply_tool(tool)
+		obj.design.obj.spielkarte.push_into_next_section()

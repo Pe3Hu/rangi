@@ -23,5 +23,5 @@ func set_label() -> void:
 	$HBox/Label.text = parent.word.abbreviation
 
 
-func remove_bg() -> void:
-	$BG.visible = false
+func switch_bg() -> void:
+	$BG.visible = !$BG.visible

@@ -57,13 +57,17 @@ class Bureau:
 class Design:
 	var arr = {}
 	var obj = {}
+	var flag = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
+		arr.tool = input_.tools
 		obj.bureau = input_.bureau
 		obj.corporation = input_.corporation
-		arr.tool = input_.tools
+		obj.spielkarte = null
+		obj.owner = null
+		flag.exile = false
 		init_scene()
 		set_tools()
 
@@ -78,6 +82,9 @@ class Design:
 		for tool in arr.tool:
 			tool.obj.design = self
 			scene.myself.get_node("Tool").add_child(tool.scene.myself)
+			
+			if !flag.exile and tool.word.category == "schematic":
+				flag.exile = true
 
 
 #Инструмент tool

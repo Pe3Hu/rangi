@@ -21,5 +21,4 @@ func set_free_stamp_by_design(design_: Classes_3.Design) -> void:
 		var index = grid.y * Global.num.factory.count.n + grid.x
 		var node = $Stamp.get_child(index)
 		node.set_design(design_)
-		
 
