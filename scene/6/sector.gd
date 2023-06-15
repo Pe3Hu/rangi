@@ -7,7 +7,6 @@ var parent = null
 func set_parent(parent_) -> void:
 	parent = parent_
 	set_vertexs()
-	update_color()
 
 
 func set_vertexs() -> void:
@@ -20,14 +19,14 @@ func set_vertexs() -> void:
 	set_polygon(vertexs)
 
 
-func update_color() -> void:
+func paint_black() -> void:
 	var max_h = 360.0
 	var size = Global.num.size.continent
 	var h = float(parent.num.index) / (size.row * size.col)#* Global.num.size.terres.n)
 	var s = 0.25
 	var v = 1
 	var color_ = Color.from_hsv(h,s,v)
-	set_color(color_)
+	set_color(Color.BLACK)
 
 
 func update_color_by_cluster() -> void:

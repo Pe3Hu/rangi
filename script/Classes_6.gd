@@ -7,14 +7,16 @@ class Cluster:
 	var num = {}
 	var obj = {}
 	var vec = {}
-	var scene = {}
+	var dict = {}
 
 
 	func _init(input_: Dictionary):
-		vec.grid = input_.grid
-		obj.continent = input_.continent
 		num.index = Global.num.index.cluster
 		Global.num.index.cluster += 1
+		obj.continent = input_.continent
+		obj.edifice = null
+		vec.grid = input_.grid
+		dict.neighbor = {}
 		set_sectors()
 
 
@@ -30,6 +32,11 @@ class Cluster:
 		for sector in arr.sector:
 			sector.obj.cluster = self
 			sector.scene.myself.update_color_by_cluster()
+
+
+	func paint_black() -> void:
+		for sector in arr.sector:
+			sector.scene.myself.paint_black()
 
 
 #Область sector

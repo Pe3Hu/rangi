@@ -13,6 +13,7 @@ class Outpost:
 		obj.director.obj.outpost = self
 		obj.planet = null
 		arr.edifice = []
+		arr.worksite  = []
 		init_conveyor()
 
 
@@ -34,12 +35,9 @@ class Outpost:
 			input.types.append("adaptive compartment")
 		
 		var schematic = Classes_7.Schematic.new(input)
-		input = {}
-		input.schematic = schematic
 		var grid_center = Vector2(Global.num.size.continent.col/2, Global.num.size.continent.row/2)
-		input.cluster = obj.continent.arr.sector[grid_center.y][grid_center.x].obj.cluster
-		var edifice = Classes_7.Edifice.new(input)
-		arr.edifice.append(edifice)
+		var cluster = obj.continent.arr.sector[grid_center.y][grid_center.x].obj.cluster
+		erect_edifice(schematic, cluster)
 
 
 	func erect_edifice(schematic_: Schematic, cluster_: Classes_6.Cluster) -> void:
@@ -47,6 +45,14 @@ class Outpost:
 		input.schematic = schematic_
 		input.cluster = cluster_
 		var edifice = Classes_7.Edifice.new(input)
+		arr.edifice.append(edifice)
+		update_worksite(edifice)
+
+
+	func update_worksite(edifice_: Edifice) -> void:
+		for cluster in edifice_.obj.cluster.dict.neighbor:
+			if cluster.obj.edifice == null and !arr.worksite.has(cluster):
+				arr.worksite.append(cluster)
 
 
 #Конвейер conveyor 
@@ -71,8 +77,68 @@ class Conveyor:
 	func apply_tool(tool_: Classes_3.Tool) -> void:
 		arr.schematic.append(tool_.obj.schematic)
 		scene.myself.add_tool(tool_)
-		var a = scene.myself.get_node("Schematic")
-		print(a)
+		get_relevant_worksites(tool_.obj.schematic)
+
+
+	func get_relevant_worksites(schematic_: Schematic) -> void:
+		var clusters = []
+		
+		#overlay_schematic_on_cluster(schematic_, obj.outpost.arr.worksite.front())
+		
+		for cluster in obj.outpost.arr.worksite:
+			
+			overlay_schematic_on_cluster(schematic_, cluster)
+			clusters.append(cluster)
+			#cluster.paint_black()
+
+
+	func overlay_schematic_on_cluster(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
+		for compartment in schematic_.arr.compartment:
+			var grid = cluster_.obj.center.vec.grid + compartment.vec.direction
+			print("_______", grid)
+			var sector = cluster_.obj.continent.arr.sector[grid.y][grid.x]
+			var windrose_compartment = Global.get_windrose(compartment.vec.direction)
+			sector.scene.myself.set_color(compartment.color.bg)
+			
+			for side in Global.dict.side.windrose:
+				if Global.dict.side.windrose[side].has(windrose_compartment):
+					var direction = Global.dict.side.direction[side]
+					var windrose_side = Global.get_windrose(direction)
+					
+					for neighbor_sector in sector.dict.neighbor:
+						if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
+							print(compartment.word.type, neighbor_sector.obj.compartment.word.type)
+							
+							#if neighbor_sector.obj.compartment.word.type == compartment.word.type:
+							#	sector.scene.myself.paint_black()
+		
+		return true
+
+
+	func overlay_schematic_on_cluster_old(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
+		for neighbor_cluster in cluster_.dict.neighbor:
+			if neighbor_cluster.obj.edifice != null:
+				var windrose_original = cluster_.dict.neighbor[neighbor_cluster]
+				var a = Global.dict.windrose.reverse
+				var windrose_reversed = Global.dict.windrose.reverse[windrose_original]
+				
+				for _i in cluster_.arr.sector.size():
+					var sector = cluster_.arr.sector[_i]
+					
+					for neighbor_sector in sector.dict.neighbor:
+						if sector.dict.neighbor[neighbor_sector] == windrose_original and neighbor_sector.obj.cluster == neighbor_cluster:
+							
+							var index = _i
+							
+							if index > 4:
+								pass
+							
+							var type_compartment = Global.arr.windrose
+							#sector.scene.myself.paint_black()
+							pass
+			#print(cluster_.dict.neighbor)
+		
+		return true
 
 
 
@@ -84,6 +150,7 @@ class Edifice:
 	func _init(input_: Dictionary):
 		obj.schematic = input_.schematic
 		obj.cluster = input_.cluster
+		obj.cluster.obj.edifice = self
 		obj.continent = obj.cluster.obj.continent
 		erect_compartment()
 

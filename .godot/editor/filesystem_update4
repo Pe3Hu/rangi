@@ -15,3 +15,8 @@ res://scene/2/factory.gd
 res://scene/2/stamp.gd
 res://scene/3/bureau.tscn
 res://scene/3/design.tscn
+res://scene/Game.gd
+res://script/Classes_1.gd
+res://script/Classes_0.gd
+res://script/Classes_6.gd
+res://scene/6/sector.gd

@@ -191,3 +191,17 @@ class Continent:
 				input.continent = self
 				var cluster = Classes_6.Cluster.new(input)
 				arr.cluster[_i].append(cluster)
+		
+		init_cluster_neighbors()
+
+	func init_cluster_neighbors() -> void:
+		for clusters in arr.cluster:
+			for cluster in clusters:
+				for direction in Global.dict.neighbor.linear2:
+					var grid = cluster.obj.center.vec.grid + direction * Global.num.size.cluster.n
+					
+					if Global.check_array_has_grid(arr.sector, grid):
+						var neighbor = arr.sector[grid.y][grid.x].obj.cluster
+						var windrose = Global.get_windrose(direction)
+						cluster.dict.neighbor[neighbor] = windrose
+

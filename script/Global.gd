@@ -120,14 +120,38 @@ func init_dict() -> void:
 	]
 	
 	dict.windrose = {}
-	dict.windrose["NE"] = Vector2(1, -1)
-	dict.windrose["E"] = Vector2(1, 0)
-	dict.windrose["SE"] = Vector2(1, 1)
-	dict.windrose["S"] = Vector2(0, 1)
-	dict.windrose["SW"] = Vector2(-1, 1)
-	dict.windrose["W"] = Vector2(-1, 0)
-	dict.windrose["NW"] = Vector2(-1, -1)
-	dict.windrose["N"] = Vector2(1, -1)
+	dict.windrose.direction = {}
+	dict.windrose.direction["NE"] = Vector2(1, -1)
+	dict.windrose.direction["E"] = Vector2(1, 0)
+	dict.windrose.direction["SE"] = Vector2(1, 1)
+	dict.windrose.direction["S"] = Vector2(0, 1)
+	dict.windrose.direction["SW"] = Vector2(-1, 1)
+	dict.windrose.direction["W"] = Vector2(-1, 0)
+	dict.windrose.direction["NW"] = Vector2(-1, -1)
+	dict.windrose.direction["N"] = Vector2(0, -1)
+	
+	dict.windrose.reverse = {}
+	dict.windrose.reverse["NE"] = "SW"
+	dict.windrose.reverse["E"] = "W"
+	dict.windrose.reverse["SE"] = "NW"
+	dict.windrose.reverse["S"] = "N"
+	dict.windrose.reverse["SW"] = "NE"
+	dict.windrose.reverse["W"] = "E"
+	dict.windrose.reverse["NW"] = "SE"
+	dict.windrose.reverse["N"] = "S"
+	
+	dict.side = {}
+	dict.side.windrose = {}
+	dict.side.windrose["right"] = ["NE", "E", "SE"]
+	dict.side.windrose["bot"] = ["SE", "S", "SW"]
+	dict.side.windrose["left"] = ["SW", "W", "NW"]
+	dict.side.windrose["top"] = ["NW", "N", "NE"]
+	
+	dict.side.direction = {}
+	dict.side.direction["right"] = Vector2(1, 0)
+	dict.side.direction["bot"] = Vector2(0, 1)
+	dict.side.direction["left"] = Vector2(-1, 0)
+	dict.side.direction["top"] = Vector2(0, -1)
 	
 	dict.compartment = {}
 	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
@@ -140,8 +164,8 @@ func init_dict() -> void:
 func get_windrose(diretion_: Vector2) -> String:
 	var windrose = ""
 	
-	for windrose_ in dict.windrose:
-		if dict.windrose[windrose_] == diretion_:
+	for windrose_ in dict.windrose.direction:
+		if dict.windrose.direction[windrose_] == diretion_:
 			windrose = windrose_
 			break
 	
@@ -278,6 +302,8 @@ func init_schematic() -> void:
 			
 			dict.schematic.association[association][data.title] = data.title
 			dict.schematic.rarity[data.rarity].append(data.title)
+	
+	#print(dict.schematic.title)
 
 
 func init_node() -> void:
@@ -317,7 +343,6 @@ func init_scene() -> void:
 	scene.conveyor = load("res://scene/7/conveyor.tscn")
 	scene.compartment = load("res://scene/7/compartment.tscn")
 	
-
 
 
 func get_random_element(arr_: Array):
