@@ -1,1 +1,1 @@
-![image](https://github.com/Pe3Hu/rangi/assets/34793005/864dd83f-a223-4c8b-8024-ace22150e91d)
+![image](https://github.com/Pe3Hu/rangi/assets/34793005/cca0f59d-4e36-4250-b74c-8f1281513ba3)
