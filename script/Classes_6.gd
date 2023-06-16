@@ -44,6 +44,17 @@ class Cluster:
 			sector.scene.myself.update_color_by_cluster()
 
 
+	func paint_schematic(schematic_: Classes_7.Schematic) -> void:
+		var compartment = schematic_.get_compartment(null)
+		obj.center.scene.myself.recolor_based_on_compartment(compartment)
+		#obj.compartment
+		
+		for neighbor in obj.center.dict.neighbor:
+			var windrose = obj.center.dict.neighbor[neighbor]
+			compartment = schematic_.get_compartment(windrose)
+			neighbor.scene.myself.recolor_based_on_compartment(compartment)
+
+
 #Область sector
 class Sector:
 	var num = {}

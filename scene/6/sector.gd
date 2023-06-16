@@ -39,8 +39,8 @@ func update_color_by_cluster() -> void:
 	set_color(color_)
 
 
-func recolor_based_on_compartment() -> void:
-	set_color(parent.obj.compartment.color.bg)
+func recolor_based_on_compartment(compartment_: Classes_7.Compartment) -> void:
+	set_color(compartment_.color.bg)
 
 
 func update_color_by_terrain() -> void:

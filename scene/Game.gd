@@ -33,6 +33,12 @@ func _input(event) -> void:
 			KEY_E:
 				if event.is_pressed() && !event.is_echo():
 					corporation.obj.outpost.obj.conveyor.rotate_first_schematic(false)
+			KEY_R:
+				if event.is_pressed() && !event.is_echo():
+					corporation.obj.outpost.obj.conveyor.next_worksite()
+			KEY_F:
+				if event.is_pressed() && !event.is_echo():
+					corporation.obj.outpost.obj.conveyor.find_best_worksite()
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():
 					corporation.obj.factory.press_stamps()

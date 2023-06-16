@@ -58,6 +58,7 @@ class Outpost:
 		var edifice = Classes_7.Edifice.new(input)
 		arr.edifice.append(edifice)
 		update_worksite(edifice)
+		obj.conveyor.num.worksite.shift = 0
 
 
 	func update_worksite(edifice_: Edifice) -> void:
@@ -69,12 +70,15 @@ class Outpost:
 #Конвейер conveyor 
 class Conveyor:
 	var arr = {}
+	var num = {}
 	var obj = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary):
 		obj.outpost = input_.outpost
+		num.worksite = {}
+		num.worksite.shift = 0
 		arr.schematic = []
 		init_scene()
 
@@ -88,10 +92,10 @@ class Conveyor:
 	func apply_tool(tool_: Classes_3.Tool) -> void:
 		arr.schematic.append(tool_.obj.schematic)
 		scene.myself.add_tool(tool_)
-		get_relevant_worksites(tool_.obj.schematic)
+		find_best_worksite()
 
 
-	func get_relevant_worksites(schematic_: Schematic) -> void:
+	func get_relevant_worksites(schematic_: Schematic) -> Array:
 		for cluster in obj.outpost.arr.worksite:
 			cluster.paint_cluster()
 		
@@ -100,8 +104,8 @@ class Conveyor:
 		for cluster in obj.outpost.arr.worksite:
 			if overlay_schematic_on_cluster(schematic_, cluster):
 				clusters.append(cluster)
-				cluster.paint_black()
-				#sector.scene.myself.set_color(compartment.color.bg)
+		
+		return clusters
 
 
 	func overlay_schematic_on_cluster(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
@@ -128,34 +132,23 @@ class Conveyor:
 		var schematic = arr.schematic.front()
 		schematic.rotate(clockwise_)
 		schematic.redraw_icon()
-		get_relevant_worksites(schematic)
+		find_best_worksite()
 
 
-	func overlay_schematic_on_cluster_old(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
-		for neighbor_cluster in cluster_.dict.neighbor:
-			if neighbor_cluster.obj.edifice != null:
-				var windrose_original = cluster_.dict.neighbor[neighbor_cluster]
-				var a = Global.dict.windrose.reverse
-				var windrose_reversed = Global.dict.windrose.reverse[windrose_original]
-				
-				for _i in cluster_.arr.sector.size():
-					var sector = cluster_.arr.sector[_i]
-					
-					for neighbor_sector in sector.dict.neighbor:
-						if sector.dict.neighbor[neighbor_sector] == windrose_original and neighbor_sector.obj.cluster == neighbor_cluster:
-							
-							var index = _i
-							
-							if index > 4:
-								pass
-							
-							var type_compartment = Global.arr.windrose
-							#sector.scene.myself.paint_black()
-							pass
-			#print(cluster_.dict.neighbor)
+	func next_worksite() -> void:
+		num.worksite.shift += 1
+		find_best_worksite()
+
+
+	func find_best_worksite() -> void:
+		var schematic = arr.schematic.front()
+		var worksites = get_relevant_worksites(schematic)
 		
-		return true
-
+		if worksites.size() > 0:
+			var index = num.worksite.shift % worksites.size()
+			var worksite = worksites[index]
+			worksite.paint_schematic(schematic)
+		
 
 
 #сооружение edifice 
@@ -178,7 +171,7 @@ class Edifice:
 			sector.obj.compartment = compartment
 			compartment.obj.sector = sector
 			compartment.obj.edifice = self
-			sector.scene.myself.recolor_based_on_compartment()
+			sector.scene.myself.recolor_based_on_compartment(compartment)
 
 
 #Схема сооружения schematic 
@@ -265,7 +258,7 @@ class Schematic:
 			compartment.swap()
 
 
-	func get_compartment(windrose_: String) -> Variant:
+	func get_compartment(windrose_: Variant) -> Variant:
 		for compartment in dict.compartment:
 			if compartment.word.windrose == windrose_:
 				return compartment
@@ -333,4 +326,3 @@ class Compartment:
 			word.type.next = null
 		
 		scene.myself.update_color_based_on_type()
-

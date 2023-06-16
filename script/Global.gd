@@ -2,22 +2,22 @@ extends Node
 
 
 var rng = RandomNumberGenerator.new()
-var num = {}
-var dict = {}
 var arr = {}
+var num = {}
 var obj = {}
-var node = {}
-var flag = {}
 var vec = {}
+var dict = {}
+var flag = {}
+var node = {}
 var scene = {}
 
 
 func _ready() -> void:
 	init_arr()
 	init_num()
+	init_vec()
 	init_dict()
 	init_node()
-	init_vec()
 	init_scene()
 
 
