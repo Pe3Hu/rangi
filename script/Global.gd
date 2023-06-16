@@ -30,6 +30,7 @@ func init_arr() -> void:
 	arr.spec = ["arm","brain","heart"]
 	
 
+
 func init_num() -> void:
 	num.index = {}
 	num.index.schematic = 0
@@ -122,6 +123,11 @@ func init_dict() -> void:
 	dict.compartment = {}
 	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
 	dict.compartment.active = ["power generator", "protective field generator", "research station"]
+	
+	dict.indicator = {}
+	dict.indicator["energy"] = ["power generator"]
+	dict.indicator["knowledge"] = ["research station"]
+	dict.indicator["shield"] = ["protective field generator"]
 	
 	init_corner()
 	init_windrose()
@@ -361,6 +367,7 @@ func init_scene() -> void:
 	scene.pilier = load("res://scene/6/pilier.tscn")
 	scene.outpost = load("res://scene/7/outpost.tscn")
 	scene.conveyor = load("res://scene/7/conveyor.tscn")
+	scene.scoreboard = load("res://scene/7/scoreboard.tscn")
 	scene.compartment = load("res://scene/7/compartment.tscn")
 	
 

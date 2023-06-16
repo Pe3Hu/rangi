@@ -10,7 +10,7 @@ class Cluster:
 	var dict = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		num.index = Global.num.index.cluster
 		Global.num.index.cluster += 1
 		obj.continent = input_.continent
@@ -104,7 +104,7 @@ class Frontière:
 	var scene = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		obj.continent = input_.continent
 		arr.pilier = input_.piliers
 		arr.terres = []
@@ -145,7 +145,7 @@ class Pilier:
 	var scene = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		vec.grid = input_.grid
 		obj.continent = input_.continent
 		dict.neighbor = {}

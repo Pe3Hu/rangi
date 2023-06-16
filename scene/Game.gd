@@ -6,9 +6,10 @@ func _ready() -> void:
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
 	#012
 	
-	var branch = Global.obj.cosmos.obj.planet.arr.outpost.front().arr.branch.front()
-	branch.obj.outpost.place_core()
-	branch.obj.factory.press_stamps()
+	var outpost = Global.obj.cosmos.obj.planet.arr.outpost.front()
+	outpost.place_core()
+	outpost.arr.branch.front().obj.factory.press_stamps()
+	outpost.arr.branch.back().obj.factory.press_stamps()
 
 
 func _input(event) -> void:

@@ -9,10 +9,11 @@ script = ExtResource("1_soudf")
 
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.819608, 0.584314, 1, 1)
+color = Color(0.501961, 0.501961, 0.501961, 1)
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
+alignment = 1
 
 [node name="Director" type="HBoxContainer" parent="VBox"]
 layout_mode = 2

@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://yfhciwxybee5"]
+
+[ext_resource type="FontFile" uid="uid://brthmdy0bvgqo" path="res://asset/font/metal lord ot.otf" id="1_77dx8"]
+[ext_resource type="Script" path="res://scene/7/scoreboard.gd" id="1_dp4b1"]
+
+[node name="Scoreboard" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_dp4b1")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+
+[node name="Label" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="Energy" type="Label" parent="Label"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_77dx8")
+text = "E: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Knowledge" type="Label" parent="Label"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_77dx8")
+text = "E: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Shield" type="Label" parent="Label"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_77dx8")
+text = "E: 0"
+horizontal_alignment = 1
+vertical_alignment = 1

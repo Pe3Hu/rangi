@@ -28,3 +28,8 @@ res://scene/4/storage.gd
 res://scene/7/outpost.tscn
 res://scene/7/outpost.gd
 res://scene/0/planet.tscn
+res://scene/1/director.gd
+res://scene/0/planet.gd
+res://scene/7/scoreboard.tscn
+res://scene/4/storage.tscn
+res://scene/7/scoreboard.gd

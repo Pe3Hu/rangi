@@ -87,7 +87,7 @@ class Continent:
 	var scene = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		vec.offset = Vector2.ONE * 0.5 * Global.num.size.sector.d
 		obj.outpost = input_.outpost
 		init_scene()

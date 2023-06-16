@@ -26,5 +26,5 @@ color = Color(0.0666667, 0.521569, 0.188235, 1)
 
 [node name="Schematic" type="HBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 10
 alignment = 1

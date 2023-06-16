@@ -8,15 +8,17 @@ class Outpost:
 	var scene = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		arr.corporation = input_.corporations
 		obj.planet = input_.planet
 		arr.edifice = []
 		arr.worksite  = []
+		arr.module = []
 		init_scene()
 		init_continent()
 		init_branchs()
 		init_conveyor()
+		init_scoreboard()
 
 
 	func init_scene() -> void:
@@ -48,6 +50,12 @@ class Outpost:
 		obj.conveyor = Classes_7.Conveyor.new(input)
 
 
+	func init_scoreboard() -> void:
+		var input = {}
+		input.outpost = self
+		obj.scoreboard = Classes_7.Scoreboard.new(input)
+
+
 	func place_core() -> void:
 		var input = {}
 		input.tool = null
@@ -74,19 +82,28 @@ class Outpost:
 		var grid_center = Vector2(Global.num.size.continent.col/2, Global.num.size.continent.row/2)
 		var cluster = obj.continent.arr.sector[grid_center.y][grid_center.x].obj.cluster
 		erect_edifice(schematic, cluster)
+		
+		print(arr.module.size())
 
 
 	func erect_edifice(schematic_: Schematic, cluster_: Classes_6.Cluster) -> void:
 		var input = {}
+		input.outpost = self
 		input.schematic = schematic_
 		input.cluster = cluster_
 		var edifice = Classes_7.Edifice.new(input)
 		arr.edifice.append(edifice)
 		update_worksite(edifice)
 		obj.conveyor.num.worksite.shift = 0
+		
+		if obj.conveyor.arr.schematic.has(schematic_):
+			obj.conveyor.arr.schematic.erase(schematic_)
+			obj.conveyor.scene.myself.remove_schematic(schematic_.obj.tool)
 
 
 	func update_worksite(edifice_: Edifice) -> void:
+		arr.worksite.erase(edifice_.obj.cluster)
+		
 		for cluster in edifice_.obj.cluster.dict.neighbor:
 			if cluster.obj.edifice == null and !arr.worksite.has(cluster):
 				arr.worksite.append(cluster)
@@ -101,7 +118,7 @@ class Conveyor:
 	var scene = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		obj.outpost = input_.outpost
 		num.worksite = {}
 		num.worksite.shift = 0
@@ -138,6 +155,7 @@ class Conveyor:
 
 	func overlay_schematic_on_cluster(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
 		var relevant = true
+		var wall = true
 		
 		for compartment in schematic_.dict.compartment:
 			var grid = cluster_.obj.center.vec.grid + compartment.vec.direction
@@ -152,15 +170,17 @@ class Conveyor:
 					for neighbor_sector in sector.dict.neighbor:
 						if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
 							relevant = relevant and compartment.compatibility_check(neighbor_sector.obj.compartment)
+							wall = wall and compartment.word.type.current == "wall"
 		
-		return relevant
+		return relevant and !wall
 
 
 	func rotate_first_schematic(clockwise_: bool) -> void:
-		var schematic = arr.schematic.front()
-		schematic.rotate(clockwise_)
-		schematic.redraw_icon()
-		find_best_worksite()
+		if arr.schematic.size() > 0:
+			var schematic = arr.schematic.front()
+			schematic.rotate(clockwise_)
+			schematic.redraw_icon()
+			find_best_worksite()
 
 
 	func next_worksite() -> void:
@@ -169,17 +189,17 @@ class Conveyor:
 
 
 	func find_best_worksite() -> Variant:
-		var schematic = arr.schematic.front()
-		var worksites = get_relevant_worksites(schematic)
-		
-		if worksites.size() > 0:
-			var index = num.worksite.shift % worksites.size()
-			var worksite = worksites[index]
-			worksite.paint_schematic(schematic)
-			return worksite
-		
+		if arr.schematic.size() > 0:
+			var schematic = arr.schematic.front()
+			var worksites = get_relevant_worksites(schematic)
+			
+			if worksites.size() > 0:
+				var index = num.worksite.shift % worksites.size()
+				var worksite = worksites[index]
+				worksite.paint_schematic(schematic)
+				return worksite
+			
 		return null
-
 
 
 	func erect_on_best_worksite() -> void:
@@ -190,12 +210,40 @@ class Conveyor:
 			obj.outpost.erect_edifice(schematic, worksite)
 
 
+#Табло scoreboard 
+class Scoreboard:
+	var num = {}
+	var obj = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.outpost = input_.outpost
+		init_scene()
+		init_indicators()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.scoreboard.instantiate()
+		scene.myself.set_parent(self)
+		obj.outpost.scene.myself.get_node("VBox").add_child(scene.myself)
+		obj.outpost.scene.myself.get_node("VBox").move_child(scene.myself, 2)
+
+
+	func init_indicators() -> void:
+		num.indicator = {}
+		
+		for indicator in Global.dict.indicator:
+			num.indicator[indicator] = 0
+
+
 #сооружение edifice 
 class Edifice:
 	var obj = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
+		obj.outpost = input_.outpost
 		obj.schematic = input_.schematic
 		obj.cluster = input_.cluster
 		obj.cluster.obj.edifice = self
@@ -211,6 +259,35 @@ class Edifice:
 			compartment.obj.sector = sector
 			compartment.obj.edifice = self
 			sector.scene.myself.recolor_based_on_compartment(compartment)
+			
+			if Global.dict.compartment.active.has(compartment.word.type.current):
+				add_module(compartment)
+
+
+	func add_module(compartment_: Compartment) -> void:
+		var module = get_module(compartment_)
+		
+		if module == null:
+			var input = {}
+			input.outpost = obj.outpost
+			input.compartment = compartment_
+			module = Classes_7.Module.new(input)
+			obj.outpost.arr.module.append(module)
+		else:
+			module.add_compartment(compartment_)
+		
+		print(obj.outpost.arr.module.size())
+
+
+	func get_module(compartment_: Compartment) -> Variant:
+		var sector = compartment_.obj.sector
+		
+		for neighbor in sector.dict.neighbor:
+			if neighbor.obj.cluster != sector.obj.cluster and sector.dict.neighbor[neighbor].length() == 1:
+				if neighbor.obj.compartment != null:
+					return neighbor.obj.compartment.obj.module
+		
+		return null
 
 
 #Схема сооружения schematic 
@@ -222,7 +299,7 @@ class Schematic:
 	var word = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		obj.tool = input_.tool
 		word.title = input_.title
 		flag.core = input_.core
@@ -320,10 +397,11 @@ class Compartment:
 	var scene = {}
 
 
-	func _init(input_: Dictionary):
+	func _init(input_: Dictionary) -> void:
 		obj.schematic = input_.schematic
 		obj.edifice = null
 		obj.sector = null
+		obj.module = null
 		vec.grid = input_.grid
 		vec.direction = input_.direction
 		word.type = {}
@@ -365,3 +443,90 @@ class Compartment:
 			word.type.next = null
 		
 		scene.myself.update_color_based_on_type()
+
+
+#Модуль module  
+class Module:
+	var arr = {}
+	var obj = {}
+	var dict = {}
+	var flag = {}
+	var word = {}
+ 
+
+	func _init(input_: Dictionary) -> void:
+		arr.compartment = []
+		obj.outpost = input_.outpost
+		dict.indicator = {}
+		flag.complete = false
+		word.type = null
+		add_compartment(input_.compartment)
+		set_type()
+		update_indicators()
+
+
+	func set_type() -> void:
+		for compartment in arr.compartment:
+			if Global.dict.compartment.active.has(compartment.word.type.current):
+				word.type = str(compartment.word.type.current)
+		
+		if word.type != null:
+			for indicator in Global.dict.indicator:
+				if Global.dict.indicator[indicator].has(word.type):
+					dict.indicator[indicator] = 0
+
+
+	func update_indicators() -> void:
+		for indicator in dict.indicator:
+			obj.outpost.obj.scoreboard.num.indicator[indicator] -= dict.indicator[indicator]
+			set_indicator_value(indicator)
+			obj.outpost.obj.scoreboard.num.indicator[indicator] += dict.indicator[indicator]
+		
+		obj.outpost.obj.scoreboard.scene.myself.update_labels()
+
+
+	func set_indicator_value(indicator_: String) -> void:
+		var value = 1
+		
+		match indicator_:
+			"energy":
+				value *= arr.compartment.size() * 3
+			"knowledge":
+				value *= arr.compartment.size() * 1
+			"shield":
+				value *= arr.compartment.size() * 1
+		
+		if flag.complete:
+			value *= 2
+		
+		dict.indicator[indicator_] = value
+
+
+	func add_compartment(compartment_: Compartment) -> void:
+		arr.compartment.append(compartment_)
+		compartment_.obj.module = self
+		
+		if word.type == null:
+			set_type()
+		
+		check_complete()
+		update_indicators()
+
+
+	func check_complete() -> void:
+		flag.complete = true
+		var clusters = []
+		
+		for compartment in arr.compartment:
+			var sector = compartment.obj.sector
+			
+			for neighbor in sector.dict.neighbor:
+				if neighbor.obj.cluster != sector.obj.cluster:
+					if neighbor.obj.compartment == null:
+						flag.complete = false
+						update_indicators()
+						print(word.type, flag.complete)
+						return
+		
+		print(word.type, flag.complete)
+		update_indicators()
