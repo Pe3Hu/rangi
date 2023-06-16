@@ -17,3 +17,14 @@ res://scene/3/icon.gd
 res://scene/7/compartment.gd
 res://script/Classes_6.gd
 res://scene/6/sector.gd
+res://script/Classes_3.gd
+res://script/Classes_5.gd
+res://scene/3/bureau.gd
+res://scene/7/conveyor.gd
+res://scene/3/design.gd
+res://scene/2/factory.gd
+res://scene/2/stamp.gd
+res://scene/4/storage.gd
+res://scene/7/outpost.tscn
+res://scene/7/outpost.gd
+res://scene/0/planet.tscn

@@ -5,16 +5,41 @@ extends Node
 class Outpost:
 	var arr = {}
 	var obj = {}
+	var scene = {}
 
 
 	func _init(input_: Dictionary):
-		obj.corporation = input_.corporation
-		obj.director = obj.corporation.obj.director
-		obj.director.obj.outpost = self
-		obj.planet = null
+		arr.corporation = input_.corporations
+		obj.planet = input_.planet
 		arr.edifice = []
 		arr.worksite  = []
+		init_scene()
+		init_continent()
+		init_branchs()
 		init_conveyor()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.outpost.instantiate()
+		scene.myself.set_parent(self)
+		obj.planet.scene.myself.get_node("VBox/Outpost").add_child(scene.myself)
+
+
+	func init_continent() -> void:
+		var input = {}
+		input.outpost = self
+		obj.continent = Classes_0.Continent.new(input)
+
+
+	func init_branchs() -> void:
+		arr.branch = []
+		
+		for corporation in arr.corporation:
+			var input = {}
+			input.outpost = self
+			input.corporation = corporation
+			var branch = Classes_1.Branch.new(input)
+			arr.branch.append(branch)
 
 
 	func init_conveyor() -> void:
@@ -65,6 +90,7 @@ class Outpost:
 		for cluster in edifice_.obj.cluster.dict.neighbor:
 			if cluster.obj.edifice == null and !arr.worksite.has(cluster):
 				arr.worksite.append(cluster)
+				cluster.paint_black()
 
 
 #Конвейер conveyor 
@@ -86,7 +112,8 @@ class Conveyor:
 	func init_scene() -> void:
 		scene.myself = Global.scene.conveyor.instantiate()
 		scene.myself.set_parent(self)
-		obj.outpost.obj.director.scene.myself.get_node("VBox").add_child(scene.myself)
+		obj.outpost.scene.myself.get_node("VBox").add_child(scene.myself)
+		obj.outpost.scene.myself.get_node("VBox").move_child(scene.myself, 1)
 
 
 	func apply_tool(tool_: Classes_3.Tool) -> void:
@@ -97,7 +124,8 @@ class Conveyor:
 
 	func get_relevant_worksites(schematic_: Schematic) -> Array:
 		for cluster in obj.outpost.arr.worksite:
-			cluster.paint_cluster()
+			cluster.paint_black()
+			#cluster.paint_cluster()
 		
 		var clusters = []
 		
@@ -140,7 +168,7 @@ class Conveyor:
 		find_best_worksite()
 
 
-	func find_best_worksite() -> void:
+	func find_best_worksite() -> Variant:
 		var schematic = arr.schematic.front()
 		var worksites = get_relevant_worksites(schematic)
 		
@@ -148,7 +176,18 @@ class Conveyor:
 			var index = num.worksite.shift % worksites.size()
 			var worksite = worksites[index]
 			worksite.paint_schematic(schematic)
+			return worksite
 		
+		return null
+
+
+
+	func erect_on_best_worksite() -> void:
+		var worksite = find_best_worksite()
+		
+		if worksite != null:
+			var schematic = arr.schematic.front()
+			obj.outpost.erect_edifice(schematic, worksite)
 
 
 #сооружение edifice 

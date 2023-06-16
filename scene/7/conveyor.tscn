@@ -14,7 +14,6 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 6
 size_flags_vertical = 6
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_right = 10

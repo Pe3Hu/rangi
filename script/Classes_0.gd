@@ -10,8 +10,8 @@ class Cosmos:
 
 	func _init() -> void:
 		init_scene()
-		init_planet()
 		init_corporations()
+		init_planet()
 
 
 	func init_scene() -> void:
@@ -34,7 +34,6 @@ class Cosmos:
 			input.cosmos = self
 			var corporation = Classes_1.Corporation.new(input)
 			arr.corporation.append(corporation)
-			obj.planet.add_corporation(corporation)
 
 
 #Планета planet  
@@ -46,9 +45,8 @@ class Planet:
 
 	func _init(input_: Dictionary) -> void:
 		obj.cosmos = input_.cosmos
-		arr.corporation = []
 		init_scene()
-		init_continent()
+		init_outposts()
 		init_bureau()
 
 
@@ -58,23 +56,25 @@ class Planet:
 		obj.cosmos.scene.myself.get_node("Planet").add_child(scene.myself)
 
 
-	func init_continent() -> void:
-		var input = {}
-		input.planet = self
-		obj.continent = Classes_0.Continent.new(input)
+	func init_outposts() -> void:
+		arr.outpost = []
+		
+		for _i in obj.cosmos.arr.corporation.size() - 1:
+			var input = {}
+			input.planet = self
+			input.corporations = []
+			var corporation = obj.cosmos.arr.corporation[_i]
+			input.corporations.append(corporation)
+			corporation = obj.cosmos.arr.corporation[_i + 1]
+			input.corporations.append(corporation)
+			var outpost = Classes_7.Outpost.new(input)
+			arr.outpost.append(outpost)
 
 
 	func init_bureau() -> void:
 		var input = {}
 		input.planet = self
 		obj.bureau = Classes_3.Bureau.new(input)
-
-
-	func add_corporation(corporation_: Classes_1.Corporation) -> void:
-		arr.corporation.append(corporation_)
-		corporation_.obj.planet = self
-		corporation_.obj.outpost.obj.continent = obj.continent
-		scene.myself.get_node("VBox/Director").add_child(corporation_.obj.director.scene.myself)
 
 
 #континент continent
@@ -89,7 +89,7 @@ class Continent:
 
 	func _init(input_: Dictionary):
 		vec.offset = Vector2.ONE * 0.5 * Global.num.size.sector.d
-		obj.planet = input_.planet
+		obj.outpost = input_.outpost
 		init_scene()
 		init_piliers()
 		init_sectors()
@@ -99,7 +99,7 @@ class Continent:
 	func init_scene() -> void:
 		scene.myself = Global.scene.continent.instantiate()
 		scene.myself.set_parent(self)
-		obj.planet.scene.myself.get_node("VBox").add_child(scene.myself)
+		obj.outpost.scene.myself.get_node("VBox").add_child(scene.myself)
 
 
 	func init_piliers() -> void:
@@ -193,6 +193,7 @@ class Continent:
 				arr.cluster[_i].append(cluster)
 		
 		init_cluster_neighbors()
+
 
 	func init_cluster_neighbors() -> void:
 		for clusters in arr.cluster:

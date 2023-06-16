@@ -74,7 +74,7 @@ class Album:
 					"storage":
 						obj.director.obj.storage.apply_tool(tool)
 					"outpost":
-						obj.director.obj.outpost.obj.conveyor.apply_tool(tool)
+						obj.director.obj.branch.obj.outpost.obj.conveyor.apply_tool(tool)
 		
 		fill_thought()
 

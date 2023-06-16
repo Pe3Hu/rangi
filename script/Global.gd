@@ -359,6 +359,7 @@ func init_scene() -> void:
 	scene.sector = load("res://scene/6/sector.tscn")
 	scene.frontière = load("res://scene/6/frontière.tscn")
 	scene.pilier = load("res://scene/6/pilier.tscn")
+	scene.outpost = load("res://scene/7/outpost.tscn")
 	scene.conveyor = load("res://scene/7/conveyor.tscn")
 	scene.compartment = load("res://scene/7/compartment.tscn")
 	

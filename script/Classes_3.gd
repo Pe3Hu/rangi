@@ -27,7 +27,7 @@ class Bureau:
 		for _i in Global.num.bureau.count.total:
 			var input = {}
 			input.bureau = self
-			input.corporation = null
+			input.branch = null
 			input.tools = []
 			
 			for _j in 1:
@@ -64,7 +64,7 @@ class Design:
 	func _init(input_: Dictionary) -> void:
 		arr.tool = input_.tools
 		obj.bureau = input_.bureau
-		obj.corporation = input_.corporation
+		obj.branch = input_.branch
 		obj.spielkarte = null
 		obj.owner = null
 		flag.exile = false

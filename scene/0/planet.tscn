@@ -25,7 +25,7 @@ color = Color(0.588235, 0.588235, 0.588235, 1)
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Director" type="HBoxContainer" parent="VBox"]
+[node name="Outpost" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1

@@ -11,23 +11,28 @@ class Corporation:
 
 	func _init(input_: Dictionary) -> void:
 		obj.cosmos = input_.cosmos
-		obj.planet = null
+
+
+#Филиал branch
+class Branch:
+	var arr = {}
+	var obj = {}
+	var dict = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.corporation = input_.corporation
+		obj.outpost = input_.outpost
 		init_director()
-		init_outpost()
 		init_factory()
 		init_storage()
 
 
 	func init_director() -> void:
 		var input = {}
-		input.corporation = self
+		input.branch = self
 		obj.director = Classes_1.Director.new(input)
-
-
-	func init_outpost() -> void:
-		var input = {}
-		input.corporation = self
-		obj.outpost = Classes_7.Outpost.new(input)
 
 
 	func init_factory() -> void:
@@ -50,7 +55,7 @@ class Director:
 
 
 	func _init(input_: Dictionary) -> void:
-		obj.corporation = input_.corporation
+		obj.branch = input_.branch
 		init_scene()
 		init_base_design()
 		init_album()
@@ -60,6 +65,7 @@ class Director:
 	func init_scene() -> void:
 		scene.myself = Global.scene.director.instantiate()
 		scene.myself.set_parent(self)
+		obj.branch.obj.outpost.scene.myself.get_node("VBox/Director").add_child(scene.myself)
 
 
 	func init_base_design() -> void:
@@ -97,7 +103,7 @@ class Director:
 			for _i in data_.count:
 				var input = {}
 				input.bureau = null
-				input.corporation = obj.corporation
+				input.branch = obj.branch
 				input.tools = []
 				
 				for _j in 1:
