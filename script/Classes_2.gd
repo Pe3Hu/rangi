@@ -73,7 +73,7 @@ class Factory:
 	func shift_selected_stamp(shift_: Vector2) -> void:
 		var grid = obj.stamp.selected.vec.grid + shift_
 		
-		if Global.check_array_has_grid(arr.stamp, grid):
+		if Global.boundary_of_array_check(arr.stamp, grid):
 			set_stamp_as_selected(arr.stamp[grid.y][grid.x])
 
 

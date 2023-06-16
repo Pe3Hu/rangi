@@ -29,10 +29,21 @@ class Outpost:
 		input.title = "170"
 		input.types = []
 		input.core = true
+		var n = 2
+		var diagonals = []
+		var linears = []
 		
-		for _i in 4:
-			input.types.append("wall")
-			input.types.append("adaptive compartment")
+		for _i in n:
+			diagonals.append("wall")
+			diagonals.append("wall")
+			linears.append("adaptive compartment")
+			linears.append("power generator")
+		
+		linears.shuffle()
+		
+		for _i in diagonals.size():
+			input.types.append(diagonals[_i])
+			input.types.append(linears[_i])
 		
 		var schematic = Classes_7.Schematic.new(input)
 		var grid_center = Vector2(Global.num.size.continent.col/2, Global.num.size.continent.row/2)
@@ -81,24 +92,25 @@ class Conveyor:
 
 
 	func get_relevant_worksites(schematic_: Schematic) -> void:
+		for cluster in obj.outpost.arr.worksite:
+			cluster.paint_cluster()
+		
 		var clusters = []
 		
-		#overlay_schematic_on_cluster(schematic_, obj.outpost.arr.worksite.front())
-		
 		for cluster in obj.outpost.arr.worksite:
-			
-			overlay_schematic_on_cluster(schematic_, cluster)
-			clusters.append(cluster)
-			#cluster.paint_black()
+			if overlay_schematic_on_cluster(schematic_, cluster):
+				clusters.append(cluster)
+				cluster.paint_black()
+				#sector.scene.myself.set_color(compartment.color.bg)
 
 
 	func overlay_schematic_on_cluster(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
-		for compartment in schematic_.arr.compartment:
+		var relevant = true
+		
+		for compartment in schematic_.dict.compartment:
 			var grid = cluster_.obj.center.vec.grid + compartment.vec.direction
-			print("_______", grid)
 			var sector = cluster_.obj.continent.arr.sector[grid.y][grid.x]
 			var windrose_compartment = Global.get_windrose(compartment.vec.direction)
-			sector.scene.myself.set_color(compartment.color.bg)
 			
 			for side in Global.dict.side.windrose:
 				if Global.dict.side.windrose[side].has(windrose_compartment):
@@ -107,12 +119,16 @@ class Conveyor:
 					
 					for neighbor_sector in sector.dict.neighbor:
 						if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
-							print(compartment.word.type, neighbor_sector.obj.compartment.word.type)
-							
-							#if neighbor_sector.obj.compartment.word.type == compartment.word.type:
-							#	sector.scene.myself.paint_black()
+							relevant = relevant and compartment.compatibility_check(neighbor_sector.obj.compartment)
 		
-		return true
+		return relevant
+
+
+	func rotate_first_schematic(clockwise_: bool) -> void:
+		var schematic = arr.schematic.front()
+		schematic.rotate(clockwise_)
+		schematic.redraw_icon()
+		get_relevant_worksites(schematic)
 
 
 	func overlay_schematic_on_cluster_old(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
@@ -156,7 +172,7 @@ class Edifice:
 
 
 	func erect_compartment() -> void:
-		for compartment in obj.schematic.arr.compartment:
+		for compartment in obj.schematic.dict.compartment:
 			var grid_sector = obj.cluster.obj.center.vec.grid + compartment.vec.direction
 			var sector = obj.continent.arr.sector[grid_sector.y][grid_sector.x]
 			sector.obj.compartment = compartment
@@ -175,19 +191,18 @@ class Schematic:
 
 
 	func _init(input_: Dictionary):
-		arr.type = input_.types
 		obj.tool = input_.tool
 		word.title = input_.title
 		flag.core = input_.core
-		init_compartments()
+		init_compartments(input_.types)
 
 
-	func init_compartments() -> void:
-		arr.compartment = []
+	func init_compartments(types_: Array) -> void:
+		dict.compartment = {}
 		var index = 0
 		
-		if arr.type.size() == 0:
-			get_random_types()
+		if types_.size() == 0:
+			types_.append_array(get_random_types())
 		
 		for _i in Global.num.size.cluster.n:
 			for _j in Global.num.size.cluster.n:
@@ -197,10 +212,10 @@ class Schematic:
 				input.direction = Vector2.ZERO
 				
 				if input.grid != Vector2.ONE:
-					input.direction = Vector2.ONE - input.grid
+					input.direction =  input.grid - Vector2.ONE
 					var windrose = Global.arr.windrose_shifted[index]
 					var index_ = Global.arr.windrose.find(windrose)
-					input.type = arr.type[index_]
+					input.type = types_[index_]
 					index += 1
 				else:
 					if flag.core:
@@ -209,23 +224,58 @@ class Schematic:
 						input.type = "gateway"
 				
 				var compartment = Classes_7.Compartment.new(input)
-				arr.compartment.append(compartment)
+				dict.compartment[compartment] = input.direction
 
 
-	func get_random_types() -> void:
+	func get_random_types() -> Array:
+		var types = []
 		var options = []
 		options.append_array(Global.dict.compartment.active)
 		var schematic = Global.dict.schematic.title[word.title]
 		var n = pow(Global.num.size.cluster.n, 2) - 1
 		
 		for _i in n:
-			arr.type.append("wall")
+			types.append("wall")
 		
 		for association in schematic.associations:
 			var type = options.pick_random()
 			
 			for _i in association:
-				arr.type[_i] = type
+				types[_i] = type
+		
+		return types
+
+
+	func rotate(clockwise_: bool) -> void:
+		var rotated = []
+		var windroses = null
+		
+		if clockwise_:
+			windroses = Global.dict.windrose.next
+		else:
+			windroses = Global.dict.windrose.previous
+		
+		for current_compartment in dict.compartment:
+			if current_compartment.word.windrose != null:
+				var next_windrose = windroses[current_compartment.word.windrose] 
+				var next_compartment = get_compartment(next_windrose)
+				current_compartment.swap_reparation_with(next_compartment)
+		
+		for compartment in dict.compartment:
+			compartment.swap()
+
+
+	func get_compartment(windrose_: String) -> Variant:
+		for compartment in dict.compartment:
+			if compartment.word.windrose == windrose_:
+				return compartment
+		
+		return null
+
+
+	func redraw_icon() -> void:
+		obj.tool.obj.icon.scene.myself.clean()
+		obj.tool.obj.icon.scene.myself.fill_based_on_tool()
 
 
 #Отсек compartment  
@@ -244,7 +294,10 @@ class Compartment:
 		obj.sector = null
 		vec.grid = input_.grid
 		vec.direction = input_.direction
-		word.type = input_.type
+		word.type = {}
+		word.type.current = input_.type
+		word.type.next = null
+		word.windrose = Global.get_windrose(vec.direction)
 		color.bg = null
 		init_scene()
 
@@ -252,3 +305,32 @@ class Compartment:
 	func init_scene() -> void:
 		scene.myself = Global.scene.compartment.instantiate()
 		scene.myself.set_parent(self)
+
+
+	func compatibility_check(compartment_: Compartment) -> bool:
+		var compatibility = false
+		var types = []
+		types.append(word.type.current)
+		types.append(compartment_.word.type.current)
+		
+		if types.front() == types.back():
+			compatibility = true
+		
+		if types.has("adaptive compartment"):
+			if !types.has("wall"):
+				compatibility = true
+		
+		return compatibility
+
+
+	func swap_reparation_with(compartment_: Compartment) -> void:
+		word.type.next = str(compartment_.word.type.current)
+
+
+	func swap() -> void:
+		if word.type.next != null:
+			word.type.current = str(word.type.next)
+			word.type.next = null
+		
+		scene.myself.update_color_based_on_type()
+

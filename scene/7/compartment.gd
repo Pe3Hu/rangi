@@ -20,7 +20,7 @@ func update_color_based_on_type() -> void:
 	var v = 1.0
 	var h = 0.0
 
-	match parent.word.type:
+	match parent.word.type.current:
 		"core":
 			h = 30/max_h
 		"gateway":

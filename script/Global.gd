@@ -119,6 +119,16 @@ func init_dict() -> void:
 		]
 	]
 	
+	dict.compartment = {}
+	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
+	dict.compartment.active = ["power generator", "protective field generator", "research station"]
+	
+	init_corner()
+	init_windrose()
+	init_schematic()
+
+
+func init_windrose() -> void:
 	dict.windrose = {}
 	dict.windrose.direction = {}
 	dict.windrose.direction["NE"] = Vector2(1, -1)
@@ -140,6 +150,26 @@ func init_dict() -> void:
 	dict.windrose.reverse["NW"] = "SE"
 	dict.windrose.reverse["N"] = "S"
 	
+	dict.windrose.previous = {}
+	dict.windrose.previous["NE"] = "NW"
+	dict.windrose.previous["E"] = "N"
+	dict.windrose.previous["SE"] = "NE"
+	dict.windrose.previous["S"] = "E"
+	dict.windrose.previous["SW"] = "SE"
+	dict.windrose.previous["W"] = "S"
+	dict.windrose.previous["NW"] = "SW"
+	dict.windrose.previous["N"] = "W"
+	
+	dict.windrose.next = {}
+	dict.windrose.next["NE"] = "SE"
+	dict.windrose.next["E"] = "S"
+	dict.windrose.next["SE"] = "SW"
+	dict.windrose.next["S"] = "W"
+	dict.windrose.next["SW"] = "NE"
+	dict.windrose.next["W"] = "N"
+	dict.windrose.next["NW"] = "NE"
+	dict.windrose.next["N"] = "E"
+	
 	dict.side = {}
 	dict.side.windrose = {}
 	dict.side.windrose["right"] = ["NE", "E", "SE"]
@@ -152,24 +182,14 @@ func init_dict() -> void:
 	dict.side.direction["bot"] = Vector2(0, 1)
 	dict.side.direction["left"] = Vector2(-1, 0)
 	dict.side.direction["top"] = Vector2(0, -1)
-	
-	dict.compartment = {}
-	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
-	dict.compartment.active = ["power generator", "protective field generator", "research station"]
-	
-	init_corner()
-	init_schematic()
 
 
-func get_windrose(diretion_: Vector2) -> String:
-	var windrose = ""
-	
+func get_windrose(diretion_: Vector2) -> Variant:
 	for windrose_ in dict.windrose.direction:
 		if dict.windrose.direction[windrose_] == diretion_:
-			windrose = windrose_
-			break
+			return windrose_
 	
-	return windrose
+	return null
 
 
 func init_corner() -> void:
@@ -302,8 +322,7 @@ func init_schematic() -> void:
 			
 			dict.schematic.association[association][data.title] = data.title
 			dict.schematic.rarity[data.rarity].append(data.title)
-	
-	#print(dict.schematic.title)
+			#print(data)
 
 
 func init_node() -> void:
@@ -395,7 +414,7 @@ func load_data(path_: String):
 	return json_object.get_data()
 
 
-func check_array_has_grid(array_: Array, grid_: Vector2) -> bool:
+func boundary_of_array_check(array_: Array, grid_: Vector2) -> bool:
 	if grid_.y >= 0 and grid_.y < array_.size():
 		if grid_.x >= 0 and grid_.x < array_[grid_.y].size():
 			return true

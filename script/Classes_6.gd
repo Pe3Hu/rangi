@@ -39,6 +39,11 @@ class Cluster:
 			sector.scene.myself.paint_black()
 
 
+	func paint_cluster() -> void:
+		for sector in arr.sector:
+			sector.scene.myself.update_color_by_cluster()
+
+
 #Область sector
 class Sector:
 	var num = {}

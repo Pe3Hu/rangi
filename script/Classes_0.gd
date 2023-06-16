@@ -126,7 +126,7 @@ class Continent:
 				for direction in Global.dict.neighbor.linear2:
 					var grid = pilier.vec.grid + direction
 					
-					if Global.check_array_has_grid(arr.pilier, grid):
+					if Global.boundary_of_array_check(arr.pilier, grid):
 						var neighbor_pilier = arr.pilier[grid.y][grid.x]
 						
 						if !neighbor_pilier.dict.neighbor.has(pilier):
@@ -173,7 +173,7 @@ class Continent:
 				for _i in directions.size():
 					var grid = sector.vec.grid + directions[_i]
 					
-					if Global.check_array_has_grid(arr.sector, grid):
+					if Global.boundary_of_array_check(arr.sector, grid):
 						var neighbor = arr.sector[grid.y][grid.x]
 						var windrose = Global.arr.windrose[_i]
 						sector.dict.neighbor[neighbor] = windrose
@@ -200,7 +200,7 @@ class Continent:
 				for direction in Global.dict.neighbor.linear2:
 					var grid = cluster.obj.center.vec.grid + direction * Global.num.size.cluster.n
 					
-					if Global.check_array_has_grid(arr.sector, grid):
+					if Global.boundary_of_array_check(arr.sector, grid):
 						var neighbor = arr.sector[grid.y][grid.x].obj.cluster
 						var windrose = Global.get_windrose(direction)
 						cluster.dict.neighbor[neighbor] = windrose

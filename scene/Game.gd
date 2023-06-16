@@ -11,25 +11,34 @@ func _ready() -> void:
 	corporation.obj.factory.press_stamps()
 
 func _input(event) -> void:
-	var factory = Global.obj.cosmos.arr.corporation.front().obj.factory
+	var corporation = Global.obj.cosmos.arr.corporation.front()
 	
 	if event is InputEventKey:
 		match event.keycode:
 			KEY_D:
 				if event.is_pressed() && !event.is_echo():
-					factory.shift_selected_stamp(Vector2(1, 0))
+					corporation.obj.factory.shift_selected_stamp(Vector2(1, 0))
 			KEY_S:
 				if event.is_pressed() && !event.is_echo():
-					factory.shift_selected_stamp(Vector2(0, 1))
+					corporation.obj.factory.shift_selected_stamp(Vector2(0, 1))
 			KEY_A:
 				if event.is_pressed() && !event.is_echo():
-					factory.shift_selected_stamp(Vector2(-1, 0))
+					corporation.obj.factory.shift_selected_stamp(Vector2(-1, 0))
 			KEY_W:
 				if event.is_pressed() && !event.is_echo():
-					factory.shift_selected_stamp(Vector2(0, -1))
+					corporation.obj.factory.shift_selected_stamp(Vector2(0, -1))
+			KEY_Q:
+				if event.is_pressed() && !event.is_echo():
+					corporation.obj.outpost.obj.conveyor.rotate_first_schematic(true)
+			KEY_E:
+				if event.is_pressed() && !event.is_echo():
+					corporation.obj.outpost.obj.conveyor.rotate_first_schematic(false)
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():
-					factory.press_stamps()
+					corporation.obj.factory.press_stamps()
+					
+					
+					
 
 
 func _process(delta_) -> void:
