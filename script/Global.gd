@@ -34,8 +34,6 @@ func init_arr() -> void:
 func init_num() -> void:
 	num.index = {}
 	num.index.schematic = 0
-	num.index.sector = 0
-	num.index.cluster = 0
 	
 	num.factory = {}
 	num.factory.count = {}
@@ -122,12 +120,24 @@ func init_dict() -> void:
 	
 	dict.compartment = {}
 	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
-	dict.compartment.active = ["power generator", "protective field generator", "research station"]
+	dict.compartment.consumption = {}
+	dict.compartment.consumption["power generator"] = 0
+	dict.compartment.consumption["adaptive compartment"] = 0
+	dict.compartment.consumption["protective field generator"] = 1
+	dict.compartment.consumption["research station"] = 1
+	dict.compartment.consumption["construction berth"] = 1
+	
+	dict.compartment.active = []
+	
+	for compartment in dict.compartment.consumption:
+		#if compartment != "adaptive compartment":
+		dict.compartment.active.append(compartment)
 	
 	dict.indicator = {}
 	dict.indicator["energy"] = ["power generator"]
 	dict.indicator["knowledge"] = ["research station"]
 	dict.indicator["shield"] = ["protective field generator"]
+	dict.indicator["component"] = ["construction berth"]
 	
 	init_corner()
 	init_windrose()
@@ -171,7 +181,7 @@ func init_windrose() -> void:
 	dict.windrose.next["E"] = "S"
 	dict.windrose.next["SE"] = "SW"
 	dict.windrose.next["S"] = "W"
-	dict.windrose.next["SW"] = "NE"
+	dict.windrose.next["SW"] = "NW"
 	dict.windrose.next["W"] = "N"
 	dict.windrose.next["NW"] = "NE"
 	dict.windrose.next["N"] = "E"

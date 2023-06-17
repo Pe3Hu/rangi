@@ -128,7 +128,7 @@ class Tool:
 				input.title = word.title
 				input.types = []
 				input.core = false
-				obj.schematic = Classes_7.Schematic.new(input)
+				obj.schematic = Classes_8.Schematic.new(input)
 
 
 	func init_icon() -> void:

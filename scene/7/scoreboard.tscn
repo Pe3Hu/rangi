@@ -41,3 +41,11 @@ theme_override_fonts/font = ExtResource("1_77dx8")
 text = "E: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Component" type="Label" parent="Label"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_77dx8")
+text = "E: 0"
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -11,4 +11,10 @@ func set_parent(parent_) -> void:
 func update_labels() -> void:
 	for label in get_node("Label").get_children():
 		var indicator = label.name.to_lower()
-		label.text = indicator[0].to_upper() + ":" + str(parent.num.indicator[indicator])
+		var value = parent.num.indicator[indicator]
+		
+		match indicator:
+			"energy":
+				value -= parent.num.consumption
+		
+		label.text = indicator[0].to_upper() + ":" + str(value)

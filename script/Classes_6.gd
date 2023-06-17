@@ -4,15 +4,12 @@ extends Node
 #Скопление cluster
 class Cluster:
 	var arr = {}
-	var num = {}
 	var obj = {}
 	var vec = {}
 	var dict = {}
 
 
 	func _init(input_: Dictionary) -> void:
-		num.index = Global.num.index.cluster
-		Global.num.index.cluster += 1
 		obj.continent = input_.continent
 		obj.edifice = null
 		vec.grid = input_.grid
@@ -44,7 +41,7 @@ class Cluster:
 			sector.scene.myself.update_color_by_cluster()
 
 
-	func paint_schematic(schematic_: Classes_7.Schematic) -> void:
+	func paint_schematic(schematic_: Classes_8.Schematic) -> void:
 		var compartment = schematic_.get_compartment(null)
 		obj.center.scene.myself.recolor_based_on_compartment(compartment)
 		#obj.compartment
@@ -57,7 +54,6 @@ class Cluster:
 
 #Область sector
 class Sector:
-	var num = {}
 	var obj = {}
 	var vec = {}
 	var dict = {}
@@ -70,8 +66,7 @@ class Sector:
 		obj.cluster = null
 		obj.compartment = null
 		vec.grid = input_.grid
-		num.index = Global.num.index.sector
-		Global.num.index.sector += 1
+		vec.center = Vector2()
 		dict.neighbor = {}
 		flag.onscreen = true
 		set_piliers()
@@ -160,6 +155,3 @@ class Pilier:
 
 	func set_terrain() -> void:
 		pass
-
-
-

@@ -38,6 +38,8 @@ func update_color_based_on_type() -> void:
 			h = 270/max_h
 		"research station":
 			h = 220/max_h
+		"construction berth":
+			h = 120/max_h
 	
 	parent.color.bg = Color.from_hsv(h,s,v)
 	$BG.set_color(parent.color.bg)

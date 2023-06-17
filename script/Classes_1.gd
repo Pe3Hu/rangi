@@ -95,8 +95,8 @@ class Director:
 		data = {}
 		data.category = "schematic"
 		data.target = "outpost"
-		data.title = "10"#Global.dict.schematic.title.keys().pick_random()42
-		data.count = 1
+		data.title = "46"#Global.dict.schematic.title.keys().pick_random()42 10
+		data.count = 4
 		datas.append(data)
 		
 		for data_ in datas:
@@ -131,7 +131,7 @@ class Director:
 			for tool in spielkarte.obj.design.arr.tool:
 				if tool.word.category == "schematic":
 					obj.album.put_above_on_archive(spielkarte)
-					return
+					#return
 
 
 	func reset_section(section_: String) -> void:
