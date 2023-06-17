@@ -13,6 +13,6 @@ func add_tool(tool_: Classes_3.Tool) -> void:
 	get_node("Schematic").add_child(tool_.scene.myself)
 
 
-func remove_schematic(tool_: Classes_3.Tool) -> void:
+func remove_tool(tool_: Classes_3.Tool) -> void:
 	get_node("Schematic").remove_child(tool_.scene.myself) 
 

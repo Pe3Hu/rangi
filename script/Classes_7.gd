@@ -97,7 +97,7 @@ class Outpost:
 		
 		if obj.conveyor.arr.schematic.has(schematic_):
 			obj.conveyor.arr.schematic.erase(schematic_)
-			obj.conveyor.scene.myself.remove_schematic(schematic_.obj.tool)
+			obj.conveyor.scene.myself.remove_tool(schematic_.obj.tool)
 
 
 	func update_worksite(edifice_: Edifice) -> void:
@@ -250,7 +250,6 @@ class Module:
 					sides.append(side)
 					break
 		
-		print(sides)
 		num.breath = sides.size()
 		set_type()
 		update_indicators()

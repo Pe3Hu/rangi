@@ -56,15 +56,14 @@ class Conveyor:
 			if sector.obj.cluster.obj.center != sector:
 				var windrose_compartment = sector.obj.cluster.obj.center.dict.neighbor[sector]
 				
-				
 				for side in sector.arr.side:
-						var direction = Global.dict.side.direction[side]
-						var windrose_side = Global.get_windrose(direction)
-						
-						for neighbor_sector in sector.dict.neighbor:
-							if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
-								relevant = relevant and compartment.compatibility_check(neighbor_sector.obj.compartment)
-								wall = wall and compartment.word.type.current == "wall"
+					var direction = Global.dict.side.direction[side]
+					var windrose_side = Global.get_windrose(direction)
+					
+					for neighbor_sector in sector.dict.neighbor:
+						if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
+							relevant = relevant and compartment.compatibility_check(neighbor_sector.obj.compartment)
+							wall = wall and compartment.word.type.current == "wall"
 		
 		return relevant and !wall
 
@@ -117,6 +116,8 @@ class Conveyor:
 				if arr.schematic.size() > 1:
 					var schematic = arr.schematic.pop_front()
 					arr.schematic.append(schematic)
+					scene.myself.remove_tool(schematic.obj.tool)
+					scene.myself.add_tool(schematic.obj.tool)
 
 
 	func evaluate_worksites() -> Variant:
@@ -372,6 +373,10 @@ class Compartment:
 		if types.has("adaptive compartment"):
 			if !types.has("wall"):
 				compatibility = true
+			
+			if compartment_.obj.module != null and word.type.current == "adaptive compartment":
+				if compartment_.obj.module.num.breath == 1 and compartment_.obj.module.word.type == null:
+					compatibility = false
 		
 		return compatibility
 
