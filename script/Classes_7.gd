@@ -245,11 +245,12 @@ class Module:
 		for compartment in input_.compartments:
 			add_compartment(compartment)
 			
-			for side in Global.dict.side.windrose:
-				if !sides.has(side) and Global.dict.side.windrose[side].has(compartment.word.windrose):
+			for side in compartment.obj.sector.arr.side:
+				if !sides.has(side):
 					sides.append(side)
 					break
 		
+		print(sides)
 		num.breath = sides.size()
 		set_type()
 		update_indicators()
@@ -294,19 +295,14 @@ class Module:
 			
 			for compartment in arr.compartment:
 				var sector = compartment.obj.sector
-				#var index_ = Global.num.size.continent.col * sector.vec.grid.y + sector.vec.grid.x
-				#print("sector: ", index_)
 				
 				for neighbor in sector.dict.neighbor:
 					if neighbor.obj.cluster != sector.obj.cluster and sector.dict.neighbor[neighbor].length() == 1:
 						if neighbor.obj.compartment == null:
 							flag.complete = false
 							update_indicators()
-							#var index = Global.num.size.continent.col * neighbor.vec.grid.y + neighbor.vec.grid.x
-							#print(index, word.type, flag.complete)
 							return
 			
-			#print(word.type, flag.complete)
 			update_indicators()
 
 
@@ -333,5 +329,4 @@ class Module:
 		if flag.complete:
 			value *= 2
 		
-		#print(indicator_, ": ",value)
 		dict.indicator[indicator_] = value

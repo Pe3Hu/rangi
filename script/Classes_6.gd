@@ -38,6 +38,7 @@ class Cluster:
 						dict.side[side] = []
 					
 					dict.side[side].append(sector)
+					sector.arr.side.append(side)
 		
 		for sector in arr.sector:
 			sector.obj.cluster = self

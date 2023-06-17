@@ -52,17 +52,19 @@ class Conveyor:
 		for compartment in schematic_.dict.compartment:
 			var grid = cluster_.obj.center.vec.grid + compartment.vec.direction
 			var sector = cluster_.obj.continent.arr.sector[grid.y][grid.x]
-			var windrose_compartment = Global.get_windrose(compartment.vec.direction)
 			
-			for side in Global.dict.side.windrose:
-				if Global.dict.side.windrose[side].has(windrose_compartment):
-					var direction = Global.dict.side.direction[side]
-					var windrose_side = Global.get_windrose(direction)
-					
-					for neighbor_sector in sector.dict.neighbor:
-						if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
-							relevant = relevant and compartment.compatibility_check(neighbor_sector.obj.compartment)
-							wall = wall and compartment.word.type.current == "wall"
+			if sector.obj.cluster.obj.center != sector:
+				var windrose_compartment = sector.obj.cluster.obj.center.dict.neighbor[sector]
+				
+				
+				for side in sector.arr.side:
+						var direction = Global.dict.side.direction[side]
+						var windrose_side = Global.get_windrose(direction)
+						
+						for neighbor_sector in sector.dict.neighbor:
+							if neighbor_sector.obj.compartment != null and sector.dict.neighbor[neighbor_sector] == windrose_side:
+								relevant = relevant and compartment.compatibility_check(neighbor_sector.obj.compartment)
+								wall = wall and compartment.word.type.current == "wall"
 		
 		return relevant and !wall
 
@@ -406,10 +408,10 @@ class Incentive:
 	func set_indexs() -> void:
 		var inflexibles = []
 		var indexs = {}
-		print("@@@")
+		#print("@@@")
 		
 		for sector in obj.cluster.obj.center.dict.neighbor:
 			var windrose = obj.cluster.obj.center.dict.neighbor[sector]
 			var index = 0
 			var index_sector = Global.num.size.continent.col * sector.vec.grid.y + sector.vec.grid.x
-			print([windrose, index_sector])
+			#print([windrose, index_sector])
