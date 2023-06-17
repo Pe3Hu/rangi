@@ -153,6 +153,9 @@ class Edifice:
 
 
 	func erect_compartment() -> void:
+		var description_schematic = Global.dict.schematic.title[obj.schematic.word.title]
+		#print(description_schematic)#Global.dict.schematic.title)
+			
 		for compartment in obj.schematic.dict.compartment:
 			var grid_sector = obj.cluster.obj.center.vec.grid + compartment.vec.direction
 			var sector = obj.continent.arr.sector[grid_sector.y][grid_sector.x]
@@ -160,31 +163,44 @@ class Edifice:
 			compartment.obj.sector = sector
 			compartment.obj.edifice = self
 			sector.scene.myself.recolor_based_on_compartment(compartment)
+		
+		for association in description_schematic.associations:
+			var compartments = []
+			var a = obj.schematic.dict.compartment
 			
-			if Global.dict.compartment.active.has(compartment.word.type.current):
-				add_module(compartment)
+			for index in association:
+				var windrose = Global.arr.windrose[index]
+				
+				for compartment in obj.schematic.dict.compartment:
+					if compartment.word.windrose == windrose:
+						compartments.append(compartment)
+						break
+			
+			add_module(compartments)
 
 
-	func add_module(compartment_: Classes_8.Compartment) -> void:
-		var module = get_module(compartment_)
+	func add_module(compartments_: Array) -> void:
+		var module = get_module(compartments_)
 		
 		if module == null:
 			var input = {}
 			input.outpost = obj.outpost
-			input.compartment = compartment_
+			input.compartments = compartments_
 			module = Classes_7.Module.new(input)
 			obj.outpost.arr.module.append(module)
 		else:
-			module.add_compartment(compartment_)
+			for compartment in compartments_:
+				module.add_compartment(compartment)
 
 
-	func get_module(compartment_: Classes_8.Compartment) -> Variant:
-		var sector = compartment_.obj.sector
-		
-		for neighbor in sector.dict.neighbor:
-			if neighbor.obj.cluster != sector.obj.cluster and sector.dict.neighbor[neighbor].length() == 1:
-				if neighbor.obj.compartment != null:
-					return neighbor.obj.compartment.obj.module
+	func get_module(compartments_: Array) -> Variant:
+		for compartment in compartments_:
+			var sector = compartment.obj.sector
+			
+			for neighbor in sector.dict.neighbor:
+				if neighbor.obj.cluster != sector.obj.cluster and sector.dict.neighbor[neighbor].length() == 1:
+					if neighbor.obj.compartment != null:
+						return neighbor.obj.compartment.obj.module
 		
 		return null
 
@@ -205,7 +221,10 @@ class Module:
 		dict.indicator = {}
 		flag.complete = false
 		word.type = null
-		add_compartment(input_.compartment)
+		
+		for compartment in input_.compartments:
+			add_compartment(compartment)
+		
 		set_type()
 		update_indicators()
 

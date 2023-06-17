@@ -239,6 +239,7 @@ func init_schematic() -> void:
 	dict.schematic.title = {}
 	dict.schematic.rarity = {}
 	dict.schematic.association = {}
+	dict.schematic.indexs = {}
 	
 	var size = pow(num.size.cluster.n, 2) - 1
 	var index = {}
@@ -329,6 +330,7 @@ func init_schematic() -> void:
 		
 		if association > 0:
 			dict.schematic.title[data.title] = data
+			dict.schematic.indexs[data.indexs] = data.title
 			
 			if !dict.schematic.association.has(association):
 				dict.schematic.association[association] = {}

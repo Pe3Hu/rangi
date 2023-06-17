@@ -197,6 +197,8 @@ class Schematic:
 		for compartment in dict.compartment:
 			if compartment.word.windrose != null:
 				compartment.swap()
+		
+		update_title()
 
 
 	func get_compartment(windrose_: Variant) -> Variant:
@@ -205,6 +207,24 @@ class Schematic:
 				return compartment
 		
 		return null
+
+
+	func update_title() -> void:
+		var description_schematic = Global.dict.schematic.title[word.title]
+		var indexs = []
+		
+		for compartment in dict.compartment:
+			if compartment.word.windrose !=  null:
+				indexs.append(0)
+		
+		for compartment in dict.compartment:
+			if compartment.word.windrose !=  null:
+				if compartment.word.type.current != "wall":
+					var index = Global.arr.windrose.find(compartment.word.windrose)
+					indexs[index] = 1
+					
+		
+		word.title = Global.dict.schematic.indexs[indexs]
 
 
 	func redraw_icon() -> void:
