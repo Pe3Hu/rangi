@@ -6,6 +6,7 @@ class Conveyor:
 	var arr = {}
 	var num = {}
 	var obj = {}
+	var dict = {}
 	var scene = {}
 
 
@@ -14,6 +15,7 @@ class Conveyor:
 		num.worksite = {}
 		num.worksite.shift = 0
 		arr.schematic = []
+		dict.incentive = {}
 		init_scene()
 
 
@@ -70,15 +72,15 @@ class Conveyor:
 			var schematic = arr.schematic.front()
 			schematic.rotate(clockwise_)
 			schematic.redraw_icon()
-			find_best_worksite()
+			preset_worksite()
 
 
 	func next_worksite() -> void:
 		num.worksite.shift += 1
-		find_best_worksite()
+		preset_worksite()
 
 
-	func find_best_worksite() -> Variant:
+	func preset_worksite() -> Variant:
 		if arr.schematic.size() > 0:
 			var schematic = arr.schematic.front()
 			var worksites = get_relevant_worksites(schematic)
@@ -92,14 +94,35 @@ class Conveyor:
 		return null
 
 
+	func decide_which_worksite_to_build_on() -> void:
+		if arr.schematic.size() > 0:
+			var datas = evaluate_worksites()
+			
+			if datas.size() > 0:
+				var weights = {}
+				
+				for data in datas:
+					var weight = int(round(data.weight))
+					weights[data] = weight
+				
+				var data = Global.get_random_key(weights)
+				
+				for _i in data.turn:
+					data.schematic.rotate(true)
+				
+				obj.outpost.erect_edifice(data.schematic, data.worksite)
+			else:
+				if arr.schematic.size() > 1:
+					var schematic = arr.schematic.pop_front()
+					arr.schematic.append(schematic)
+
+
 	func evaluate_worksites() -> Variant:
 		if arr.schematic.size() > 0:
-			print("_____")
 			var schematic = arr.schematic.front()
 			var datas = []
 			
 			for turn in Global.num.conveyor.turn:
-				schematic.rotate(true)
 				var worksites = get_relevant_worksites(schematic)
 				
 				for worksite in worksites:
@@ -107,21 +130,23 @@ class Conveyor:
 					data.turn = turn
 					data.schematic = schematic
 					data.worksite = worksite
+					data.surcharge = pow(Global.num.conveyor.surcharge, worksite.num.ring - 1)
 					var center = worksite.obj.center
 					data.index = Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
 					get_involved_modules(data)
 					evaluate_involved_modules(data)
 					datas.append(data)
-					print(data)
+				
+				schematic.rotate(true)
 			
-			find_best_worksite()
+			preset_worksite()
 			return datas
 		
 		return []
 
 
 	func erect_on_best_worksite() -> void:
-		var worksite = find_best_worksite()
+		var worksite = preset_worksite()
 		
 		if worksite != null:
 			var schematic = arr.schematic.front()
@@ -141,8 +166,6 @@ class Conveyor:
 						var windrose = sector.dict.neighbor[neighbor]
 						
 						if neighbor.obj.cluster != sector.obj.cluster and neighbor.obj.cluster == data_.worksite and windrose.length() == 1:
-							#var index = Global.num.size.continent.col * neighbor.vec.grid.y + neighbor.vec.grid.x
-							#print(index)
 							data_.modules.append(module)
 							break
 				else:
@@ -171,8 +194,20 @@ class Conveyor:
 			for key in factor:
 				weight *= factor[key]
 			
-			data_.weight += weight
+			data_.weight += float(weight)
+		
+		data_.weight /= data_.surcharge
 
+
+	func add_incentive(cluster_: Classes_6.Cluster) -> void:
+		var input = {}
+		input.cluster = cluster_
+		var incentive = Classes_8.Incentive.new(input)
+		
+		if !dict.incentive.has(cluster_.num.breath):
+			dict.incentive[cluster_.num.breath] = []
+		
+		dict.incentive[cluster_.num.breath].append(incentive)
 
 
 #Схема сооружения schematic 
@@ -353,3 +388,28 @@ class Compartment:
 		
 		if obj.sector != null:
 			obj.sector.scene.myself.recolor_based_on_compartment(self)
+
+
+#Поощрение incentive  
+class Incentive:
+	var arr = {}
+	var num = {}
+	var obj = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.cluster = input_.cluster
+		
+		set_indexs()
+
+
+	func set_indexs() -> void:
+		var inflexibles = []
+		var indexs = {}
+		print("@@@")
+		
+		for sector in obj.cluster.obj.center.dict.neighbor:
+			var windrose = obj.cluster.obj.center.dict.neighbor[sector]
+			var index = 0
+			var index_sector = Global.num.size.continent.col * sector.vec.grid.y + sector.vec.grid.x
+			print([windrose, index_sector])

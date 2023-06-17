@@ -4,16 +4,20 @@ extends Node
 #Скопление cluster
 class Cluster:
 	var arr = {}
+	var num = {}
 	var obj = {}
 	var vec = {}
 	var dict = {}
 
 
 	func _init(input_: Dictionary) -> void:
+		num.ring = null
+		num.breath = null
 		obj.continent = input_.continent
 		obj.edifice = null
 		vec.grid = input_.grid
 		dict.neighbor = {}
+		dict.side = {}
 		set_sectors()
 
 
@@ -25,6 +29,15 @@ class Cluster:
 		
 		for sector in obj.center.dict.neighbor:
 			arr.sector.append(sector)
+			var windrose = obj.center.dict.neighbor[sector]
+			
+			for side in Global.dict.side.windrose:
+				
+				if Global.dict.side.windrose[side].has(windrose):
+					if !dict.side.has(side):
+						dict.side[side] = []
+					
+					dict.side[side].append(sector)
 		
 		for sector in arr.sector:
 			sector.obj.cluster = self
@@ -41,6 +54,16 @@ class Cluster:
 			sector.scene.myself.update_color_by_cluster()
 
 
+	func paint_breath() -> void:
+		for sector in arr.sector:
+			sector.scene.myself.update_color_by_cluster_breath()
+
+
+	func paint_ring() -> void:
+		for sector in arr.sector:
+			sector.scene.myself.update_color_by_cluster_ring()
+
+
 	func paint_schematic(schematic_: Classes_8.Schematic) -> void:
 		var compartment = schematic_.get_compartment(null)
 		obj.center.scene.myself.recolor_based_on_compartment(compartment)
@@ -54,6 +77,7 @@ class Cluster:
 
 #Область sector
 class Sector:
+	var arr = {}
 	var obj = {}
 	var vec = {}
 	var dict = {}
@@ -62,6 +86,7 @@ class Sector:
 
 
 	func _init(input_):
+		arr.side = []
 		obj.continent = input_.continent
 		obj.cluster = null
 		obj.compartment = null

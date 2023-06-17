@@ -42,6 +42,10 @@ func _input(event) -> void:
 			KEY_F:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.outpost.obj.conveyor.erect_on_best_worksite()
+			KEY_Z:
+				if event.is_pressed() && !event.is_echo():
+					branch.obj.outpost.obj.conveyor.decide_which_worksite_to_build_on()
+					
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.factory.press_stamps()

@@ -41,5 +41,5 @@ func update_color_based_on_type() -> void:
 		"construction berth":
 			h = 120/max_h
 	
-	parent.color.bg = Color.from_hsv(h,s,v)
+	parent.color.bg = Color.from_hsv(h, s, v)
 	$BG.set_color(parent.color.bg)

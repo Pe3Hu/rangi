@@ -92,6 +92,7 @@ class Outpost:
 		var edifice = Classes_7.Edifice.new(input)
 		arr.edifice.append(edifice)
 		update_worksite(edifice)
+		update_clusters_breath(cluster_)
 		obj.conveyor.num.worksite.shift = 0
 		
 		if obj.conveyor.arr.schematic.has(schematic_):
@@ -105,7 +106,19 @@ class Outpost:
 		for cluster in edifice_.obj.cluster.dict.neighbor:
 			if cluster.obj.edifice == null and !arr.worksite.has(cluster):
 				arr.worksite.append(cluster)
-				cluster.paint_black()
+				obj.conveyor.add_incentive(cluster)
+				cluster.paint_breath()
+		
+		obj.conveyor.preset_worksite()
+
+
+	func update_clusters_breath(cluster_: Classes_6.Cluster) -> void:
+		cluster_.num.breath = 0
+		
+		for neighbor in cluster_.dict.neighbor:
+			if neighbor.obj.edifice == null:
+				neighbor.num.breath -= 1
+				neighbor.paint_breath()
 
 
 #Табло scoreboard 
@@ -134,6 +147,13 @@ class Scoreboard:
 		
 		for indicator in Global.dict.indicator:
 			num.indicator[indicator] = 0
+		
+		num.indicator["component"] = 1000
+
+
+	func pay_to_build(compartment_: Classes_8.Compartment) -> void:
+		var component = Global.dict.compartment.price[compartment_.word.type.current]
+		num.indicator["component"] -= component
 
 
 #сооружение edifice 
@@ -160,6 +180,8 @@ class Edifice:
 			compartment.obj.sector = sector
 			compartment.obj.edifice = self
 			sector.scene.myself.recolor_based_on_compartment(compartment)
+			obj.outpost.obj.scoreboard.pay_to_build(compartment)
+			Global.dict.compartment.price[compartment.word.type.current]
 		
 		for association in description_schematic.associations:
 			var compartments = []

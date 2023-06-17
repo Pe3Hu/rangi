@@ -26,6 +26,29 @@ func set_vertexs() -> void:
 
 func paint_black() -> void:
 	set_color(Color.GRAY)
+	update_color_by_cluster_breath()
+
+
+func update_color_by_cluster_ring() -> void:
+	if parent.obj.cluster.num.ring != null:
+		var max_h = 360.0
+		var h = float(parent.obj.cluster.num.ring) / Global.num.size.cluster.ring
+		var s = 0.25 
+		var v = 1
+		var color_ = Color.from_hsv(h, s, v)
+		set_color(color_)
+	else:
+		paint_black()
+
+
+func update_color_by_cluster_breath() -> void:
+	var max_h = 360.0
+	var h = 0
+	var s = 0.0
+	var v = float(parent.obj.cluster.num.breath) / Global.num.size.cluster.breath
+	var color_ = Color.from_hsv(h, s, v)
+	set_color(color_)
+
 
 
 func update_color_by_cluster() -> void:
@@ -35,7 +58,7 @@ func update_color_by_cluster() -> void:
 	var h = float(index) / (size.cluster * size.cluster)#* Global.num.size.terres.n)
 	var s = 0.25 
 	var v = 1
-	var color_ = Color.from_hsv(h,s,v)
+	var color_ = Color.from_hsv(h, s, v)
 	set_color(color_)
 
 
@@ -58,7 +81,7 @@ func update_color_by_terrain() -> void:
 			return
 	
 	print(parent,parent.word.terrain)
-	var color_ = Color.from_hsv(h,s,v)
+	var color_ = Color.from_hsv(h, s, v)
 	set_color(color_)
 
 

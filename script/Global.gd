@@ -47,6 +47,7 @@ func init_num() -> void:
 	
 	num.conveyor = {}
 	num.conveyor.turn = 4
+	num.conveyor.surcharge = 1.5
 	
 	num.separation = {}
 	num.separation.croupier = 5
@@ -68,11 +69,14 @@ func init_num() -> void:
 	
 	num.size.cluster = {}
 	num.size.cluster.n = 3
+	num.size.cluster.ring = 5
+	num.size.cluster.breath = 4
 	
 	num.size.continent = {}
-	num.size.continent.cluster = 9
+	num.size.continent.cluster = num.size.cluster.ring * 2 - 1
 	num.size.continent.col = num.size.continent.cluster * num.size.cluster.n
 	num.size.continent.row = num.size.continent.col
+	
 
 
 func init_dict() -> void:
@@ -128,6 +132,16 @@ func init_dict() -> void:
 	dict.compartment.consumption["protective field generator"] = 1
 	dict.compartment.consumption["research station"] = 1
 	dict.compartment.consumption["construction berth"] = 1
+	
+	dict.compartment.price = {}
+	dict.compartment.price["core"] = 100
+	dict.compartment.price["gateway"] = 7
+	dict.compartment.price["wall"] = 3
+	dict.compartment.price["adaptive compartment"] = 30
+	dict.compartment.price["power generator"] = 10
+	dict.compartment.price["protective field generator"] = 14
+	dict.compartment.price["research station"] = 12
+	dict.compartment.price["construction berth"] = 16
 	
 	dict.compartment.active = []
 	

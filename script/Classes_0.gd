@@ -193,6 +193,8 @@ class Continent:
 				arr.cluster[_i].append(cluster)
 		
 		init_cluster_neighbors()
+		init_cluster_rings()
+		init_cluster_breaths()
 
 
 	func init_cluster_neighbors() -> void:
@@ -206,3 +208,48 @@ class Continent:
 						var windrose = Global.get_windrose(direction)
 						cluster.dict.neighbor[neighbor] = windrose
 
+
+	func init_cluster_rings() -> void:
+		var unringed_clusters = []
+		
+		for clusters in arr.cluster:
+			for cluster in clusters:
+				unringed_clusters.append(cluster)
+		
+		var center_grid = Vector2(Global.num.size.continent.col, Global.num.size.continent.row) / 2
+		var center_cluster = arr.sector[center_grid.y][center_grid.x].obj.cluster
+		var ring = {}
+		ring.value = 0
+		ring.current = []
+		ring.current.append(center_cluster)
+		
+		while unringed_clusters.size() > 0:
+			ring.next = []
+			
+			for cluster in ring.current:
+				cluster.num.ring = ring.value
+				unringed_clusters.erase(cluster)
+				
+			
+			while ring.current.size() > 0:
+				var cluster = ring.current.pop_front()
+				
+				for sector in cluster.arr.sector:
+					for neighbor_sector in sector.dict.neighbor:
+						var neighbor_cluster = neighbor_sector.obj.cluster
+						
+						if neighbor_cluster != cluster and neighbor_cluster.num.ring == null:
+							if unringed_clusters.has(neighbor_cluster) and !ring.next.has(neighbor_cluster):
+								ring.next.append(neighbor_cluster)
+			
+			ring.current.append_array(ring.next)
+			ring.value += 1
+
+
+	func init_cluster_breaths() -> void:
+		for clusters in arr.cluster:
+			for cluster in clusters:
+				cluster.num.breath = Global.num.size.cluster.breath
+				var neighbors = cluster.dict.neighbor.keys().size()
+				cluster.num.breath -= (cluster.num.breath - neighbors)
+				#cluster.paint_breath()
