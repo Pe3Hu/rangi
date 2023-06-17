@@ -27,7 +27,6 @@ class Conveyor:
 	func apply_tool(tool_: Classes_3.Tool) -> void:
 		arr.schematic.append(tool_.obj.schematic)
 		scene.myself.add_tool(tool_)
-		find_best_worksite()
 
 
 	func get_relevant_worksites(schematic_: Schematic) -> Array:
@@ -89,18 +88,36 @@ class Conveyor:
 				var worksite = worksites[index]
 				worksite.paint_schematic(schematic)
 				return worksite
-			
+		
 		return null
 
 
 	func evaluate_worksites() -> Variant:
-		var weights = {}
-		
 		if arr.schematic.size() > 0:
+			print("_____")
 			var schematic = arr.schematic.front()
-			var worksites = get_relevant_worksites(schematic)
+			var datas = []
+			
+			for turn in Global.num.conveyor.turn:
+				schematic.rotate(true)
+				var worksites = get_relevant_worksites(schematic)
+				
+				for worksite in worksites:
+					var data = {}
+					data.turn = turn
+					data.schematic = schematic
+					data.worksite = worksite
+					var center = worksite.obj.center
+					data.index = Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
+					get_involved_modules(data)
+					evaluate_involved_modules(data)
+					datas.append(data)
+					print(data)
+			
+			find_best_worksite()
+			return datas
 		
-		return weights
+		return []
 
 
 	func erect_on_best_worksite() -> void:
@@ -109,6 +126,53 @@ class Conveyor:
 		if worksite != null:
 			var schematic = arr.schematic.front()
 			obj.outpost.erect_edifice(schematic, worksite)
+			evaluate_worksites()
+
+
+	func get_involved_modules(data_: Dictionary) -> void:
+		data_.modules = []
+		
+		for module in obj.outpost.arr.module:
+			for compartment in module.arr.compartment:
+				if !data_.modules.has(module):
+					var sector = compartment.obj.sector
+					
+					for neighbor in sector.dict.neighbor:
+						var windrose = sector.dict.neighbor[neighbor]
+						
+						if neighbor.obj.cluster != sector.obj.cluster and neighbor.obj.cluster == data_.worksite and windrose.length() == 1:
+							#var index = Global.num.size.continent.col * neighbor.vec.grid.y + neighbor.vec.grid.x
+							#print(index)
+							data_.modules.append(module)
+							break
+				else:
+					break
+
+
+	func evaluate_involved_modules(data_: Dictionary) -> void:
+		data_.weight = 0
+		
+		for module in data_.modules:
+			var factor = {}
+			factor.size = module.arr.compartment.size()
+			
+			if module.num.breath == 1:
+				factor.breath = 4
+			else:
+				factor.breath = 1
+			
+			if module.word.type == null:
+				factor.versatility = 1
+			else:
+				factor.versatility = 3
+			
+			var weight = 1
+			
+			for key in factor:
+				weight *= factor[key]
+			
+			data_.weight += weight
+
 
 
 #Схема сооружения schematic 
@@ -190,9 +254,6 @@ class Schematic:
 				var next_windrose = windroses[current_compartment.word.windrose] 
 				var next_compartment = get_compartment(next_windrose)
 				current_compartment.swap_reparation_with(next_compartment)
-				
-				#if next_windrose.length() == 2:
-				#print(current_compartment.word.windrose, current_compartment.word.type, next_windrose)
 		
 		for compartment in dict.compartment:
 			if compartment.word.windrose != null:

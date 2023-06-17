@@ -45,6 +45,8 @@ func init_num() -> void:
 	num.bureau.count.active = 5
 	num.bureau.count.total = 10
 	
+	num.conveyor = {}
+	num.conveyor.turn = 4
 	
 	num.separation = {}
 	num.separation.croupier = 5

@@ -97,8 +97,6 @@ class Outpost:
 		if obj.conveyor.arr.schematic.has(schematic_):
 			obj.conveyor.arr.schematic.erase(schematic_)
 			obj.conveyor.scene.myself.remove_schematic(schematic_.obj.tool)
-		
-		print(arr.module.size())
 
 
 	func update_worksite(edifice_: Edifice) -> void:
@@ -154,8 +152,7 @@ class Edifice:
 
 	func erect_compartment() -> void:
 		var description_schematic = Global.dict.schematic.title[obj.schematic.word.title]
-		#print(description_schematic)#Global.dict.schematic.title)
-			
+		
 		for compartment in obj.schematic.dict.compartment:
 			var grid_sector = obj.cluster.obj.center.vec.grid + compartment.vec.direction
 			var sector = obj.continent.arr.sector[grid_sector.y][grid_sector.x]
@@ -207,8 +204,8 @@ class Edifice:
 
 #Модуль module  
 class Module:
-	var num = {}
 	var arr = {}
+	var num = {}
 	var obj = {}
 	var dict = {}
 	var flag = {}
@@ -221,17 +218,23 @@ class Module:
 		dict.indicator = {}
 		flag.complete = false
 		word.type = null
+		var sides = []
 		
 		for compartment in input_.compartments:
 			add_compartment(compartment)
+			
+			for side in Global.dict.side.windrose:
+				if !sides.has(side) and Global.dict.side.windrose[side].has(compartment.word.windrose):
+					sides.append(side)
+					break
 		
+		num.breath = sides.size()
 		set_type()
 		update_indicators()
 
 
 	func add_compartment(compartment_: Classes_8.Compartment) -> void:
 		arr.compartment.append(compartment_)
-		#num.size = compartment_.num.size
 		compartment_.obj.module = self
 		var consumption = Global.dict.compartment.consumption[compartment_.word.type.current]
 		obj.outpost.obj.scoreboard.num.consumption += consumption
@@ -252,7 +255,6 @@ class Module:
 		if word.type != null:
 			for compartment in arr.compartment:
 				if compartment.word.type.current == "adaptive compartment":
-					print(word.type,"@",compartment.word.type.current)
 					compartment.word.type.next = word.type
 					compartment.swap()
 					var consumption = Global.dict.compartment.consumption[ word.type]

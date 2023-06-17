@@ -10,6 +10,7 @@ func _ready() -> void:
 	outpost.place_core()
 	outpost.arr.branch.front().obj.factory.press_stamps()
 	outpost.arr.branch.back().obj.factory.press_stamps()
+	outpost.obj.conveyor.evaluate_worksites()
 
 
 func _input(event) -> void:
