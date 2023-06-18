@@ -41,7 +41,7 @@ class Bureau:
 #				input_.value = 1
 				input_.category = "schematic"
 				input_.target = "outpost"
-				input_.title = Global.dict.schematic.mastery[2].pick_random()
+				input_.title = Global.dict.schematic.mastery[1].pick_random()
 				var tool = Classes_3.Tool.new(input_)
 				input.tools.append(tool)
 			
@@ -135,7 +135,8 @@ class Tool:
 			"drone":
 				num.value = input_.value
 				word.specialty = input_.specialty
-				word.abbreviation = word.category[0].to_upper() + word.specialty[0].to_upper() + str(num.value)
+				word.abbreviation = word.specialty[0].to_upper() + str(num.value)
+				#word.abbreviation = word.category[0].to_upper() + word.specialty[0].to_upper() + str(num.value)
 			"schematic":
 				word.title = input_.title
 				word.abbreviation = word.category[0].to_upper() + word.title[0].to_upper()

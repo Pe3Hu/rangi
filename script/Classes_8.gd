@@ -95,7 +95,7 @@ class Conveyor:
 		return null
 
 
-	func decide_which_worksite_to_build_on() -> void:
+	func decide_which_worksite_to_establish() -> void:
 		if arr.schematic.size() > 0:
 			var datas = evaluate_worksites()
 			
@@ -111,7 +111,7 @@ class Conveyor:
 				for _i in data.turn:
 					data.schematic.rotate(true)
 				
-				obj.outpost.erect_edifice(data.schematic, data.worksite)
+				obj.outpost.establish_edifice(data.schematic, data.worksite)
 			else:
 				if arr.schematic.size() > 1:
 					var schematic = arr.schematic.pop_front()
@@ -148,12 +148,12 @@ class Conveyor:
 		return []
 
 
-	func erect_on_best_worksite() -> void:
+	func establish_on_best_worksite() -> void:
 		var worksite = preset_worksite()
 		
 		if worksite != null:
 			var schematic = arr.schematic.front()
-			obj.outpost.erect_edifice(schematic, worksite)
+			obj.outpost.establish_edifice(schematic, worksite)
 			evaluate_worksites()
 
 
@@ -219,9 +219,9 @@ class Conveyor:
 			dict.incentive[cluster_.num.breath].append(incentive)
 
 
-	func erect_starter_schematics() -> void:
+	func establish_starter_schematics() -> void:
 		for _i in arr.schematic.size():
-			decide_which_worksite_to_build_on()
+			decide_which_worksite_to_establish()
 
 
 #Схема сооружения schematic 
@@ -357,24 +357,32 @@ class Schematic:
 		obj.tool.obj.icon.scene.myself.fill_based_on_tool()
 
 
+	func build() -> void:
+		for compartment in dict.compartment:
+			compartment.build()
+
 
 #Отсек compartment  
 class Compartment:
+	var num = {}
 	var obj = {}
 	var vec = {}
 	var dict = {}
+	var flag = {}
 	var word = {}
 	var color = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
+		num.mastery = null
 		obj.schematic = input_.schematic
 		obj.edifice = null
 		obj.sector = null
 		obj.module = null
 		vec.grid = input_.grid
 		vec.direction = input_.direction
+		flag.construction = true
 		word.type = {}
 		word.type.current = input_.type
 		word.type.next = null
@@ -422,6 +430,13 @@ class Compartment:
 		
 		if obj.sector != null:
 			obj.sector.scene.myself.recolor_based_on_compartment(self)
+
+
+	func build() -> void:
+		flag.construction = false
+		scene.myself.update_color_based_on_type()
+		obj.sector.scene.myself.recolor_based_on_compartment(self)
+		obj.sector.scene.myself.hide_label()
 
 
 #Поощрение incentive  

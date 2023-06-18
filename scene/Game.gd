@@ -8,10 +8,15 @@ func _ready() -> void:
 	
 	var outpost = Global.obj.cosmos.obj.planet.arr.outpost.front()
 	outpost.place_core()
-	outpost.arr.branch.front().obj.factory.press_stamps()
-	outpost.arr.branch.back().obj.factory.press_stamps()
-	outpost.obj.conveyor.evaluate_worksites()
-	outpost.obj.conveyor.erect_starter_schematics()
+	
+	for branch in outpost.arr.branch:
+		branch.obj.director.promote_starter_schematics()
+	
+	outpost.obj.conveyor.establish_starter_schematics()
+	#outpost.obj.conveyor.evaluate_worksites()
+	
+	for branch in outpost.arr.branch:
+		branch.obj.director.evaluate_bureau()
 
 
 func _input(event) -> void:
@@ -42,7 +47,7 @@ func _input(event) -> void:
 					branch.obj.outpost.obj.conveyor.next_worksite()
 			KEY_F:
 				if event.is_pressed() && !event.is_echo():
-					branch.obj.outpost.obj.conveyor.erect_on_best_worksite()
+					branch.obj.outpost.obj.conveyor.establish_on_best_worksite()
 			KEY_Z:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.outpost.obj.conveyor.decide_which_worksite_to_build_on()

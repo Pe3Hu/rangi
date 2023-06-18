@@ -27,7 +27,7 @@ func init_arr() -> void:
 	arr.windrose = ["NE","E","SE","S","SW","W","NW","N"]
 	arr.windrose_shifted = ["NW","N","NE","W","E","SW","S","SE"]
 	arr.polyhedron = [3,4,5,6]
-	arr.spec = ["arm","brain","heart"]
+	arr.drone = ["arm","brain"]
 	arr.sequence["A000045"] = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 
 
@@ -130,10 +130,18 @@ func init_dict() -> void:
 	dict.indicator["shield"] = ["protective field generator"]
 	dict.indicator["component"] = ["construction berth"]
 	
+	dict.roman = {}
+	dict.roman.number = {}
+	dict.roman.number[1] = "I"
+	dict.roman.number[2] = "II"
+	dict.roman.number[3] = "III"
+	dict.roman.number[4] = "IV"
+	dict.roman.number[5] = "V"
+	
 	init_corner()
 	init_windrose()
 	init_compartment()
-	init_arm()
+	init_drone()
 	init_schematic()
 
 
@@ -256,33 +264,41 @@ func init_compartment() -> void:
 		dict.compartment.active.append(compartment)
 
 
-func init_arm() -> void:
-	num.arm = {}
-	num.arm.max = 5
-	num.arm.downgrade = {}
-	num.arm.mastery = {}
-	num.arm.mastery[1] = 1
-	num.arm.mastery[2] = 3
-	num.arm.mastery[3] = 5
-	num.arm.mastery[4] = 7
-	num.arm.mastery[5] = 8
+func init_drone() -> void:
+	num.drone = {}
+	num.drone.arm = {}
+	num.drone.arm.max = 5
+	num.drone.arm.downgrade = {}
+	num.drone.arm.mastery = {}
+	num.drone.arm.mastery[1] = 1
+	num.drone.arm.mastery[2] = 3
+	num.drone.arm.mastery[3] = 5
+	num.drone.arm.mastery[4] = 7
+	num.drone.arm.mastery[5] = 8
 	
-	for grade in num.arm.mastery:
+	for mastery in num.drone.arm.mastery:
 		var index = 2
-		num.arm.downgrade[grade] = {}
+		num.drone.arm.downgrade[mastery] = {}
 		
-		for _i in range(grade, 0, -1):
-			num.arm.downgrade[grade][_i] = arr.sequence["A000045"][index]
+		for _i in range(mastery, 0, -1):
+			num.drone.arm.downgrade[mastery][_i] = arr.sequence["A000045"][index]
 			index += 1
+	
+	num.drone.brain = {}
+	num.drone.brain.max = 5
+	num.drone.brain.mastery = {}
+	
+	for mastery in num.drone.arm.mastery:
+		num.drone.brain.mastery[mastery] = mastery
 
 
 func get_mastery_based_on_association_size(size_: int) -> Variant:
 	var keys = []
-	keys.append_array(num.arm.mastery.keys())
+	keys.append_array(num.drone.arm.mastery.keys())
 	keys.sort()
 	
 	for key in keys:
-		if num.arm.mastery[key] >= size_:
+		if num.drone.arm.mastery[key] >= size_:
 			return key
 	
 	return null
@@ -391,7 +407,7 @@ func init_schematic() -> void:
 				if data.mastery < mastery:
 					data.mastery = mastery
 			
-			for mastery in range(data.mastery, num.arm.max, 1):
+			for mastery in range(data.mastery, num.drone.arm.max, 1):
 				if !dict.schematic.mastery.has(mastery):
 					dict.schematic.mastery[mastery] = []
 				

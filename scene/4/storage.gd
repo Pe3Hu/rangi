@@ -15,5 +15,24 @@ func update_rec_size() -> void:
 
 func update_labels() -> void:
 	for label in get_node("Label").get_children():
-		var spec = label.name.to_lower()
-		label.text = spec[0].to_upper() + ":" + str(parent.num.count[spec])
+		var specialty = label.name.to_lower()
+		
+		if parent.dict.specialty.has(specialty):
+			var symbol = null
+			
+			match specialty:
+				"arm":
+					symbol = "-"
+				"brain":
+					symbol = "#"
+			
+			var text = symbol
+			
+			for mastery in parent.dict.specialty[specialty]:
+				var counter = parent.dict.specialty[specialty][mastery]
+				
+				if counter > 0:
+					var letter = Global.dict.roman.number[mastery]
+					text += letter + str(counter) + symbol
+			
+			label.text = text

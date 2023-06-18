@@ -150,13 +150,6 @@ class Frontière:
 		arr.pilier.back().dict.neighbor[arr.pilier.front()] = directions.front()
 
 
-	func set_terrain() -> void:
-		if word.terrain == null:
-			for terres in arr.terres:
-				if terres.word.terrain != null:
-					word.terrain = terres.word.terrain
-					scene.myself.update_color_based_on_terrain()
-
 
 #Столб pilier 
 class Pilier:
@@ -177,7 +170,3 @@ class Pilier:
 		scene.myself = Global.scene.pilier.instantiate()
 		obj.continent.scene.myself.get_node("Pilier").add_child(scene.myself)
 		scene.myself.set_parent(self)
-
-
-	func set_terrain() -> void:
-		pass

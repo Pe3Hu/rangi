@@ -7,7 +7,7 @@ var parent = null
 func set_parent(parent_) -> void:
 	parent = parent_
 	set_vertexs()
-	update_label()
+	update_label_based_on_index()
 
 
 func set_vertexs() -> void:
@@ -89,7 +89,17 @@ func update_color_based_on_terrain() -> void:
 	set_color(color_)
 
 
-func update_label() -> void:
+func update_label_based_on_index() -> void:
 	var index = Global.num.size.continent.col * parent.vec.grid.y + parent.vec.grid.x
 	$Label.position = parent.vec.center
 	$Label.text = str(index)
+
+
+func update_label_based_on_mastery() -> void:
+	var mastery = parent.obj.compartment.num.mastery
+	$Label.position = parent.vec.center
+	$Label.text = str(mastery)
+
+
+func hide_label() -> void:
+	$Label.visible = false

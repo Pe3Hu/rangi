@@ -3,9 +3,8 @@ extends Node
 
 #Хранилище storage
 class Storage:
-	var arr = {}
 	var obj = {}
-	var num = {}
+	var dict = {}
 	var scene = {}
 
 
@@ -14,7 +13,7 @@ class Storage:
 		obj.director = obj.corporation.obj.director
 		obj.director.obj.storage = self
 		init_scene()
-		init_nums()
+		init_specialty()
 
 
 	func init_scene() -> void:
@@ -24,15 +23,20 @@ class Storage:
 		obj.director.scene.myself.get_node("VBox").move_child(scene.myself, 0)
 
 
-	func init_nums() -> void:
-		num.count = {}
+	func init_specialty() -> void:
+		dict.specialty = {}
 		
-		for spec in Global.arr.spec:
-			num.count[spec] = 0
+		for specialty in Global.num.drone:
+			dict.specialty[specialty] = {}
+			
+			for mastery in Global.num.drone[specialty].mastery:
+				dict.specialty[specialty][mastery] = 0
 
 
 	func apply_tool(tool_: Classes_3.Tool) -> void:
-		num.count[tool_.word.specialty] += tool_.num.value
+		var specialty = tool_.word.specialty
+		var mastery = tool_.num.value
+		dict.specialty[specialty][mastery] += 1
 
 
 #Жетон badge

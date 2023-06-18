@@ -103,6 +103,7 @@ class Album:
 			print("archive doesn't have ", spielkarte_)
 
 
+
 #Игральная карта spielkarte
 class Spielkarte:
 	var arr = {}
@@ -130,6 +131,15 @@ class Spielkarte:
 						
 						obj.design.obj.owner.scene.myself.pop_design(obj.design)
 				
+				obj.album.arr.spielkarte[current_section].erase(self)
+				obj.album.arr.spielkarte[next_section].append(self)
+				return
+
+
+	func exile() -> void:
+		for current_section in obj.album.dict.link:
+			if obj.album.arr.spielkarte[current_section].has(self):
+				var next_section = "forgotten"
 				obj.album.arr.spielkarte[current_section].erase(self)
 				obj.album.arr.spielkarte[next_section].append(self)
 				return

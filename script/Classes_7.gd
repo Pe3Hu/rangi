@@ -81,10 +81,11 @@ class Outpost:
 		var schematic = Classes_8.Schematic.new(input)
 		var grid_center = Vector2(Global.num.size.continent.col/2, Global.num.size.continent.row/2)
 		var cluster = obj.continent.arr.sector[grid_center.y][grid_center.x].obj.cluster
-		erect_edifice(schematic, cluster)
+		establish_edifice(schematic, cluster)
+		schematic.build()
 
 
-	func erect_edifice(schematic_: Classes_8.Schematic, cluster_: Classes_6.Cluster) -> void:
+	func establish_edifice(schematic_: Classes_8.Schematic, cluster_: Classes_6.Cluster) -> void:
 		var input = {}
 		input.outpost = self
 		input.schematic = schematic_
@@ -155,7 +156,7 @@ class Scoreboard:
 		num.indicator["component"] = 1000
 
 
-	func pay_to_build(compartment_: Classes_8.Compartment) -> void:
+	func pay_to_establish(compartment_: Classes_8.Compartment) -> void:
 		var component = Global.num.compartment.price[compartment_.word.type.current]
 		num.indicator["component"] -= component
 
@@ -163,6 +164,7 @@ class Scoreboard:
 #сооружение edifice 
 class Edifice:
 	var obj = {}
+	var dict = {}
 
 
 	func _init(input_: Dictionary) -> void:
@@ -171,11 +173,12 @@ class Edifice:
 		obj.cluster = input_.cluster
 		obj.cluster.obj.edifice = self
 		obj.continent = obj.cluster.obj.continent
-		erect_compartment()
+		establish_compartment()
 
 
-	func erect_compartment() -> void:
+	func establish_compartment() -> void:
 		var description_schematic = Global.dict.schematic.title[obj.schematic.word.title]
+		dict.construction = {}
 		
 		for compartment in obj.schematic.dict.compartment:
 			var grid_sector = obj.cluster.obj.center.vec.grid + compartment.vec.direction
@@ -183,13 +186,13 @@ class Edifice:
 			sector.obj.compartment = compartment
 			compartment.obj.sector = sector
 			compartment.obj.edifice = self
+			obj.outpost.obj.scoreboard.pay_to_establish(compartment)
+			compartment.scene.myself.update_color_based_on_type()
 			sector.scene.myself.recolor_based_on_compartment(compartment)
-			obj.outpost.obj.scoreboard.pay_to_build(compartment)
 			Global.num.compartment.price[compartment.word.type.current]
 		
 		for association in description_schematic.associations:
 			var compartments = []
-			var a = obj.schematic.dict.compartment
 			
 			for windrose in association:
 				for compartment in obj.schematic.dict.compartment:
@@ -198,6 +201,15 @@ class Edifice:
 						break
 			
 			add_module(compartments)
+			
+			for compartment in compartments:
+				compartment.num.mastery = compartments.size()
+		
+		for compartment in obj.schematic.dict.compartment:
+			if compartment.num.mastery == null:
+				compartment.num.mastery = 1
+			
+			compartment.obj.sector.scene.myself.update_label_based_on_mastery()
 
 
 	func add_module(compartments_: Array) -> void:

@@ -69,7 +69,7 @@ class Director:
 		init_scene()
 		init_base_design()
 		init_album()
-		put_schematic_above_on_archive()
+		put_starter_schematic_above_on_archive()
 
 
 	func init_scene() -> void:
@@ -101,7 +101,7 @@ class Director:
 		data.specialty = "heart"
 		data.value = 1
 		data.count = 3
-		datas.append(data)
+		#datas.append(data)
 		data = {}
 		data.category = "schematic"
 		data.target = "outpost"
@@ -136,19 +136,31 @@ class Director:
 		obj.album = Classes_5.Album.new(input)
 
 
-	func put_schematic_above_on_archive() -> void:
+	func put_starter_schematic_above_on_archive() -> void:
 		for spielkarte in obj.album.arr.spielkarte.archive:
+			var starter = false
+			
 			for tool in spielkarte.obj.design.arr.tool:
 				if tool.word.category == "schematic":
-					obj.album.put_above_on_archive(spielkarte)
-					#return
+					starter = true
+					break
+			
+			if starter:
+				obj.album.put_above_on_archive(spielkarte)
 
 
-	func reset_section(section_: String) -> void:
-		obj.album.pull_full_section(section_)
-		scene.myself.remove_spielkartes_from(section_)
+	func promote_starter_schematics() -> void:
+		for stamps in obj.factory.arr.stamp:
+			for stamp in stamps:
+				for tool in stamp.obj.design.arr.tool:
+					if tool.word.category == "schematic":
+						stamp.press()
+						break
+		
+		obj.album.apply_dream()
+		obj.album.fill_thought()
 
 
-	func reset_after_stadion() -> void:
-		obj.album.full_reset()
-		scene.myself.reset_spielkartes()
+	func evaluate_bureau() -> void:
+		pass
+

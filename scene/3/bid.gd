@@ -26,7 +26,7 @@ func update_mastery_label() -> void:
 				if mastery < Global.dict.schematic.title[title].mastery:
 					mastery = Global.dict.schematic.title[title].mastery
 	
-	$VBox/Mastery.text = "-" + str(mastery) + "-"
+	$VBox/Mastery.text = "-" + Global.dict.roman.number[mastery] + "-"
 
 
 func update_knowledge_label() -> void:
@@ -37,4 +37,4 @@ func update_knowledge_label() -> void:
 			"schematic":
 				knowledge += tool.obj.schematic.num.knowledge
 				
-	$VBox/Knowledge.text = "$" + str(knowledge) + "$"
+	$VBox/Knowledge.text = "#" + str(knowledge) + "#"
