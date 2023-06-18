@@ -224,10 +224,10 @@ class Conveyor:
 			decide_which_worksite_to_build_on()
 
 
-
 #Схема сооружения schematic 
 class Schematic:
 	var arr = {}
+	var num = {}
 	var obj = {}
 	var dict = {}
 	var flag = {}
@@ -238,7 +238,21 @@ class Schematic:
 		obj.tool = input_.tool
 		word.title = input_.title
 		flag.core = input_.core
+		set_mastery()
 		init_compartments(input_.types)
+
+
+	func set_mastery() -> void:
+		num.knowledge = 0
+		arr.mastery = []
+		var associations = Global.dict.schematic.title[word.title].associations
+		
+		for association in associations:
+			var mastery = Global.get_mastery_based_on_association_size(association.size())
+			
+			for _i in association.size():
+				arr.mastery.append(mastery)
+				num.knowledge += mastery
 
 
 	func init_compartments(types_: Array) -> void:
@@ -334,7 +348,6 @@ class Schematic:
 				if compartment.word.type.current != "wall":
 					var index = Global.arr.windrose.find(compartment.word.windrose)
 					indexs[index] = 1
-					
 		
 		word.title = Global.dict.schematic.indexs[indexs]
 
@@ -342,6 +355,7 @@ class Schematic:
 	func redraw_icon() -> void:
 		obj.tool.obj.icon.scene.myself.clean()
 		obj.tool.obj.icon.scene.myself.fill_based_on_tool()
+
 
 
 #Отсек compartment  

@@ -156,7 +156,7 @@ class Scoreboard:
 
 
 	func pay_to_build(compartment_: Classes_8.Compartment) -> void:
-		var component = Global.dict.compartment.price[compartment_.word.type.current]
+		var component = Global.num.compartment.price[compartment_.word.type.current]
 		num.indicator["component"] -= component
 
 
@@ -185,7 +185,7 @@ class Edifice:
 			compartment.obj.edifice = self
 			sector.scene.myself.recolor_based_on_compartment(compartment)
 			obj.outpost.obj.scoreboard.pay_to_build(compartment)
-			Global.dict.compartment.price[compartment.word.type.current]
+			Global.num.compartment.price[compartment.word.type.current]
 		
 		for association in description_schematic.associations:
 			var compartments = []
@@ -263,7 +263,7 @@ class Module:
 	func add_compartment(compartment_: Classes_8.Compartment) -> void:
 		arr.compartment.append(compartment_)
 		compartment_.obj.module = self
-		var consumption = Global.dict.compartment.consumption[compartment_.word.type.current]
+		var consumption = Global.num.compartment.consumption[compartment_.word.type.current]
 		obj.outpost.obj.scoreboard.num.consumption += consumption
 		
 		if word.type == null or compartment_.word.type.current == "adaptive compartment":
@@ -284,7 +284,7 @@ class Module:
 				if compartment.word.type.current == "adaptive compartment":
 					compartment.word.type.next = word.type
 					compartment.swap()
-					var consumption = Global.dict.compartment.consumption[ word.type]
+					var consumption = Global.num.compartment.consumption[ word.type]
 					obj.outpost.obj.scoreboard.num.consumption += consumption
 			
 			for indicator in Global.dict.indicator:

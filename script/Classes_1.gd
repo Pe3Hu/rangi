@@ -105,7 +105,7 @@ class Director:
 		data = {}
 		data.category = "schematic"
 		data.target = "outpost"
-		data.title = "10"#Global.dict.schematic.title.keys().pick_random()46 42 10
+		data.title = "10"#Global.dict.schematic.title.keys().pick_random()167 114 46 42 10
 		data.count = 2
 		datas.append(data)
 		

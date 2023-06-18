@@ -28,7 +28,7 @@ func init_arr() -> void:
 	arr.windrose_shifted = ["NW","N","NE","W","E","SW","S","SE"]
 	arr.polyhedron = [3,4,5,6]
 	arr.spec = ["arm","brain","heart"]
-	
+	arr.sequence["A000045"] = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 
 
 func init_num() -> void:
@@ -77,7 +77,6 @@ func init_num() -> void:
 	num.size.continent.cluster = num.size.cluster.ring * 2 - 1
 	num.size.continent.col = num.size.continent.cluster * num.size.cluster.n
 	num.size.continent.row = num.size.continent.col
-	
 
 
 func init_dict() -> void:
@@ -125,32 +124,6 @@ func init_dict() -> void:
 		]
 	]
 	
-	dict.compartment = {}
-	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
-	dict.compartment.consumption = {}
-	dict.compartment.consumption["power generator"] = 0
-	dict.compartment.consumption["adaptive compartment"] = 0
-	dict.compartment.consumption["protective field generator"] = 1
-	dict.compartment.consumption["research station"] = 1
-	dict.compartment.consumption["construction berth"] = 1
-	
-	dict.compartment.price = {}
-	dict.compartment.price["core"] = 100
-	dict.compartment.price["gateway"] = 7
-	dict.compartment.price["wall"] = 3
-	dict.compartment.price["adaptive compartment"] = 30
-	dict.compartment.price["power generator"] = 10
-	dict.compartment.price["protective field generator"] = 14
-	dict.compartment.price["research station"] = 12
-	dict.compartment.price["construction berth"] = 16
-	
-	dict.compartment.passive = ["wall"]
-	dict.compartment.active = []
-	
-	for compartment in dict.compartment.consumption:
-		#if compartment != "adaptive compartment":
-		dict.compartment.active.append(compartment)
-	
 	dict.indicator = {}
 	dict.indicator["energy"] = ["power generator"]
 	dict.indicator["knowledge"] = ["research station"]
@@ -159,6 +132,8 @@ func init_dict() -> void:
 	
 	init_corner()
 	init_windrose()
+	init_compartment()
+	init_arm()
 	init_schematic()
 
 
@@ -252,12 +227,74 @@ func init_corner() -> void:
 				dict.corner.vector[corners_][order_][_i] = vertex
 
 
+func init_compartment() -> void:
+	num.compartment = {}
+	num.compartment.consumption = {}
+	num.compartment.consumption["power generator"] = 0
+	num.compartment.consumption["adaptive compartment"] = 0
+	num.compartment.consumption["protective field generator"] = 1
+	num.compartment.consumption["research station"] = 1
+	num.compartment.consumption["construction berth"] = 1
+	
+	num.compartment.price = {}
+	num.compartment.price["core"] = 100
+	num.compartment.price["gateway"] = 7
+	num.compartment.price["wall"] = 3
+	num.compartment.price["adaptive compartment"] = 30
+	num.compartment.price["power generator"] = 10
+	num.compartment.price["protective field generator"] = 14
+	num.compartment.price["research station"] = 12
+	num.compartment.price["construction berth"] = 16
+	
+	dict.compartment = {}
+	dict.compartment.total = ["core", "gateway", "wall", "adaptive compartment", "power generator", "protective field generator", "research station"]
+	dict.compartment.passive = ["wall"]
+	dict.compartment.active = []
+	
+	for compartment in num.compartment.consumption:
+		#if compartment != "adaptive compartment":
+		dict.compartment.active.append(compartment)
+
+
+func init_arm() -> void:
+	num.arm = {}
+	num.arm.max = 5
+	num.arm.downgrade = {}
+	num.arm.mastery = {}
+	num.arm.mastery[1] = 1
+	num.arm.mastery[2] = 3
+	num.arm.mastery[3] = 5
+	num.arm.mastery[4] = 7
+	num.arm.mastery[5] = 8
+	
+	for grade in num.arm.mastery:
+		var index = 2
+		num.arm.downgrade[grade] = {}
+		
+		for _i in range(grade, 0, -1):
+			num.arm.downgrade[grade][_i] = arr.sequence["A000045"][index]
+			index += 1
+
+
+func get_mastery_based_on_association_size(size_: int) -> Variant:
+	var keys = []
+	keys.append_array(num.arm.mastery.keys())
+	keys.sort()
+	
+	for key in keys:
+		if num.arm.mastery[key] >= size_:
+			return key
+	
+	return null
+
+
 func init_schematic() -> void:
 	dict.schematic = {}
 	dict.schematic.title = {}
 	dict.schematic.rarity = {}
 	dict.schematic.association = {}
 	dict.schematic.indexs = {}
+	dict.schematic.mastery = {}
 	
 	var size = pow(num.size.cluster.n, 2) - 1
 	var index = {}
@@ -343,19 +380,33 @@ func init_schematic() -> void:
 	
 	for data in datas:
 		data.rarity = weight.max - data.rarity + 1
-		var association = data.associations.size()
+		var associations_size = data.associations.size()
 		
-		if association > 0:
+		if associations_size > 0:
+			data.mastery = 0
+			
+			for association in data.associations:
+				var mastery = get_mastery_based_on_association_size(association.size())
+				
+				if data.mastery < mastery:
+					data.mastery = mastery
+			
+			for mastery in range(data.mastery, num.arm.max, 1):
+				if !dict.schematic.mastery.has(mastery):
+					dict.schematic.mastery[mastery] = []
+				
+				dict.schematic.mastery[mastery].append(data.title)
+			
 			dict.schematic.title[data.title] = data
 			dict.schematic.indexs[data.indexs] = data.title
 			
-			if !dict.schematic.association.has(association):
-				dict.schematic.association[association] = {}
+			if !dict.schematic.association.has(associations_size):
+				dict.schematic.association[associations_size] = {}
 			
 			if !dict.schematic.rarity.has(data.rarity):
 				dict.schematic.rarity[data.rarity] = []
 			
-			dict.schematic.association[association][data.title] = data.title
+			dict.schematic.association[associations_size][data.title] = data.title
 			dict.schematic.rarity[data.rarity].append(data.title)
 			#print(data)
 
@@ -390,6 +441,7 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 			flag = flag and description_marker == markers_[windrose]
 	
 	return flag
+
 
 func init_node() -> void:
 	node.game = get_node("/root/Game")

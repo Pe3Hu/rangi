@@ -41,7 +41,7 @@ class Bureau:
 #				input_.value = 1
 				input_.category = "schematic"
 				input_.target = "outpost"
-				input_.title = Global.dict.schematic.title.keys().pick_random()
+				input_.title = Global.dict.schematic.mastery[2].pick_random()
 				var tool = Classes_3.Tool.new(input_)
 				input.tools.append(tool)
 			
@@ -80,7 +80,7 @@ class Bid:
 		scene.myself = Global.scene.bid.instantiate()
 		scene.myself.set_parent(self)
 		scene.myself.get_node("VBox").add_child(obj.design.scene.myself)
-
+		scene.myself.get_node("VBox").move_child(obj.design.scene.myself, 0)
 
 
 #Чертеж design
