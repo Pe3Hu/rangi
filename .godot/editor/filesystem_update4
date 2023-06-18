@@ -14,3 +14,13 @@ res://scene/Game.gd
 res://script/Classes_7.gd
 res://script/Classes_0.gd
 res://script/Classes_6.gd
+res://script/Classes_3.gd
+res://scene/3/bid.tscn
+res://scene/3/bureau.tscn
+res://scene/3/bid.gd
+res://script/Classes_4.gd
+res://scene/4/badge.tscn
+res://scene/4/badge.gd
+res://scene/6/sector.gd
+res://scene/1/director.gd
+res://scene/7/compartment.gd

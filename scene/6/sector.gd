@@ -26,10 +26,10 @@ func set_vertexs() -> void:
 
 func paint_black() -> void:
 	set_color(Color.GRAY)
-	update_color_by_cluster_breath()
+	update_color_based_on_cluster_breath()
 
 
-func update_color_by_cluster_ring() -> void:
+func update_color_based_on_cluster_ring() -> void:
 	if parent.obj.cluster.num.ring != null:
 		var max_h = 360.0
 		var h = float(parent.obj.cluster.num.ring) / Global.num.size.cluster.ring
@@ -41,7 +41,7 @@ func update_color_by_cluster_ring() -> void:
 		paint_black()
 
 
-func update_color_by_cluster_breath() -> void:
+func update_color_based_on_cluster_breath() -> void:
 	var max_h = 360.0
 	var h = 0
 	var s = 0.0
@@ -50,8 +50,7 @@ func update_color_by_cluster_breath() -> void:
 	set_color(color_)
 
 
-
-func update_color_by_cluster() -> void:
+func update_color_based_on_cluster() -> void:
 	var max_h = 360.0
 	var size = Global.num.size.continent
 	var index = size.cluster * parent.obj.cluster.vec.grid.y + parent.obj.cluster.vec.grid.x
@@ -63,10 +62,15 @@ func update_color_by_cluster() -> void:
 
 
 func recolor_based_on_compartment(compartment_: Classes_8.Compartment) -> void:
-	set_color(compartment_.color.bg)
+	var color_ = compartment_.color.bg
+	
+	if compartment_.word.type.current == "gateway":
+		color_ = compartment_.obj.schematic.obj.tool.obj.design.obj.branch.obj.badge.color.bg
+	
+	set_color(color_)
 
 
-func update_color_by_terrain() -> void:
+func update_color_based_on_terrain() -> void:
 	var max_h = 360.0
 	var s = 0.25
 	var v = 1

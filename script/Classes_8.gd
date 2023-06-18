@@ -201,21 +201,22 @@ class Conveyor:
 
 
 	func add_incentive(cluster_: Classes_6.Cluster) -> void:
-		if dict.incentive.has(cluster_.num.breath + 1):
-			for incentive in dict.incentive[cluster_.num.breath + 1]:
-				if incentive.obj.cluster == cluster_:
-					incentive.rebreath()
-					return
-		
-		var input = {}
-		input.conveyor = self
-		input.cluster = cluster_
-		var incentive = Classes_8.Incentive.new(input)
-		
-		if !dict.incentive.has(cluster_.num.breath):
-			dict.incentive[cluster_.num.breath] = []
-		
-		dict.incentive[cluster_.num.breath].append(incentive)
+		if cluster_.num.breath < 3:
+			if dict.incentive.has(cluster_.num.breath + 1):
+				for incentive in dict.incentive[cluster_.num.breath + 1]:
+					if incentive.obj.cluster == cluster_:
+						incentive.rebreath()
+						return
+			
+			var input = {}
+			input.conveyor = self
+			input.cluster = cluster_
+			var incentive = Classes_8.Incentive.new(input)
+			
+			if !dict.incentive.has(cluster_.num.breath):
+				dict.incentive[cluster_.num.breath] = []
+			
+			dict.incentive[cluster_.num.breath].append(incentive)
 
 
 	func erect_starter_schematics() -> void:
@@ -283,8 +284,9 @@ class Schematic:
 		for association in schematic.associations:
 			var type = options.pick_random()
 			
-			for _i in association:
-				types[_i] = type
+			for windrose in association:
+				var index = Global.arr.windrose.find(windrose)
+				types[index] = type
 		
 		return types
 
@@ -418,16 +420,13 @@ class Incentive:
 	func _init(input_: Dictionary) -> void:
 		obj.conveyor = input_.conveyor
 		obj.cluster = input_.cluster
+		arr.title = []
 		set_indexs()
 
 
 	func set_indexs() -> void:
-		var inflexibles = []
-		var indexs = {}
-		#print("@@@")
-		var center_index = Global.num.size.continent.col * obj.cluster.obj.center.vec.grid.y + obj.cluster.obj.center.vec.grid.x
-		print("___")
-		#print([center_index, obj.cluster.num.breath])
+		#var center_index = Global.num.size.continent.col * obj.cluster.obj.center.vec.grid.y + obj.cluster.obj.center.vec.grid.x
+		#print("___", [center_index, obj.cluster.num.breath])
 		var markers = {}
 		
 		for windrose in Global.arr.windrose:
@@ -437,7 +436,6 @@ class Incentive:
 			var windrose = obj.cluster.obj.center.dict.neighbor[sector]
 			var marker = "any"
 			var index_sector = Global.num.size.continent.col * sector.vec.grid.y + sector.vec.grid.x
-			
 			
 			for boundary in sector.dict.boundary:
 				if boundary.obj.compartment != null:
@@ -450,14 +448,14 @@ class Incentive:
 						marker = "active"
 			
 			markers[windrose] = marker
-			print([center_index, windrose, index_sector, marker])
+			#print([center_index, windrose, index_sector, marker])
 		
-		print(center_index, markers)
-		var titles = Global.get_schematic_title_based_on_markers(markers)
+		#print(markers)
 		
-		for title in titles:
-			var description = Global.dict.schematic.title[title]
-			print(center_index, description)
+#		for title in arr.title:
+#			var description = Global.dict.schematic.title[title]
+#			print(center_index, description)
+		arr.title = Global.get_schematic_title_based_on_markers(markers)
 
 
 	func rebreath() -> void:

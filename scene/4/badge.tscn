@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://da51owxbou4pe"]
+
+[ext_resource type="Script" path="res://scene/4/badge.gd" id="1_eekfe"]
+
+[node name="Badge" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_eekfe")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2

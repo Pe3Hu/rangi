@@ -41,7 +41,7 @@ class Cluster:
 		
 		for sector in arr.sector:
 			sector.obj.cluster = self
-			sector.scene.myself.update_color_by_cluster()
+			sector.scene.myself.update_color_based_on_cluster()
 
 
 	func paint_black() -> void:
@@ -51,17 +51,17 @@ class Cluster:
 
 	func paint_cluster() -> void:
 		for sector in arr.sector:
-			sector.scene.myself.update_color_by_cluster()
+			sector.scene.myself.update_color_based_on_cluster()
 
 
 	func paint_breath() -> void:
 		for sector in arr.sector:
-			sector.scene.myself.update_color_by_cluster_breath()
+			sector.scene.myself.update_color_based_on_cluster_breath()
 
 
 	func paint_ring() -> void:
 		for sector in arr.sector:
-			sector.scene.myself.update_color_by_cluster_ring()
+			sector.scene.myself.update_color_based_on_cluster_ring()
 
 
 	func paint_schematic(schematic_: Classes_8.Schematic) -> void:
@@ -155,7 +155,7 @@ class Frontière:
 			for terres in arr.terres:
 				if terres.word.terrain != null:
 					word.terrain = terres.word.terrain
-					scene.myself.update_color_by_terrain()
+					scene.myself.update_color_based_on_terrain()
 
 
 #Столб pilier 

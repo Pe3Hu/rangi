@@ -11,7 +11,8 @@ class Bureau:
 	func _init(input_: Dictionary) -> void:
 		obj.planet = input_.planet
 		init_scene()
-		init_designs()
+		init_bids()
+		set_active_bids()
 
 
 	func init_scene() -> void:
@@ -21,10 +22,12 @@ class Bureau:
 		obj.planet.scene.myself.get_node("VBox").move_child(scene.myself, 0)
 
 
-	func init_designs() -> void:
-		arr.design = []
+	func init_bids() -> void:
+		arr.bid = {}
+		arr.bid.stock = []
+		arr.bid.showcase = []
 		
-		for _i in Global.num.bureau.count.total:
+		for _i in Global.num.bureau.bid.stock:
 			var input = {}
 			input.bureau = self
 			input.branch = null
@@ -32,25 +35,52 @@ class Bureau:
 			
 			for _j in 1:
 				var input_ = {}
-				input_.target = "storage"
-				input_.category = "drone"
-				input_.specialty = "arm"
-				input_.value = 1
+#				input_.target = "storage"
+#				input_.category = "drone"
+#				input_.specialty = "arm"
+#				input_.value = 1
+				input_.category = "schematic"
+				input_.target = "outpost"
+				input_.title = Global.dict.schematic.title.keys().pick_random()
 				var tool = Classes_3.Tool.new(input_)
 				input.tools.append(tool)
 			
 			var design = Classes_3.Design.new(input)
-			arr.design.append(design)
-		
-		set_active_design()
+			input = {}
+			input.bureau = self
+			input.design = design
+			var bid = Classes_3.Bid.new(input)
+			arr.bid.stock.append(bid)
 
 
-	func set_active_design() -> void:
-		arr.design.shuffle()
+	func set_active_bids() -> void:
+		arr.bid.stock.shuffle()
 		
-		for _i in Global.num.bureau.count.active:
-			var design = arr.design[_i]
-			scene.myself.get_node("Design").add_child(design.scene.myself)
+		while arr.bid.showcase.size() < Global.num.bureau.bid.showcase:
+			var bid = arr.bid.stock.pop_front()
+			arr.bid.showcase.append(bid)
+			scene.myself.get_node("Bid").add_child(bid.scene.myself)
+
+
+#Тендер bid
+class Bid:
+	var arr = {}
+	var obj = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.bureau = input_.bureau
+		obj.design = input_.design
+		arr.contender = []
+		init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.bid.instantiate()
+		scene.myself.set_parent(self)
+		scene.myself.get_node("VBox").add_child(obj.design.scene.myself)
+
 
 
 #Чертеж design

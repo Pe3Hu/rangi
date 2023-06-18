@@ -25,5 +25,5 @@ script = ExtResource("1_mpuxh")
 layout_mode = 2
 color = Color(0.984314, 0, 0.341176, 1)
 
-[node name="Design" type="HBoxContainer" parent="."]
+[node name="Bid" type="HBoxContainer" parent="."]
 layout_mode = 2

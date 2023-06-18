@@ -191,9 +191,7 @@ class Edifice:
 			var compartments = []
 			var a = obj.schematic.dict.compartment
 			
-			for index in association:
-				var windrose = Global.arr.windrose[index]
-				
+			for windrose in association:
 				for compartment in obj.schematic.dict.compartment:
 					if compartment.word.windrose == windrose:
 						compartments.append(compartment)

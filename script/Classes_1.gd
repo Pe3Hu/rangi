@@ -16,17 +16,27 @@ class Corporation:
 #Филиал branch
 class Branch:
 	var arr = {}
+	var num = {}
 	var obj = {}
 	var dict = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
+		num.index = Global.num.index.branch
+		Global.num.index.branch += 1
 		obj.corporation = input_.corporation
 		obj.outpost = input_.outpost
+		init_badge()
 		init_director()
 		init_factory()
 		init_storage()
+
+
+	func init_badge() -> void:
+		var input = {}
+		input.branch = self
+		obj.badge = Classes_4.Badge.new(input)
 
 
 	func init_director() -> void:

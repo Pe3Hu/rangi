@@ -47,6 +47,7 @@ class Planet:
 		obj.cosmos = input_.cosmos
 		init_scene()
 		init_outposts()
+		update_badges()
 		init_bureau()
 
 
@@ -69,6 +70,13 @@ class Planet:
 			input.corporations.append(corporation)
 			var outpost = Classes_7.Outpost.new(input)
 			arr.outpost.append(outpost)
+
+
+	func update_badges() -> void:
+		for outpost in arr.outpost:
+			for branch in outpost.arr.branch:
+				branch.obj.badge.set_bg_color()
+				branch.obj.director.scene.myself.update_color()
 
 
 	func init_bureau() -> void:

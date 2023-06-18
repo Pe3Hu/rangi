@@ -33,3 +33,29 @@ class Storage:
 
 	func apply_tool(tool_: Classes_3.Tool) -> void:
 		num.count[tool_.word.specialty] += tool_.num.value
+
+
+#Жетон badge
+class Badge:
+	var obj = {}
+	var color = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.branch = input_.branch
+		init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.badge.instantiate()
+		scene.myself.set_parent(self)
+
+
+	func set_bg_color() -> void:
+		var max_h = 360.0
+		var h = float(obj.branch.num.index) / Global.num.index.branch
+		var s = 0.25
+		var v = 1
+		color.bg = Color.from_hsv(h, s, v)
+		scene.myself.update_color()

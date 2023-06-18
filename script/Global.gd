@@ -33,6 +33,7 @@ func init_arr() -> void:
 
 func init_num() -> void:
 	num.index = {}
+	num.index.branch = 0
 	num.index.schematic = 0
 	
 	num.factory = {}
@@ -41,9 +42,9 @@ func init_num() -> void:
 	num.factory.count.total = pow(num.factory.count.n, 2)
 	
 	num.bureau = {}
-	num.bureau.count = {}
-	num.bureau.count.active = 5
-	num.bureau.count.total = 10
+	num.bureau.bid = {}
+	num.bureau.bid.showcase = 5
+	num.bureau.bid.stock = 10
 	
 	num.conveyor = {}
 	num.conveyor.turn = 4
@@ -290,11 +291,11 @@ func init_schematic() -> void:
 		
 		while _i < data.indexs.size():
 			if data.indexs[_i] == 1:
-				var association = [_i]
+				var association = [arr.windrose[_i]]
 				var _j = _i + 1
 				
 				while _j < data.indexs.size() and data.indexs[_j] == 1:
-					association.append(_j)
+					association.append(arr.windrose[_j])
 					_j += 1
 				
 				_i = _j
@@ -302,7 +303,7 @@ func init_schematic() -> void:
 				if _j == data.indexs.size():
 					_j = 0
 					
-					if data.indexs[_j] == 1 and !association.has(_j):
+					if data.indexs[_j] == 1 and !association.has(arr.windrose[_j]):
 						data.associations.front().append_array(association)
 					else:
 						data.associations.append(association)
@@ -317,8 +318,7 @@ func init_schematic() -> void:
 			var flag_only_diagonal = true
 			var rarity = -1
 			
-			for _l in data.associations[_j]:
-				var windrose = arr.windrose[_l]
+			for windrose in data.associations[_j]:
 				rarity += weight.windrose[windrose.length()]
 				flag_only_diagonal = flag_only_diagonal and windrose.length() == 2
 				
@@ -362,7 +362,6 @@ func init_schematic() -> void:
 
 func get_schematic_title_based_on_markers(markers_: Dictionary) -> Array:
 	var titles = []
-	
 	
 	for title in dict.schematic.title:
 		if compare_title_with_markers(title, markers_):
@@ -419,10 +418,12 @@ func init_scene() -> void:
 	scene.factory = load("res://scene/2/factory.tscn")
 	scene.stamp = load("res://scene/2/stamp.tscn")
 	scene.bureau = load("res://scene/3/bureau.tscn")
+	scene.bid = load("res://scene/3/bid.tscn")
 	scene.design = load("res://scene/3/design.tscn")
 	scene.tool = load("res://scene/3/tool.tscn")
 	scene.icon = load("res://scene/3/icon.tscn")
 	scene.storage = load("res://scene/4/storage.tscn")
+	scene.badge = load("res://scene/4/badge.tscn")
 	scene.sector = load("res://scene/6/sector.tscn")
 	scene.frontière = load("res://scene/6/frontière.tscn")
 	scene.pilier = load("res://scene/6/pilier.tscn")
