@@ -138,6 +138,12 @@ func init_dict() -> void:
 	dict.roman.number[4] = "IV"
 	dict.roman.number[5] = "V"
 	
+	dict.priority = {}
+	dict.priority.min = 1
+	dict.priority.avg = 5
+	dict.priority.title = ["finish construction", "pursuit of incentive", "take on hardest"]
+	dict.priority.total = dict.priority.avg * dict.priority.title.size()
+	
 	init_corner()
 	init_windrose()
 	init_compartment()
@@ -311,6 +317,7 @@ func init_schematic() -> void:
 	dict.schematic.association = {}
 	dict.schematic.indexs = {}
 	dict.schematic.mastery = {}
+	dict.schematic.rotate = {}
 	
 	var size = pow(num.size.cluster.n, 2) - 1
 	var index = {}
@@ -425,6 +432,35 @@ func init_schematic() -> void:
 			dict.schematic.association[associations_size][data.title] = data.title
 			dict.schematic.rarity[data.rarity].append(data.title)
 			#print(data)
+	
+	for title in dict.schematic.title:
+		dict.schematic.rotate[title] = []
+		var description = dict.schematic.title[title]
+		var indexs = {}
+		indexs.current = []
+		indexs.next = []
+		indexs.current.append_array(description.indexs)
+		
+		for turn in num.conveyor.turn:
+			indexs.next = []
+			
+			for _i in indexs.current.size():
+				indexs.next.append(0)
+			
+			for _i in indexs.current.size():
+				if indexs.current[_i] == 1:
+					var windrose = arr.windrose[_i]
+					var next_windrose = dict.windrose.next[windrose]
+					var next_index = arr.windrose.find(next_windrose)
+					indexs.next[next_index] = 1
+			
+			var title_rotated = dict.schematic.indexs[indexs.next]
+			
+			if !dict.schematic.rotate[title].has(title_rotated):
+				dict.schematic.rotate[title].append(title_rotated)
+			
+			indexs.current = []
+			indexs.current.append_array(indexs.next)
 
 
 func get_schematic_title_based_on_markers(markers_: Dictionary) -> Array:

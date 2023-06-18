@@ -61,12 +61,15 @@ class Branch:
 class Director:
 	var arr = {}
 	var obj = {}
+	var dict = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
 		obj.branch = input_.branch
+		obj.bureau = obj.branch.obj.outpost.obj.planet.obj.bureau
 		init_scene()
+		init_priorities()
 		init_base_design()
 		init_album()
 		put_starter_schematic_above_on_archive()
@@ -76,6 +79,20 @@ class Director:
 		scene.myself = Global.scene.director.instantiate()
 		scene.myself.set_parent(self)
 		obj.branch.obj.outpost.scene.myself.get_node("VBox/Director").add_child(scene.myself)
+
+
+	func init_priorities() -> void:
+		var undistributed = int(Global.dict.priority.total)
+		dict.priority = {}
+		
+		for priority in Global.dict.priority.title:
+			dict.priority[priority] = int(Global.dict.priority.min)
+			undistributed -= dict.priority[priority]
+		
+		while undistributed > 0:
+			var priority = Global.dict.priority.title.pick_random()
+			dict.priority[priority] += 1
+			undistributed -= 1
 
 
 	func init_base_design() -> void:
@@ -161,6 +178,64 @@ class Director:
 		obj.album.fill_thought()
 
 
+	func prioritize() -> void:
+		var priority = Global.get_random_key(dict.priority)
+		priority = "pursuit of incentive"
+		print(priority)
+		
+		match priority:
+			"finish construction":
+				pass
+			"pursuit of incentive":
+				evaluate_bureau()
+			"take on hardest":
+				pass
+
+
 	func evaluate_bureau() -> void:
-		pass
+		var incentive_titles = {}
+		var incentives = obj.branch.obj.outpost.obj.conveyor.dict.incentive
+		
+		for breath in incentives:
+			for incentive in incentives[breath]:
+				#var center = incentive.obj.cluster.obj.center
+				#var index =  Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
+				
+				for title in incentive.arr.title:
+					if !incentive_titles.has(title):
+						incentive_titles[title] = []
+					
+					incentive_titles[title].append(incentive)
+				
+				#print([breath, index], incentive.arr.title)
+		var relevant_bids = {}
+		
+		for bid in obj.bureau.arr.bid.showcase:
+			for tool in bid.obj.design.arr.tool:
+				match tool.word.category:
+					"drone":
+						pass
+					"schematic":
+						var title = tool.obj.schematic.word.title
+						var description = Global.dict.schematic.title[title]
+						var rotates = Global.dict.schematic.rotate[title]
+						
+						for rotated_title in rotates:
+							if incentive_titles.has(rotated_title):
+								
+								for incentive in incentive_titles[rotated_title]:
+									if !relevant_bids.has(bid):
+										relevant_bids[bid] = []
+									
+									relevant_bids[bid].append(incentive)
+		
+		
+		for bid in relevant_bids:
+			for incentive in relevant_bids[bid]:
+				var center = incentive.obj.cluster.obj.center
+				var index =  Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
+				var schematic = bid.obj.design.arr.tool.front().obj.schematic
+				
+				var description = Global.dict.schematic.title[schematic.word.title]
+				print([index, description])
 

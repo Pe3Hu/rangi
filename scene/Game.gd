@@ -15,8 +15,9 @@ func _ready() -> void:
 	outpost.obj.conveyor.establish_starter_schematics()
 	#outpost.obj.conveyor.evaluate_worksites()
 	
-	for branch in outpost.arr.branch:
-		branch.obj.director.evaluate_bureau()
+	#for branch in outpost.arr.branch:
+	#	branch.obj.director.prioritize()
+	outpost.arr.branch.front().obj.director.prioritize()
 
 
 func _input(event) -> void:

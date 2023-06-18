@@ -46,15 +46,21 @@ class Planet:
 	func _init(input_: Dictionary) -> void:
 		obj.cosmos = input_.cosmos
 		init_scene()
+		init_bureau()
 		init_outposts()
 		update_badges()
-		init_bureau()
 
 
 	func init_scene() -> void:
 		scene.myself = Global.scene.planet.instantiate()
 		scene.myself.set_parent(self)
 		obj.cosmos.scene.myself.get_node("Planet").add_child(scene.myself)
+
+
+	func init_bureau() -> void:
+		var input = {}
+		input.planet = self
+		obj.bureau = Classes_3.Bureau.new(input)
 
 
 	func init_outposts() -> void:
@@ -77,12 +83,6 @@ class Planet:
 			for branch in outpost.arr.branch:
 				branch.obj.badge.set_bg_color()
 				branch.obj.director.scene.myself.update_color()
-
-
-	func init_bureau() -> void:
-		var input = {}
-		input.planet = self
-		obj.bureau = Classes_3.Bureau.new(input)
 
 
 #континент continent
