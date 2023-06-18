@@ -11,6 +11,7 @@ func _ready() -> void:
 	outpost.arr.branch.front().obj.factory.press_stamps()
 	outpost.arr.branch.back().obj.factory.press_stamps()
 	outpost.obj.conveyor.evaluate_worksites()
+	outpost.obj.conveyor.erect_starter_schematics()
 
 
 func _input(event) -> void:

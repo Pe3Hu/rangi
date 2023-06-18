@@ -193,6 +193,7 @@ class Continent:
 				arr.cluster[_i].append(cluster)
 		
 		init_cluster_neighbors()
+		init_sector_boundaries()
 		init_cluster_rings()
 		init_cluster_breaths()
 
@@ -207,6 +208,17 @@ class Continent:
 						var neighbor = arr.sector[grid.y][grid.x].obj.cluster
 						var windrose = Global.get_windrose(direction)
 						cluster.dict.neighbor[neighbor] = windrose
+
+
+	func init_sector_boundaries() -> void:
+		for clusters in arr.cluster:
+			for cluster in clusters:
+				for sector in cluster.arr.sector:
+					for neighbor in sector.dict.neighbor:
+						var windrose = sector.dict.neighbor[neighbor]
+						
+						if neighbor.obj.cluster != cluster and windrose.length() == 1:
+							sector.dict.boundary[neighbor] = neighbor.obj.cluster
 
 
 	func init_cluster_rings() -> void:

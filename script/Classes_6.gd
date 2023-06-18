@@ -32,7 +32,6 @@ class Cluster:
 			var windrose = obj.center.dict.neighbor[sector]
 			
 			for side in Global.dict.side.windrose:
-				
 				if Global.dict.side.windrose[side].has(windrose):
 					if !dict.side.has(side):
 						dict.side[side] = []
@@ -94,6 +93,7 @@ class Sector:
 		vec.grid = input_.grid
 		vec.center = Vector2()
 		dict.neighbor = {}
+		dict.boundary = {}
 		flag.onscreen = true
 		set_piliers()
 		init_scene()

@@ -165,10 +165,8 @@ class Conveyor:
 				if !data_.modules.has(module):
 					var sector = compartment.obj.sector
 					
-					for neighbor in sector.dict.neighbor:
-						var windrose = sector.dict.neighbor[neighbor]
-						
-						if neighbor.obj.cluster != sector.obj.cluster and neighbor.obj.cluster == data_.worksite and windrose.length() == 1:
+					for boundary in sector.dict.boundary:
+						if boundary.obj.cluster == data_.worksite:
 							data_.modules.append(module)
 							break
 				else:
@@ -203,7 +201,14 @@ class Conveyor:
 
 
 	func add_incentive(cluster_: Classes_6.Cluster) -> void:
+		if dict.incentive.has(cluster_.num.breath + 1):
+			for incentive in dict.incentive[cluster_.num.breath + 1]:
+				if incentive.obj.cluster == cluster_:
+					incentive.rebreath()
+					return
+		
 		var input = {}
+		input.conveyor = self
 		input.cluster = cluster_
 		var incentive = Classes_8.Incentive.new(input)
 		
@@ -211,6 +216,12 @@ class Conveyor:
 			dict.incentive[cluster_.num.breath] = []
 		
 		dict.incentive[cluster_.num.breath].append(incentive)
+
+
+	func erect_starter_schematics() -> void:
+		for _i in arr.schematic.size():
+			decide_which_worksite_to_build_on()
+
 
 
 #Схема сооружения schematic 
@@ -405,8 +416,8 @@ class Incentive:
 
 
 	func _init(input_: Dictionary) -> void:
+		obj.conveyor = input_.conveyor
 		obj.cluster = input_.cluster
-		
 		set_indexs()
 
 
@@ -414,9 +425,46 @@ class Incentive:
 		var inflexibles = []
 		var indexs = {}
 		#print("@@@")
+		var center_index = Global.num.size.continent.col * obj.cluster.obj.center.vec.grid.y + obj.cluster.obj.center.vec.grid.x
+		print("___")
+		#print([center_index, obj.cluster.num.breath])
+		var markers = {}
+		
+		for windrose in Global.arr.windrose:
+			markers[windrose] = null
 		
 		for sector in obj.cluster.obj.center.dict.neighbor:
 			var windrose = obj.cluster.obj.center.dict.neighbor[sector]
-			var index = 0
+			var marker = "any"
 			var index_sector = Global.num.size.continent.col * sector.vec.grid.y + sector.vec.grid.x
-			#print([windrose, index_sector])
+			
+			
+			for boundary in sector.dict.boundary:
+				if boundary.obj.compartment != null:
+					
+					var index_boundary = Global.num.size.continent.col * boundary.vec.grid.y + boundary.vec.grid.x
+					
+					if Global.dict.compartment.passive.has(boundary.obj.compartment.word.type.current):
+						marker = "passive"
+					else:
+						marker = "active"
+			
+			markers[windrose] = marker
+			print([center_index, windrose, index_sector, marker])
+		
+		print(center_index, markers)
+		var titles = Global.get_schematic_title_based_on_markers(markers)
+		
+		for title in titles:
+			var description = Global.dict.schematic.title[title]
+			print(center_index, description)
+
+
+	func rebreath() -> void:
+		obj.conveyor.dict.incentive[obj.cluster.num.breath + 1].erase(self)
+		
+		if !obj.conveyor.dict.incentive.has(obj.cluster.num.breath):
+			obj.conveyor.dict.incentive[obj.cluster.num.breath] = []
+		
+		obj.conveyor.dict.incentive[obj.cluster.num.breath].append(self)
+		set_indexs()

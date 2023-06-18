@@ -91,8 +91,8 @@ class Outpost:
 		input.cluster = cluster_
 		var edifice = Classes_7.Edifice.new(input)
 		arr.edifice.append(edifice)
-		update_worksite(edifice)
 		update_clusters_breath(cluster_)
+		update_worksite(edifice)
 		obj.conveyor.num.worksite.shift = 0
 		
 		if obj.conveyor.arr.schematic.has(schematic_):
@@ -104,8 +104,10 @@ class Outpost:
 		arr.worksite.erase(edifice_.obj.cluster)
 		
 		for cluster in edifice_.obj.cluster.dict.neighbor:
-			if cluster.obj.edifice == null and !arr.worksite.has(cluster):
-				arr.worksite.append(cluster)
+			if cluster.obj.edifice == null:
+				if !arr.worksite.has(cluster):
+					arr.worksite.append(cluster)
+				
 				obj.conveyor.add_incentive(cluster)
 				cluster.paint_breath()
 		
@@ -119,6 +121,8 @@ class Outpost:
 			if neighbor.obj.edifice == null:
 				neighbor.num.breath -= 1
 				neighbor.paint_breath()
+				#var center_index = Global.num.size.continent.col * neighbor.obj.center.vec.grid.y + neighbor.obj.center.vec.grid.x
+				#print([center_index, neighbor.num.breath])
 
 
 #Табло scoreboard 
@@ -216,10 +220,9 @@ class Edifice:
 		for compartment in compartments_:
 			var sector = compartment.obj.sector
 			
-			for neighbor in sector.dict.neighbor:
-				if neighbor.obj.cluster != sector.obj.cluster and sector.dict.neighbor[neighbor].length() == 1:
-					if neighbor.obj.compartment != null:
-						return neighbor.obj.compartment.obj.module
+			for boundary in sector.dict.boundary:
+				if boundary.obj.compartment != null:
+					return boundary.obj.compartment.obj.module
 		
 		return null
 
@@ -240,9 +243,15 @@ class Module:
 		dict.indicator = {}
 		flag.complete = false
 		word.type = null
+		set_compartments(input_.compartments)
+		set_type()
+		update_indicators()
+
+
+	func set_compartments(compartments_: Array) -> void:
 		var sides = []
 		
-		for compartment in input_.compartments:
+		for compartment in compartments_:
 			add_compartment(compartment)
 			
 			for side in compartment.obj.sector.arr.side:
@@ -251,8 +260,6 @@ class Module:
 					break
 		
 		num.breath = sides.size()
-		set_type()
-		update_indicators()
 
 
 	func add_compartment(compartment_: Classes_8.Compartment) -> void:
@@ -295,12 +302,11 @@ class Module:
 			for compartment in arr.compartment:
 				var sector = compartment.obj.sector
 				
-				for neighbor in sector.dict.neighbor:
-					if neighbor.obj.cluster != sector.obj.cluster and sector.dict.neighbor[neighbor].length() == 1:
-						if neighbor.obj.compartment == null:
-							flag.complete = false
-							update_indicators()
-							return
+				for boundary in sector.dict.neighbor:
+					if boundary.obj.compartment == null:
+						flag.complete = false
+						update_indicators()
+						return
 			
 			update_indicators()
 

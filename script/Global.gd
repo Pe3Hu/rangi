@@ -143,6 +143,7 @@ func init_dict() -> void:
 	dict.compartment.price["research station"] = 12
 	dict.compartment.price["construction berth"] = 16
 	
+	dict.compartment.passive = ["wall"]
 	dict.compartment.active = []
 	
 	for compartment in dict.compartment.consumption:
@@ -358,6 +359,38 @@ func init_schematic() -> void:
 			dict.schematic.rarity[data.rarity].append(data.title)
 			#print(data)
 
+
+func get_schematic_title_based_on_markers(markers_: Dictionary) -> Array:
+	var titles = []
+	
+	
+	for title in dict.schematic.title:
+		if compare_title_with_markers(title, markers_):
+			titles.append(title)
+	
+	return titles
+
+
+func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
+	var flag = true
+	var description = dict.schematic.title[title_]
+	
+	for _i in description.indexs.size():
+		var windrose = arr.windrose[_i]
+		
+		if markers_[windrose] != "any":
+			var description_marker = null
+			var index = description.indexs[_i]
+			
+			match index:
+				0:
+					description_marker = "passive"
+				1:
+					description_marker = "active"
+			
+			flag = flag and description_marker == markers_[windrose]
+	
+	return flag
 
 func init_node() -> void:
 	node.game = get_node("/root/Game")
