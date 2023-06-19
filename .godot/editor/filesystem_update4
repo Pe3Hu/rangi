@@ -6,10 +6,10 @@ res://scene/3/bureau.tscn
 res://scene/4/badge.tscn
 res://scene/1/director.tscn
 res://scene/4/storage.tscn
-res://script/Classes_6.gd
-res://script/Classes_7.gd
-res://script/Classes_8.gd
 res://script/Classes_1.gd
-res://scene/Game.gd
-res://script/Global.gd
 res://script/Classes_3.gd
+res://scene/7/compartment.gd
+res://script/Classes_8.gd
+res://script/Classes_5.gd
+res://script/Classes_7.gd
+res://script/Global.gd

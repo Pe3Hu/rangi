@@ -25,7 +25,7 @@ func update_color_based_on_type() -> void:
 			h = 30/max_h
 		"gateway":
 			s = 0
-			v = 0.6
+			v = 0.5
 		"wall":
 			s = 0
 			v = 0.2
@@ -42,7 +42,15 @@ func update_color_based_on_type() -> void:
 			h = 120/max_h
 	
 	if parent.flag.construction and parent.obj.edifice != null:
-		v = 0.5
+		v = 0.4
+		
+		match parent.word.type.current:
+			"gateway":
+				v = 0.25
+			"wall":
+				v = 0.15
+			"adaptive compartment":
+				v = 0.45
 	
 	parent.color.bg = Color.from_hsv(h, s, v)
 	$BG.set_color(parent.color.bg)

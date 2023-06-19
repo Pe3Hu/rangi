@@ -26,16 +26,18 @@ class Conveyor:
 		obj.outpost.scene.myself.get_node("VBox").move_child(scene.myself, 1)
 
 
-	func apply_tool(tool_: Classes_3.Tool) -> void:
+	func apply_tool(tool_: Classes_3.Tool, reshuffle_: bool) -> void:
+		if reshuffle_:
+			for schematic in arr.schematic:
+				if schematic.flag.reject:
+					schematic.flag.reject = false
+		
 		arr.schematic.append(tool_.obj.schematic)
 		scene.myself.add_tool(tool_)
 
 
 	func get_relevant_worksites(schematic_: Schematic) -> Array:
-		for cluster in obj.outpost.arr.worksite:
-			cluster.paint_black()
-			#cluster.paint_cluster()
-		
+		paint_worksites()
 		var clusters = []
 		
 		for cluster in obj.outpost.arr.worksite:
@@ -43,6 +45,12 @@ class Conveyor:
 				clusters.append(cluster)
 		
 		return clusters
+
+
+	func paint_worksites() -> void:
+		for cluster in obj.outpost.arr.worksite:
+			cluster.paint_black()
+			#cluster.paint_cluster()
 
 
 	func overlay_schematic_on_cluster(schematic_: Schematic, cluster_: Classes_6.Cluster) -> bool:
@@ -84,13 +92,15 @@ class Conveyor:
 	func preset_worksite() -> Variant:
 		if arr.schematic.size() > 0:
 			var schematic = arr.schematic.front()
-			var worksites = get_relevant_worksites(schematic)
 			
-			if worksites.size() > 0:
-				var index = num.worksite.shift % worksites.size()
-				var worksite = worksites[index]
-				worksite.paint_schematic(schematic)
-				return worksite
+			if !schematic.flag.reject:
+				var worksites = get_relevant_worksites(schematic)
+				
+				if worksites.size() > 0:
+					var index = num.worksite.shift % worksites.size()
+					var worksite = worksites[index]
+					worksite.paint_schematic(schematic)
+					return worksite
 		
 		return null
 
@@ -113,37 +123,41 @@ class Conveyor:
 				
 				obj.outpost.establish_edifice(data.schematic, data.worksite)
 			else:
+				var schematic = arr.schematic.pop_front()
+				schematic.flag.reject = true
+				
 				if arr.schematic.size() > 1:
-					var schematic = arr.schematic.pop_front()
 					arr.schematic.append(schematic)
 					scene.myself.remove_tool(schematic.obj.tool)
-					scene.myself.add_tool(schematic.obj.tool)
+					scene.myself.add_tool(schematic.obj.tool, false)
 
 
 	func evaluate_worksites() -> Variant:
 		if arr.schematic.size() > 0:
 			var schematic = arr.schematic.front()
-			var datas = []
 			
-			for turn in Global.num.conveyor.turn:
-				var worksites = get_relevant_worksites(schematic)
+			if !schematic.flag.reject:
+				var datas = []
 				
-				for worksite in worksites:
-					var data = {}
-					data.turn = turn
-					data.schematic = schematic
-					data.worksite = worksite
-					data.surcharge = pow(Global.num.conveyor.surcharge, worksite.num.ring - 1)
-					var center = worksite.obj.center
-					data.index = Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
-					get_involved_modules(data)
-					evaluate_involved_modules(data)
-					datas.append(data)
+				for turn in Global.num.conveyor.turn:
+					var worksites = get_relevant_worksites(schematic)
+					
+					for worksite in worksites:
+						var data = {}
+						data.turn = turn
+						data.schematic = schematic
+						data.worksite = worksite
+						data.surcharge = pow(Global.num.conveyor.surcharge, worksite.num.ring - 1)
+						var center = worksite.obj.center
+						data.index = Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
+						get_involved_modules(data)
+						evaluate_involved_modules(data)
+						datas.append(data)
+					
+					schematic.rotate(true)
 				
-				schematic.rotate(true)
-			
-			preset_worksite()
-			return datas
+				preset_worksite()
+				return datas
 		
 		return []
 
@@ -218,8 +232,10 @@ class Conveyor:
 
 
 	func establish_starter_schematics() -> void:
-		for _i in arr.schematic.size():
+		while arr.schematic.size() > 0 and !arr.schematic.front().flag.reject:
 			decide_which_worksite_to_establish()
+		
+		paint_worksites()
 
 
 #Схема сооружения schematic 
@@ -236,6 +252,7 @@ class Schematic:
 		obj.tool = input_.tool
 		word.title = input_.title
 		flag.core = input_.core
+		flag.reject = false
 		set_mastery()
 		init_compartments(input_.types)
 
@@ -458,11 +475,11 @@ class Incentive:
 		#print("___", [center_index, obj.cluster.num.breath])
 		dict.marker = {}
 		dict.marker.anonymized = {}
-		dict.marker.type = {}
+		dict.marker.compartment = {}
 		
 		for windrose in Global.arr.windrose:
 			dict.marker.anonymized[windrose] = null
-			dict.marker.type[windrose] = null
+			dict.marker.compartment[windrose] = null
 		
 		for sector in obj.cluster.obj.center.dict.neighbor:
 			var windrose = obj.cluster.obj.center.dict.neighbor[sector]
@@ -472,7 +489,7 @@ class Incentive:
 			for boundary in sector.dict.boundary:
 				if boundary.obj.compartment != null:
 					var index_boundary = Global.num.size.continent.col * boundary.vec.grid.y + boundary.vec.grid.x
-					dict.marker.type[windrose] = boundary.obj.compartment.word.type.current
+					dict.marker.compartment[windrose] = boundary.obj.compartment
 					
 					if Global.dict.compartment.passive.has(boundary.obj.compartment.word.type.current):
 						anonymized_marker = "passive"

@@ -210,6 +210,7 @@ class Director:
 				#print([breath, index], incentive.arr.title)
 		var relevant_bids = {}
 		
+		
 		for bid in obj.bureau.arr.bid.showcase:
 			var fitteds = bid.try_on_incentives(incentive_titles)
 			
@@ -219,6 +220,5 @@ class Director:
 				var schematic = bid.obj.design.arr.tool.front().obj.schematic
 				var description = Global.dict.schematic.title[schematic.word.title]
 				
-				
-				print([index, description])
+				print("RESULT",[index, data.turn, description])
 

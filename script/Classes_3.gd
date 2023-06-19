@@ -41,7 +41,7 @@ class Bureau:
 #				input_.value = 1
 				input_.category = "schematic"
 				input_.target = "outpost"
-				input_.title = "136"#Global.dict.schematic.mastery[1].pick_random()
+				input_.title = Global.dict.schematic.mastery[1].pick_random()#"136"
 				var tool = Classes_3.Tool.new(input_)
 				input.tools.append(tool)
 			
@@ -97,13 +97,16 @@ class Bid:
 					
 					for rotated_title in rotates:
 						if incentive_titles_.has(rotated_title):
-							if titles.has(rotated_title):
+							if !titles.has(rotated_title):
 								var turns = []
 								
 								for _i in rotates.size():
 									if rotates[_i] == rotated_title:
 										var turn = (_i + 1) % rotates.size()
 										turns.append(turn)
+								
+								titles[rotated_title] = turns
+					
 					
 					for rotated_title in titles:
 						for turn in titles[rotated_title]:
@@ -111,13 +114,14 @@ class Bid:
 								var center = incentive.obj.cluster.obj.center
 								var index = Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
 								var description = Global.dict.schematic.title[title]
-								print(["#", index, title, rotated_title, rotates, turn])
-								print(["@", index, description])
+								#print(["#", index, title, rotated_title, rotates, turn])
+								#print(["@", index, description])
 								
 								if check_types_of_incentive(tool.obj.schematic, incentive, turn):
 									var data = {}
 									data.schematic = tool.obj.schematic
 									data.incentive = incentive
+									data.turn = turn
 									fit.append(data)
 		
 		return fit
@@ -127,7 +131,7 @@ class Bid:
 		var index =  Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
 		var turned_windrose = {}
 		var description = Global.dict.schematic.title[schematic_.word.title]
-		print([index, turn_, description])
+		#print("_____", [index, turn_, description])
 		
 		for windrose in Global.dict.windrose.next:
 			turned_windrose[windrose] = [windrose]
@@ -139,14 +143,16 @@ class Bid:
 			
 			turned_windrose[windrose] = turned_windrose[windrose].back()
 		
-		for windrose in incentive_.dict.marker.type:
-			var incentive_type = incentive_.dict.marker.type[windrose]
+		for windrose in incentive_.dict.marker.compartment:
+			var incentive_compartment = incentive_.dict.marker.compartment[windrose]
+			#var incentive_compartment = incentive_.obj.cluster.obj.center.dict.neighbor[windrose]
 			
-			if incentive_type != null:
-				for compartment in schematic_.dict.compartment:
-					if compartment.word.windrose == turned_windrose[windrose]:
-						if compartment.word.type.current != incentive_type:
-							print([index, windrose, compartment.word.type.current, incentive_type])
+			if incentive_compartment != null:
+				for schematic_compartment in schematic_.dict.compartment:
+					if schematic_compartment.word.windrose == turned_windrose[windrose]:
+						#print([compartment.word.windrose, compartment.word.type.current, incentive_type])
+						if !schematic_compartment.compatibility_check(incentive_compartment):
+							#print("ERROR",[index, windrose, " I: "+ incentive_compartment.word.type.current, " S: "+ schematic_compartment.word.type.current])
 							return false
 						break
 		return true

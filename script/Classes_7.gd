@@ -176,10 +176,10 @@ class Edifice:
 		obj.cluster = input_.cluster
 		obj.cluster.obj.edifice = self
 		obj.continent = obj.cluster.obj.continent
-		establish_compartment()
+		establish_compartments()
 
 
-	func establish_compartment() -> void:
+	func establish_compartments() -> void:
 		var description_schematic = Global.dict.schematic.title[obj.schematic.word.title]
 		dict.construction = {}
 		

@@ -30,5 +30,5 @@ Classes_8="*res://script/Classes_8.gd"
 
 [display]
 
-window/size/viewport_width=1200
+window/size/viewport_width=400
 window/size/viewport_height=800

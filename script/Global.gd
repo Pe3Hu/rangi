@@ -455,7 +455,7 @@ func init_schematic() -> void:
 			for _i in indexs.current.size():
 				if indexs.current[_i] == 1:
 					var windrose = arr.windrose[_i]
-					var next_windrose = dict.windrose.next[windrose]
+					var next_windrose = dict.windrose.previous[windrose]
 					var next_index = arr.windrose.find(next_windrose)
 					indexs.next[next_index] = 1
 			
