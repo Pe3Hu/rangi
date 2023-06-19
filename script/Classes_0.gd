@@ -47,6 +47,7 @@ class Planet:
 		obj.cosmos = input_.cosmos
 		init_scene()
 		init_bureau()
+		init_orbit()
 		init_outposts()
 		update_badges()
 
@@ -61,6 +62,12 @@ class Planet:
 		var input = {}
 		input.planet = self
 		obj.bureau = Classes_3.Bureau.new(input)
+
+
+	func init_orbit() -> void:
+		var input = {}
+		input.planet = self
+		obj.orbit = Classes_9.Orbit.new(input)
 
 
 	func init_outposts() -> void:

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bl1ch6qshqx1h"]
+
+[ext_resource type="Script" path="res://scene/9/satellite.gd" id="1_54lcg"]
+
+[node name="Satellite" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_54lcg")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.188235, 0.698039, 0.686275, 1)

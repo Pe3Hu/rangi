@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://clkye0rtk7rfe"]
+
+[node name="Asteroid" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2

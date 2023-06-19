@@ -1,8 +1,8 @@
-HBoxContainer
-Label
 ColorRect
 MarginContainer
+HBoxContainer
 VBoxContainer
+Label
 GridContainer
 Polygon2D
 Control

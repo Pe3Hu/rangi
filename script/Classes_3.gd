@@ -18,8 +18,8 @@ class Bureau:
 	func init_scene() -> void:
 		scene.myself = Global.scene.bureau.instantiate()
 		scene.myself.set_parent(self)
-		obj.planet.scene.myself.get_node("VBox").add_child(scene.myself)
-		obj.planet.scene.myself.get_node("VBox").move_child(scene.myself, 0)
+		obj.planet.scene.myself.get_node("HBox/VBox").add_child(scene.myself)
+		obj.planet.scene.myself.get_node("HBox/VBox").move_child(scene.myself, 0)
 
 
 	func init_bids() -> void:
@@ -125,7 +125,8 @@ class Bid:
 									fit.append(data)
 		
 		return fit
-		
+
+
 	func check_types_of_incentive(schematic_: Classes_8.Schematic, incentive_: Classes_8.Incentive, turn_: int) -> bool:
 		var center = incentive_.obj.cluster.obj.center
 		var index =  Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x

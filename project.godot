@@ -27,8 +27,9 @@ Classes_5="*res://script/Classes_5.gd"
 Classes_6="*res://script/Classes_6.gd"
 Classes_7="*res://script/Classes_7.gd"
 Classes_8="*res://script/Classes_8.gd"
+Classes_9="*res://script/Classes_9.gd"
 
 [display]
 
-window/size/viewport_width=400
+window/size/viewport_width=600
 window/size/viewport_height=800

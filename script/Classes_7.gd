@@ -24,7 +24,7 @@ class Outpost:
 	func init_scene() -> void:
 		scene.myself = Global.scene.outpost.instantiate()
 		scene.myself.set_parent(self)
-		obj.planet.scene.myself.get_node("VBox/Outpost").add_child(scene.myself)
+		obj.planet.scene.myself.get_node("HBox/VBox/Outpost").add_child(scene.myself)
 
 
 	func init_continent() -> void:

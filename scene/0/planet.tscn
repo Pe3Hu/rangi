@@ -22,10 +22,14 @@ script = ExtResource("1_hcntl")
 layout_mode = 2
 color = Color(0.588235, 0.588235, 0.588235, 1)
 
-[node name="VBox" type="VBoxContainer" parent="."]
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="HBox"]
 layout_mode = 2
 
-[node name="Outpost" type="HBoxContainer" parent="VBox"]
+[node name="Outpost" type="HBoxContainer" parent="HBox/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1

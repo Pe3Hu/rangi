@@ -538,7 +538,9 @@ func init_scene() -> void:
 	scene.conveyor = load("res://scene/7/conveyor.tscn")
 	scene.scoreboard = load("res://scene/7/scoreboard.tscn")
 	scene.compartment = load("res://scene/7/compartment.tscn")
-	
+	scene.orbit = load("res://scene/9/orbit.tscn")
+	scene.satellite = load("res://scene/9/satellite.tscn")
+	scene.asteroid = load("res://scene/9/asteroid.tscn")
 
 
 func get_random_element(arr_: Array):

@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://bh7snhif7sh1w"]
+
+[ext_resource type="Script" path="res://scene/9/orbit.gd" id="1_b3r8f"]
+
+[node name="Orbit" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_b3r8f")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.568627, 0.454902, 0.858824, 1)
+
+[node name="Satellite" type="VBoxContainer" parent="."]
+layout_mode = 2
