@@ -318,6 +318,7 @@ func init_schematic() -> void:
 	dict.schematic.indexs = {}
 	dict.schematic.mastery = {}
 	dict.schematic.rotate = {}
+	dict.schematic.deadlock = []
 	
 	var size = pow(num.size.cluster.n, 2) - 1
 	var index = {}
@@ -333,7 +334,7 @@ func init_schematic() -> void:
 	while index.current < index.max:
 		var data = {}
 		data.title = str(index.current)
-		data.rarity = 0
+		#data.rarity = 0
 		data.indexs = []
 		var value = int(index.current)
 		
@@ -385,24 +386,26 @@ func init_schematic() -> void:
 				if !flag_only_diagonal:
 					break
 			
-			data.rarity += rarity
+			#data.rarity += rarity
 			flag = flag and !flag_only_diagonal
 			
 			if !flag:
 				break
 		
 		if flag:
-			data.rarity *= data.associations.size()
+			#data.rarity *= data.associations.size()
+			#if weight.max < data.rarity:
+			#	weight.max = data.rarity
 			
-			if weight.max < data.rarity:
-				weight.max = data.rarity
+			if data.associations.size() == 1:
+				dict.schematic.deadlock.append(data.title)
 			
 			datas.append(data)
 		
 		index.current += 1
 	
 	for data in datas:
-		data.rarity = weight.max - data.rarity + 1
+		#data.rarity = weight.max - data.rarity + 1
 		var associations_size = data.associations.size()
 		
 		if associations_size > 0:
@@ -414,11 +417,13 @@ func init_schematic() -> void:
 				if data.mastery < mastery:
 					data.mastery = mastery
 			
-			for mastery in range(data.mastery, num.drone.arm.max, 1):
-				if !dict.schematic.mastery.has(mastery):
-					dict.schematic.mastery[mastery] = []
-				
-				dict.schematic.mastery[mastery].append(data.title)
+			
+			if !dict.schematic.deadlock.has(data.title):
+				for mastery in range(data.mastery, num.drone.arm.max, 1):
+					if !dict.schematic.mastery.has(mastery):
+						dict.schematic.mastery[mastery] = []
+					
+					dict.schematic.mastery[mastery].append(data.title)
 			
 			dict.schematic.title[data.title] = data
 			dict.schematic.indexs[data.indexs] = data.title
@@ -426,11 +431,11 @@ func init_schematic() -> void:
 			if !dict.schematic.association.has(associations_size):
 				dict.schematic.association[associations_size] = {}
 			
-			if !dict.schematic.rarity.has(data.rarity):
-				dict.schematic.rarity[data.rarity] = []
+			#if !dict.schematic.rarity.has(data.rarity):
+			#	dict.schematic.rarity[data.rarity] = []
 			
 			dict.schematic.association[associations_size][data.title] = data.title
-			dict.schematic.rarity[data.rarity].append(data.title)
+			#dict.schematic.rarity[data.rarity].append(data.title)
 			#print(data)
 	
 	for title in dict.schematic.title:
@@ -455,15 +460,13 @@ func init_schematic() -> void:
 					indexs.next[next_index] = 1
 			
 			var title_rotated = dict.schematic.indexs[indexs.next]
-			
-			if !dict.schematic.rotate[title].has(title_rotated):
-				dict.schematic.rotate[title].append(title_rotated)
+			dict.schematic.rotate[title].append(title_rotated)
 			
 			indexs.current = []
 			indexs.current.append_array(indexs.next)
 
 
-func get_schematic_title_based_on_markers(markers_: Dictionary) -> Array:
+func get_schematic_title_based_on_anonymized_markers(markers_: Dictionary) -> Array:
 	var titles = []
 	
 	for title in dict.schematic.title:

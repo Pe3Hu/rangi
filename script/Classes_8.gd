@@ -202,11 +202,9 @@ class Conveyor:
 
 	func add_incentive(cluster_: Classes_6.Cluster) -> void:
 		if cluster_.num.breath < 3:
-			if dict.incentive.has(cluster_.num.breath + 1):
-				for incentive in dict.incentive[cluster_.num.breath + 1]:
-					if incentive.obj.cluster == cluster_:
-						incentive.rebreath()
-						return
+			if cluster_.obj.incentive != null:
+				cluster_.obj.incentive.rebreath()
+				return
 			
 			var input = {}
 			input.conveyor = self
@@ -444,47 +442,59 @@ class Incentive:
 	var arr = {}
 	var num = {}
 	var obj = {}
+	var dict = {}
 
 
 	func _init(input_: Dictionary) -> void:
 		obj.conveyor = input_.conveyor
 		obj.cluster = input_.cluster
+		obj.cluster.obj.incentive = self
 		arr.title = []
 		set_indexs()
 
 
 	func set_indexs() -> void:
-		#var center_index = Global.num.size.continent.col * obj.cluster.obj.center.vec.grid.y + obj.cluster.obj.center.vec.grid.x
+		var center_index = Global.num.size.continent.col * obj.cluster.obj.center.vec.grid.y + obj.cluster.obj.center.vec.grid.x
 		#print("___", [center_index, obj.cluster.num.breath])
-		var markers = {}
+		dict.marker = {}
+		dict.marker.anonymized = {}
+		dict.marker.type = {}
 		
 		for windrose in Global.arr.windrose:
-			markers[windrose] = null
+			dict.marker.anonymized[windrose] = null
+			dict.marker.type[windrose] = null
 		
 		for sector in obj.cluster.obj.center.dict.neighbor:
 			var windrose = obj.cluster.obj.center.dict.neighbor[sector]
-			var marker = "any"
+			var anonymized_marker = "any"
 			var index_sector = Global.num.size.continent.col * sector.vec.grid.y + sector.vec.grid.x
 			
 			for boundary in sector.dict.boundary:
 				if boundary.obj.compartment != null:
-					
 					var index_boundary = Global.num.size.continent.col * boundary.vec.grid.y + boundary.vec.grid.x
+					dict.marker.type[windrose] = boundary.obj.compartment.word.type.current
 					
 					if Global.dict.compartment.passive.has(boundary.obj.compartment.word.type.current):
-						marker = "passive"
+						anonymized_marker = "passive"
 					else:
-						marker = "active"
+						anonymized_marker = "active"
 			
-			markers[windrose] = marker
-			#print([center_index, windrose, index_sector, marker])
+			dict.marker.anonymized[windrose] = anonymized_marker
+			#print([center_index, windrose, index_sector, dict.marker.type[windrose], anonymized_marker])
 		
-		#print(markers)
+		if check_active():
+			arr.title = Global.get_schematic_title_based_on_anonymized_markers(dict.marker.anonymized)
+		else:
+			close()
+			#print(dict.marker.anonymized)
+
+
+	func check_active() -> bool:
+		for windrose in dict.marker.anonymized:
+			if dict.marker.anonymized[windrose] == "active":
+				return true
 		
-#		for title in arr.title:
-#			var description = Global.dict.schematic.title[title]
-#			print(center_index, description)
-		arr.title = Global.get_schematic_title_based_on_markers(markers)
+		return false
 
 
 	func rebreath() -> void:
@@ -495,3 +505,10 @@ class Incentive:
 		
 		obj.conveyor.dict.incentive[obj.cluster.num.breath].append(self)
 		set_indexs()
+
+
+	func close() -> void:
+		if obj.conveyor.dict.incentive.has(obj.cluster.num.breath):
+			obj.conveyor.dict.incentive[obj.cluster.num.breath].erase(self)
+		
+		obj.cluster.obj.incentive = null

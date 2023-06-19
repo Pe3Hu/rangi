@@ -116,6 +116,9 @@ class Outpost:
 
 
 	func update_clusters_breath(cluster_: Classes_6.Cluster) -> void:
+		if cluster_.obj.incentive != null:
+			cluster_.obj.incentive.close()
+		
 		cluster_.num.breath = 0
 		
 		for neighbor in cluster_.dict.neighbor:

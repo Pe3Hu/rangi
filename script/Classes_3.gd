@@ -41,7 +41,7 @@ class Bureau:
 #				input_.value = 1
 				input_.category = "schematic"
 				input_.target = "outpost"
-				input_.title = Global.dict.schematic.mastery[1].pick_random()
+				input_.title = "136"#Global.dict.schematic.mastery[1].pick_random()
 				var tool = Classes_3.Tool.new(input_)
 				input.tools.append(tool)
 			
@@ -81,6 +81,75 @@ class Bid:
 		scene.myself.set_parent(self)
 		scene.myself.get_node("VBox").add_child(obj.design.scene.myself)
 		scene.myself.get_node("VBox").move_child(obj.design.scene.myself, 0)
+
+
+	func try_on_incentives(incentive_titles_: Dictionary) -> Variant:
+		var fit = []
+		
+		for tool in obj.design.arr.tool:
+			match tool.word.category:
+				"drone":
+					return null
+				"schematic":
+					var title = tool.obj.schematic.word.title
+					var rotates = Global.dict.schematic.rotate[title]
+					var titles = {}
+					
+					for rotated_title in rotates:
+						if incentive_titles_.has(rotated_title):
+							if titles.has(rotated_title):
+								var turns = []
+								
+								for _i in rotates.size():
+									if rotates[_i] == rotated_title:
+										var turn = (_i + 1) % rotates.size()
+										turns.append(turn)
+					
+					for rotated_title in titles:
+						for turn in titles[rotated_title]:
+							for incentive in incentive_titles_[rotated_title]:
+								var center = incentive.obj.cluster.obj.center
+								var index = Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
+								var description = Global.dict.schematic.title[title]
+								print(["#", index, title, rotated_title, rotates, turn])
+								print(["@", index, description])
+								
+								if check_types_of_incentive(tool.obj.schematic, incentive, turn):
+									var data = {}
+									data.schematic = tool.obj.schematic
+									data.incentive = incentive
+									fit.append(data)
+		
+		return fit
+		
+	func check_types_of_incentive(schematic_: Classes_8.Schematic, incentive_: Classes_8.Incentive, turn_: int) -> bool:
+		var center = incentive_.obj.cluster.obj.center
+		var index =  Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
+		var turned_windrose = {}
+		var description = Global.dict.schematic.title[schematic_.word.title]
+		print([index, turn_, description])
+		
+		for windrose in Global.dict.windrose.next:
+			turned_windrose[windrose] = [windrose]
+			
+			if turn_ > 0:
+				for _i in turn_:
+					var next_windrose = Global.dict.windrose.next[turned_windrose[windrose].back()]
+					turned_windrose[windrose].append(next_windrose)
+			
+			turned_windrose[windrose] = turned_windrose[windrose].back()
+		
+		for windrose in incentive_.dict.marker.type:
+			var incentive_type = incentive_.dict.marker.type[windrose]
+			
+			if incentive_type != null:
+				for compartment in schematic_.dict.compartment:
+					if compartment.word.windrose == turned_windrose[windrose]:
+						if compartment.word.type.current != incentive_type:
+							print([index, windrose, compartment.word.type.current, incentive_type])
+							return false
+						break
+		return true
 
 
 #Чертеж design

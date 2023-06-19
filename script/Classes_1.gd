@@ -211,31 +211,14 @@ class Director:
 		var relevant_bids = {}
 		
 		for bid in obj.bureau.arr.bid.showcase:
-			for tool in bid.obj.design.arr.tool:
-				match tool.word.category:
-					"drone":
-						pass
-					"schematic":
-						var title = tool.obj.schematic.word.title
-						var description = Global.dict.schematic.title[title]
-						var rotates = Global.dict.schematic.rotate[title]
-						
-						for rotated_title in rotates:
-							if incentive_titles.has(rotated_title):
-								
-								for incentive in incentive_titles[rotated_title]:
-									if !relevant_bids.has(bid):
-										relevant_bids[bid] = []
-									
-									relevant_bids[bid].append(incentive)
-		
-		
-		for bid in relevant_bids:
-			for incentive in relevant_bids[bid]:
-				var center = incentive.obj.cluster.obj.center
+			var fitteds = bid.try_on_incentives(incentive_titles)
+			
+			for data in fitteds:
+				var center = data.incentive.obj.cluster.obj.center
 				var index =  Global.num.size.continent.col * center.vec.grid.y + center.vec.grid.x
 				var schematic = bid.obj.design.arr.tool.front().obj.schematic
-				
 				var description = Global.dict.schematic.title[schematic.word.title]
+				
+				
 				print([index, description])
 

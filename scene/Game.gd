@@ -52,6 +52,9 @@ func _input(event) -> void:
 			KEY_Z:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.outpost.obj.conveyor.decide_which_worksite_to_build_on()
+			KEY_X:
+				if event.is_pressed() && !event.is_echo():
+					branch.obj.director.prioritize()
 					
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():

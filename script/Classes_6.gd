@@ -15,6 +15,7 @@ class Cluster:
 		num.breath = null
 		obj.continent = input_.continent
 		obj.edifice = null
+		obj.incentive = null
 		vec.grid = input_.grid
 		dict.neighbor = {}
 		dict.side = {}
