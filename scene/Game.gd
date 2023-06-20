@@ -6,18 +6,14 @@ func _ready() -> void:
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
 	#012
 	
-	var outpost = Global.obj.cosmos.obj.planet.arr.outpost.front()
-	outpost.place_core()
-	
-	for branch in outpost.arr.branch:
-		branch.obj.director.promote_starter_schematics()
-	
-	outpost.obj.conveyor.establish_starter_schematics()
-	#outpost.obj.conveyor.evaluate_worksites()
-	
-	#for branch in outpost.arr.branch:
-	#	branch.obj.director.prioritize()
-	outpost.arr.branch.front().obj.director.prioritize()
+#	var outpost = Global.obj.cosmos.obj.planet.arr.outpost.front()
+#	outpost.place_core()
+#
+#	for branch in outpost.arr.branch:
+#		branch.obj.director.promote_starter_schematics()
+#
+#	outpost.obj.conveyor.establish_starter_schematics()
+#	outpost.arr.branch.front().obj.director.prioritize()
 
 
 func _input(event) -> void:

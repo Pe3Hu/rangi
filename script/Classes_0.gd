@@ -48,6 +48,7 @@ class Planet:
 		init_scene()
 		init_bureau()
 		init_orbit()
+		init_sanctuary()
 		init_outposts()
 		update_badges()
 
@@ -68,6 +69,12 @@ class Planet:
 		var input = {}
 		input.planet = self
 		obj.orbit = Classes_9.Orbit.new(input)
+
+
+	func init_sanctuary() -> void:
+		var input = {}
+		input.planet = self
+		obj.sanctuary = Classes_10.Sanctuary.new(input)
 
 
 	func init_outposts() -> void:

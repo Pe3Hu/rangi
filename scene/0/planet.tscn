@@ -27,6 +27,7 @@ layout_mode = 2
 alignment = 1
 
 [node name="VBox" type="VBoxContainer" parent="HBox"]
+visible = false
 layout_mode = 2
 
 [node name="Outpost" type="HBoxContainer" parent="HBox/VBox"]

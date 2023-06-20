@@ -161,8 +161,8 @@ class Pilier:
 
 
 	func _init(input_: Dictionary) -> void:
-		vec.grid = input_.grid
 		obj.continent = input_.continent
+		vec.grid = input_.grid
 		dict.neighbor = {}
 		init_scene()
 

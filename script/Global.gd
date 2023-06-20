@@ -54,6 +54,9 @@ func init_num() -> void:
 	num.separation.croupier = 5
 	num.separation.spielkarte = 5
 	
+	num.sanctuary = {}
+	num.sanctuary.ring = 2
+	
 	num.spielkarte = {}
 	
 	num.size = {}
@@ -77,6 +80,17 @@ func init_num() -> void:
 	num.size.continent.cluster = num.size.cluster.ring * 2 - 1
 	num.size.continent.col = num.size.continent.cluster * num.size.cluster.n
 	num.size.continent.row = num.size.continent.col
+	
+	num.size.sequoia = {}
+	num.size.sequoia.a = 18
+	num.size.sequoia.d = num.size.sequoia.a * 2
+	num.size.sequoia.r = num.size.sequoia.a * sqrt(2)
+	
+	num.size.forest = {}
+	num.size.forest.n = 8
+	num.size.forest.a = 40
+	num.size.forest.d = num.size.sequoia.a * 2
+	num.size.forest.r = num.size.sequoia.a * sqrt(2)
 
 
 func init_dict() -> void:
@@ -541,6 +555,10 @@ func init_scene() -> void:
 	scene.orbit = load("res://scene/9/orbit.tscn")
 	scene.satellite = load("res://scene/9/satellite.tscn")
 	scene.asteroid = load("res://scene/9/asteroid.tscn")
+	scene.sanctuary = load("res://scene/10/sanctuary.tscn")
+	scene.forest = load("res://scene/10/forest.tscn")
+	scene.glade = load("res://scene/10/glade.tscn")
+	scene.sequoia = load("res://scene/10/sequoia.tscn")
 
 
 func get_random_element(arr_: Array):

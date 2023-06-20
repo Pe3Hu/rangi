@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqlwa55pi1gab"]
+
+[ext_resource type="Script" path="res://scene/10/sanctuary.gd" id="1_reyk5"]
+
+[node name="Sanctuary" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_reyk5")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.811765, 1, 0.733333, 1)
+
+[node name="Sequoia" type="Node2D" parent="."]
