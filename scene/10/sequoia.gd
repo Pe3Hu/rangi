@@ -6,7 +6,7 @@ var parent = null
 
 func set_parent(parent_) -> void:
 	parent = parent_
-	position = parent.vec.position + parent.obj.continent.vec.offset
+	position = parent.vec.position + parent.obj.sanctuary.vec.offset
 	set_vertexs()
 
 

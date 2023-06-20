@@ -10,4 +10,5 @@ func set_parent(parent_) -> void:
 
 
 func update_rec_size() -> void:
-	custom_minimum_size = Vector2(Global.vec.size.node.spielkarte)
+	custom_minimum_size = Vector2(Global.vec.size.node.sanctuary)
+	parent.vec.offset = custom_minimum_size * 0.5

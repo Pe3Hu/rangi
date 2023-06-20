@@ -12,3 +12,5 @@ res://scene/10/forest.tscn
 res://scene/10/glade.tscn
 res://scene/10/sequoia.gd
 res://scene/Game.gd
+res://scene/10/glade.gd
+res://scene/10/forest.gd

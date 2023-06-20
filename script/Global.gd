@@ -54,9 +54,6 @@ func init_num() -> void:
 	num.separation.croupier = 5
 	num.separation.spielkarte = 5
 	
-	num.sanctuary = {}
-	num.sanctuary.ring = 2
-	
 	num.spielkarte = {}
 	
 	num.size = {}
@@ -81,16 +78,18 @@ func init_num() -> void:
 	num.size.continent.col = num.size.continent.cluster * num.size.cluster.n
 	num.size.continent.row = num.size.continent.col
 	
-	num.size.sequoia = {}
-	num.size.sequoia.a = 18
-	num.size.sequoia.d = num.size.sequoia.a * 2
-	num.size.sequoia.r = num.size.sequoia.a * sqrt(2)
+	
+	num.size.sanctuary = {}
+	num.size.sanctuary.ring = 2
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
 	num.size.forest.a = 40
-	num.size.forest.d = num.size.sequoia.a * 2
-	num.size.forest.r = num.size.sequoia.a * sqrt(2)
+	
+	num.size.sequoia = {}
+	num.size.sequoia.a = 18
+	num.size.sequoia.d = num.size.sequoia.a * 2
+	num.size.sequoia.r = num.size.sequoia.a * sqrt(2)
 
 
 func init_dict() -> void:
@@ -529,6 +528,7 @@ func init_window_size():
 	
 	vec.size.node = {}
 	vec.size.node.spielkarte = Vector2.ONE * num.size.spielkarte.r * 2
+	vec.size.node.sanctuary = Vector2.ONE * 560
 
 
 func init_scene() -> void:

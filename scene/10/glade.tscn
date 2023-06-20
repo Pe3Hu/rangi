@@ -4,5 +4,4 @@
 
 [node name="Glade" type="Line2D"]
 width = 2.0
-default_color = Color(0, 0, 0, 1)
 script = ExtResource("1_47ssk")
