@@ -35,6 +35,7 @@ func init_num() -> void:
 	num.index = {}
 	num.index.branch = 0
 	num.index.schematic = 0
+	num.index.habitat = 0
 	
 	num.factory = {}
 	num.factory.count = {}

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bi3kqdmmbw4h7"]
 
 [ext_resource type="Script" path="res://scene/3/tool.gd" id="1_27ku6"]
-[ext_resource type="FontFile" uid="uid://beh7inkt4rf38" path="res://asset/font/rimouski sb.otf" id="2_8gg8g"]
+[ext_resource type="FontFile" uid="uid://brthmdy0bvgqo" path="res://asset/font/metal lord ot.otf" id="2_m044f"]
 
 [node name="Tool" type="MarginContainer"]
 anchors_preset = 8
@@ -29,6 +29,6 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("2_8gg8g")
+theme_override_fonts/font = ExtResource("2_m044f")
 horizontal_alignment = 1
 vertical_alignment = 1

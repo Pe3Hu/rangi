@@ -50,6 +50,15 @@ func update_color_based_on_forest_shape() -> void:
 	set_color(color_)
 
 
+func update_color_based_on_habitat_index() -> void:
+	var max_h = 360.0
+	var h = float(parent.obj.habitat.num.index) / Global.num.index.habitat
+	var s = 0.6 
+	var v = 1
+	var color_ = Color.from_hsv(h, s, v)
+	set_color(color_)
+
+
 func paint_black() -> void:
 	color = Color.BLACK
 

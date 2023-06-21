@@ -9,3 +9,6 @@ res://script/Global.gd
 res://scene/10/glade.gd
 res://scene/10/sequoia.gd
 res://scene/10/forest.gd
+res://scene/Game.gd
+res://scene/3/tool.tscn
+res://scene/4/storage.tscn

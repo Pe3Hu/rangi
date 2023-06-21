@@ -172,16 +172,62 @@ class Sanctuary:
 
 
 	func init_forest_neighbors() -> void:
-		for ring in num.ring:
-			for forest in dict.forest[num.ring]:
-				for glade in forest.arr.glade:
-					pass
+#		for ring in num.ring:
+#			for forest in dict.forest[num.ring]:
+#				for glade in forest.arr.glade:
+#					if glade.num.ring == ring or glade.num.ring == ring + 0.5:
+#						glade.make_forests_neighbors()
 		
-		var forest = dict.forest[0].front()
+		for glade in arr.glade:
+			glade.make_forests_neighbors()
 		
-		for neighbor in forest.dict.neighbor:
-			neighbor.scene.myself.paint_black()
+		init_habitats()
+		
 
+	func init_habitats() -> void:
+		dict.habitat = {}
+		
+		var input = {}
+		input.sanctuary = self
+		input.ring = 0
+		input.forests = [dict.forest[input.ring].front()]
+		var habitat = Classes_10.Habitat.new(input)
+		dict.habitat[input.ring] = [habitat]
+		
+		for ring in range(1, num.ring + 1, 1):
+			dict.habitat[ring] = []
+			var forest = dict.forest[ring].front()
+			var neighbors = []
+			neighbors.append_array(get_unhabitated_neighbors(forest))
+			
+			while neighbors.size() > 0:
+				var neighbor = neighbors.pick_random()
+				neighbors.erase(neighbor)
+				
+				input.forests = [forest, neighbor]
+				input.ring = ring
+				habitat = Classes_10.Habitat.new(input)
+				dict.habitat[ring].append(habitat)
+				
+				if neighbors.size() > 0:
+					neighbors.append_array(get_unhabitated_neighbors(neighbor))
+					forest = neighbors.pop_front()
+					neighbors.append_array(get_unhabitated_neighbors(forest))
+		
+		for ring in dict.habitat:
+			for habitat_ in dict.habitat[ring]:
+				for forest in habitat_.arr.forest:
+					forest.scene.myself.update_color_based_on_habitat_index()
+
+
+	func get_unhabitated_neighbors(forest_: Forest) -> Array:
+		var neighbors = []
+		
+		for neighbor in forest_.dict.neighbor:
+			if forest_.num.ring == neighbor.num.ring and neighbor.obj.habitat == null:
+				neighbors.append(neighbor)
+		
+		return neighbors
 
 #Лес forest
 class Forest:
@@ -197,6 +243,7 @@ class Forest:
 		arr.sequoia = []
 		arr.sequoia.append_array(input_.sequoias)
 		obj.sanctuary = input_.sanctuary
+		obj.habitat = null
 		num.ring = input_.ring
 		dict.neighbor = {}
 		word.shape = input_.shape
@@ -230,7 +277,7 @@ class Forest:
 				arr.glade.append(glade)
 		
 		for glade in arr.glade:
-			glade.add_shape(word.shape)
+			glade.add_forest(self)
 
 
 #Поляна glade
@@ -247,6 +294,7 @@ class Glade:
 		arr.sequoia.append_array(input_.sequoias)
 		obj.sanctuary = input_.sanctuary
 		arr.shape = []
+		arr.forest = []
 		update_sequoia_neighbors()
 		set_ring()
 		init_scene()
@@ -278,8 +326,14 @@ class Glade:
 			num.ring += 0.5
 
 
-	func add_shape(shape_: String) -> void:
-		arr.shape.append(shape_)
+	func add_forest(forest_: Forest) -> void:
+		arr.forest.append(forest_)
+		arr.shape.append(forest_.word.shape)
+
+
+	func make_forests_neighbors() -> void:
+		arr.forest.front().dict.neighbor[arr.forest.back()] = self
+		arr.forest.back().dict.neighbor[arr.forest.front()] = self 
 
 
 #Секвойя sequoia
@@ -308,12 +362,19 @@ class Sequoia:
 #Ареал habitat
 class Habitat:
 	var arr = {}
+	var num = {}
 	var obj = {}
 	var dict = {}
 
 
 	func _init(input_: Dictionary) -> void:
+		num.ring = input_.ring
+		num.index = Global.num.index.habitat
+		Global.num.index.habitat += 1
 		arr.forest = input_.forests
 		obj.sanctuary = input_.sanctuary
 		dict.neighbor = {}
+		
+		for forest in arr.forest:
+			forest.obj.habitat = self
 
