@@ -13,3 +13,8 @@ func set_vertexs() -> void:
 	for sequoia in parent.arr.sequoia:
 		var point = sequoia.scene.myself.position
 		add_point(point)
+
+
+func paint_black() -> void:
+	default_color = Color.BLACK
+

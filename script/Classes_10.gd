@@ -40,7 +40,7 @@ class Sanctuary:
 			angle.current = angle.step * _i
 			var input = {}
 			input.sanctuary = self
-			input.position = Vector2().from_angle(angle.current) * Global.num.size.forest.a
+			input.position = Vector2().from_angle(angle.current) * Global.num.size.forest.r
 			vec.center += input.position
 			input.ring = num.ring
 			var sequoia = Classes_10.Sequoia.new(input)
@@ -51,6 +51,7 @@ class Sanctuary:
 		input.sanctuary = self
 		input.sequoias = dict.sequoia[num.ring]
 		input.ring = num.ring
+		input.shape = "octagon"
 		var forest = Classes_10.Forest.new(input)
 		dict.forest[num.ring].append(forest)
 
@@ -58,6 +59,8 @@ class Sanctuary:
 	func set_following_forest_rings() -> void:
 		while num.ring < Global.num.size.sanctuary.ring:
 			set_next_ring()
+		
+		init_forest_neighbors()
 
 
 	func set_next_ring() -> void:
@@ -68,14 +71,116 @@ class Sanctuary:
 				glades.append(glade)
 		
 		num.ring += 1
-		print(glades.size())
+		dict.sequoia[num.ring] = []
+		dict.forest[num.ring] = []
 		
 		for glade in glades:
-			set_forest_based_on_glade(glade)
+			set_square_based_on_glade(glade)
+		
+		if num.ring == 1:
+			for sequoia in dict.sequoia[num.ring - 1]:
+				set_triangle_based_on_sequoia(sequoia)
+		else:
+			for glade in arr.glade:
+				set_trapeze_based_on_glade(glade)
 
 
-	func set_forest_based_on_glade(glade_: Glade) -> void:
-		pass
+	func set_square_based_on_glade(glade_: Glade) -> void:
+		var parity = int(glade_.num.ring * 2) % 2 == 0
+		var triangle = glade_.arr.shape.has("triangle")
+		var trapeze = glade_.arr.shape.has("trapeze")
+		
+		if parity and (triangle or trapeze or glade_.num.ring == 0):
+			var sequoias = {}
+			sequoias.old = glade_.arr.sequoia
+			sequoias.new = []
+			
+			for _i in sequoias.old.size():
+				var datas = []
+				var _j  = (_i + 1) % sequoias.old.size()
+				var vector = sequoias.old[_i].vec.position - sequoias.old[_j].vec.position
+				var a = vector.length()
+				var angle = vector.angle()
+				
+				for _l in range(-1,2,2):
+					var data = {}
+					data.angle = PI / 2 * _l + angle
+					data.vertex = Vector2.from_angle(data.angle) * a + sequoias.old[_j].vec.position
+					data.d = vec.center.distance_to(data.vertex)
+					datas.append(data)
+				
+				var d = max(datas.front().d, datas.back().d)
+				
+				for data in datas:
+					if data.d == d:
+						var input = {}
+						input.sanctuary = self
+						input.position = data.vertex
+						input.ring = num.ring
+						var sequoia = Classes_10.Sequoia.new(input)
+						dict.sequoia[num.ring].append(sequoia)
+						sequoias.new.append(sequoia)
+			
+			sequoias.new.append_array(sequoias.old)
+			var input = {}
+			input.sanctuary = self
+			input.sequoias = sequoias.new
+			input.ring = num.ring
+			input.shape = "square"
+			var forest = Classes_10.Forest.new(input)
+			dict.forest[num.ring].append(forest)
+
+
+	func set_trapeze_based_on_glade(glade_: Glade) -> void:
+		var triangle = glade_.arr.shape.has("triangle")
+		var trapeze = glade_.arr.shape.has("trapeze")
+		
+		if !triangle and !trapeze and glade_.num.ring == num.ring - 1:
+			var input = {}
+			input.sequoias = []
+			input.sequoias.append_array(glade_.arr.sequoia)
+			
+			for sequoia in glade_.arr.sequoia:
+				for neighbor in sequoia.dict.neighbor:
+					if neighbor.num.ring == num.ring:
+						#neighbor.scene.myself.paint_black()
+						input.sequoias.append(neighbor)
+			
+			if input.sequoias.size() == 4:
+				var sequoia = input.sequoias.pop_at(2)
+				input.sequoias.push_back(sequoia)
+				input.sanctuary = self
+				input.ring = num.ring
+				input.shape = "trapeze"
+				var forest = Classes_10.Forest.new(input)
+				dict.forest[num.ring].append(forest)
+
+
+	func set_triangle_based_on_sequoia(sequoia_: Sequoia) -> void:
+		var input = {}
+		input.sequoias = [sequoia_]
+		
+		for sequoia in sequoia_.dict.neighbor:
+			if sequoia.num.ring == num.ring:
+				input.sequoias.append(sequoia)
+		
+		input.sanctuary = self
+		input.ring = num.ring
+		input.shape = "triangle"
+		var forest = Classes_10.Forest.new(input)
+		dict.forest[num.ring].append(forest)
+
+
+	func init_forest_neighbors() -> void:
+		for ring in num.ring:
+			for forest in dict.forest[num.ring]:
+				for glade in forest.arr.glade:
+					pass
+		
+		var forest = dict.forest[0].front()
+		
+		for neighbor in forest.dict.neighbor:
+			neighbor.scene.myself.paint_black()
 
 
 #Лес forest
@@ -83,6 +188,8 @@ class Forest:
 	var arr = {}
 	var num = {}
 	var obj = {}
+	var dict = {}
+	var word = {}
 	var scene = {}
 
 
@@ -91,6 +198,8 @@ class Forest:
 		arr.sequoia.append_array(input_.sequoias)
 		obj.sanctuary = input_.sanctuary
 		num.ring = input_.ring
+		dict.neighbor = {}
+		word.shape = input_.shape
 		init_scene()
 		init_glades()
 
@@ -116,6 +225,12 @@ class Forest:
 				var glade = Classes_10.Glade.new(input)
 				obj.sanctuary.arr.glade.append(glade)
 				arr.glade.append(glade)
+			else:
+				var glade = arr.sequoia[_i].dict.neighbor[arr.sequoia[_j]]
+				arr.glade.append(glade)
+		
+		for glade in arr.glade:
+			glade.add_shape(word.shape)
 
 
 #Поляна glade
@@ -123,6 +238,7 @@ class Glade:
 	var arr = {}
 	var num = {}
 	var obj = {}
+	var word = {}
 	var scene = {}
 
 
@@ -130,6 +246,7 @@ class Glade:
 		arr.sequoia = []
 		arr.sequoia.append_array(input_.sequoias)
 		obj.sanctuary = input_.sanctuary
+		arr.shape = []
 		update_sequoia_neighbors()
 		set_ring()
 		init_scene()
@@ -154,12 +271,15 @@ class Glade:
 		arr.sequoia.back().dict.neighbor[arr.sequoia.front()] = self
 
 
-
 	func set_ring() -> void:
 		num.ring = float(min(arr.sequoia.front().num.ring, arr.sequoia.back().num.ring))
 		
 		if arr.sequoia.front().num.ring != arr.sequoia.back().num.ring:
 			num.ring += 0.5
+
+
+	func add_shape(shape_: String) -> void:
+		arr.shape.append(shape_)
 
 
 #Секвойя sequoia
@@ -183,3 +303,17 @@ class Sequoia:
 		scene.myself = Global.scene.sequoia.instantiate()
 		scene.myself.set_parent(self)
 		obj.sanctuary.scene.myself.get_node("Sequoia").add_child(scene.myself)
+
+
+#Ареал habitat
+class Habitat:
+	var arr = {}
+	var obj = {}
+	var dict = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		arr.forest = input_.forests
+		obj.sanctuary = input_.sanctuary
+		dict.neighbor = {}
+

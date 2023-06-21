@@ -23,11 +23,5 @@ func set_vertexs() -> void:
 	set_polygon(vertexs)
 
 
-func update_color_based_on_terrain() -> void:
-	var max_h = 360.0
-	var s = 0.75
-	var v = 1
-	var h = parent.num.ring / (Global.num.sanctuary.ring * max_h)
-	
-	var color_ = Color.from_hsv(h,s,v)
-	set_color(color_)
+func paint_black() -> void:
+	color = Color.BLACK

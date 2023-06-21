@@ -80,11 +80,13 @@ func init_num() -> void:
 	
 	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 2
+	num.size.sanctuary.ring = 5
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
-	num.size.forest.a = 40
+	num.size.forest.r = 32
+	num.size.forest.k = 1 + sqrt(2)
+	num.size.forest.t = num.size.forest.r / sqrt(num.size.forest.k / (num.size.forest.k - 1))
 	
 	num.size.sequoia = {}
 	num.size.sequoia.a = 18
