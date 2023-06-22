@@ -59,6 +59,24 @@ func update_color_based_on_habitat_index() -> void:
 	set_color(color_)
 
 
+func update_color_based_on_forest_index() -> void:
+	if parent.num.index != null:
+		var max_h = 360.0
+		var h = float(parent.num.index) / Global.num.index.forest
+		var s = 0.6 
+		var v = 1
+		var color_ = Color.from_hsv(h, s, v)
+		set_color(color_)
+		#visible = false
+	else:
+		set_color(Color.BLACK)
+
+
 func paint_black() -> void:
 	color = Color.BLACK
+
+
+func paint_white() -> void:
+	color = Color.WHITE
+
 

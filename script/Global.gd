@@ -35,6 +35,7 @@ func init_num() -> void:
 	num.index = {}
 	num.index.branch = 0
 	num.index.schematic = 0
+	num.index.forest = 0
 	num.index.habitat = 0
 	
 	num.factory = {}
@@ -79,13 +80,12 @@ func init_num() -> void:
 	num.size.continent.col = num.size.continent.cluster * num.size.cluster.n
 	num.size.continent.row = num.size.continent.col
 	
-	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 5
+	num.size.sanctuary.ring = 3
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
-	num.size.forest.r = 32
+	num.size.forest.r = 32*2
 	num.size.forest.k = 1 + sqrt(2)
 	num.size.forest.t = num.size.forest.r / sqrt(num.size.forest.k / (num.size.forest.k - 1))
 	
@@ -93,6 +93,11 @@ func init_num() -> void:
 	num.size.sequoia.a = 18
 	num.size.sequoia.d = num.size.sequoia.a * 2
 	num.size.sequoia.r = num.size.sequoia.a * sqrt(2)
+	
+	num.size.glade = {}
+	num.size.glade.split = {}
+	num.size.glade.split.min = 1.0 / 3.0
+	num.size.glade.split.max = 2.0 / 3.0
 
 
 func init_dict() -> void:

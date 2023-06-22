@@ -25,3 +25,7 @@ func set_vertexs() -> void:
 
 func paint_black() -> void:
 	color = Color.BLACK
+
+
+func paint_gold() -> void:
+	color = Color.GOLD

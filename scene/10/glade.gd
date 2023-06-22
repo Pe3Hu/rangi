@@ -7,6 +7,7 @@ var parent = null
 func set_parent(parent_) -> void:
 	parent = parent_
 	set_vertexs()
+	visible = false
 
 
 func set_vertexs() -> void:
@@ -17,4 +18,9 @@ func set_vertexs() -> void:
 
 func paint_black() -> void:
 	default_color = Color.BLACK
+
+
+func paint_white() -> void:
+	default_color = Color.WHITE
+
 
