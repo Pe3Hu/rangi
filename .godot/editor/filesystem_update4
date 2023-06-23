@@ -3,9 +3,7 @@ res://scene/3/tool.gd
 res://scene/10/forest.tscn
 res://scene/10/sequoia.tscn
 res://scene/10/glade.tscn
-res://script/Global.gd
-res://script/Classes_10.gd
-res://scene/10/sequoia.gd
-res://scene/10/forest.gd
-res://scene/10/glade.gd
 res://scene/10/sanctuary.tscn
+res://script/Classes_10.gd
+res://script/Global.gd
+res://scene/Game.gd

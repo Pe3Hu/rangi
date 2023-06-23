@@ -81,11 +81,11 @@ func init_num() -> void:
 	num.size.continent.row = num.size.continent.col
 	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 3
+	num.size.sanctuary.ring = 2
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
-	num.size.forest.r = 32*2
+	num.size.forest.r = 32*3
 	num.size.forest.k = 1 + sqrt(2)
 	num.size.forest.t = num.size.forest.r / sqrt(num.size.forest.k / (num.size.forest.k - 1))
 	

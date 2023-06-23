@@ -51,13 +51,10 @@ func _input(event) -> void:
 			KEY_X:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.director.prioritize()
-					
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():
-					branch.obj.factory.press_stamps()
-					
-					
-					
+					#branch.obj.factory.press_stamps()
+					Global.obj.cosmos.obj.planet.obj.sanctuary.paint_next_forest()
 
 
 func _process(delta_) -> void:
