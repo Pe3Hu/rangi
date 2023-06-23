@@ -18,11 +18,9 @@ class Sanctuary:
 		init_center()
 		set_following_forest_rings()
 		split_glades()
-		#init_habitats()
+		init_habitats()
 		paint_someone()
-		num.paint = {}
-		num.paint.ring = 2
-		num.paint.index = 0
+		#calc_location_area()
 
 
 	func init_scene() -> void:
@@ -201,14 +199,6 @@ class Sanctuary:
 		erase_origin_forests()
 		erase_origin_glades()
 		init_forest_neighbors()
-		
-#		for ring in dict.forest:
-#			for forest in dict.forest[ring]:
-#				for _i in range(forest.dict.neighbor.keys().size()-1, -1, -1):
-#					var neighbor = forest.dict.neighbor.keys()[_i]
-#
-#					if neighbor.flag.origin and shapes.has(neighbor.word.shape):
-#						forest.dict.neighbor.erase(neighbor)
 
 
 	func erase_origin_forests() -> void:
@@ -239,7 +229,6 @@ class Sanctuary:
 				glade.knock_out()
 
 
-
 	func init_habitats() -> void:
 		dict.habitat = {}
 		var sizes = [1, 3]
@@ -248,39 +237,42 @@ class Sanctuary:
 		var input = {}
 		input.sanctuary = self
 		input.ring = 0
-		input.forests = [dict.forest[input.ring].front()]
-		var habitat = Classes_10.Habitat.new(input)
+		var habitat = Classes_11.Habitat.new(input)
+		habitat.add_forest(dict.forest[input.ring].front())
 		dict.habitat[input.ring] = [habitat]
 		index = (index + 1) % 2
 		
 		for ring in range(1, num.ring + 1, 1):
-			var options = [dict.forest[ring].front()]
+			var options = {}
+			options.total = [dict.forest[ring].front()]
+			options.current = []
 			input.ring = ring
 			dict.habitat[ring] = []
 			
-			while options.size() > 0:
-				var forest = options.pick_random()
-				input.forests = [forest]
-				options.erase(forest)
-				options.append_array(get_unhabitated_neighbors(forest))
-			
-				forest.scene.myself.paint_black()
-				for neighbor in options:
-					print(neighbor)
-					neighbor.scene.myself.paint_white()
-
-				return 
-					
+			while options.total.size() > 0:
+				var forest = options.total.pick_random()
 				
-				while input.forests.size() < sizes[index]:
-					var neighbor = options.pick_random()
-					input.forests.append(neighbor)
-					options.erase(neighbor)
-					options.append_array(get_unhabitated_neighbors(neighbor))
+				if forest.obj.habitat == null:
+					habitat = Classes_11.Habitat.new(input)
+					dict.habitat[ring].append(habitat)
+					habitat.add_forest(forest)
+					options.total.erase(forest)
+					options.current.append_array(get_unhabitated_neighbors(forest))
 					
-				habitat = Classes_10.Habitat.new(input)
-				dict.habitat[ring].append(habitat)
-				index = (index + 1) % 2
+					while habitat.arr.forest.size() < sizes[index] and options.current.size() > 0:
+						var neighbor = options.current.pick_random()
+						habitat.add_forest(neighbor)
+						options.current.erase(neighbor)
+						options.current.append_array(get_unhabitated_neighbors(neighbor))
+					
+					index = (index + 1) % 2
+					options.total.append_array(options.current)
+					options.current = []
+					#print(["H", habitat.num.ring, habitat.arr.forest.size()])#, habitat.arr.forest])
+				else:
+					options.total.erase(forest)
+		
+		calculate_area_of_forests()
 
 
 	func get_unhabitated_neighbors(forest_: Forest) -> Array:
@@ -293,7 +285,54 @@ class Sanctuary:
 		return neighbors
 
 
+	func calculate_area_of_forests() -> void:
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for forest in habitat.arr.forest:
+					forest.calculate_area()
+				
+				habitat.init_locations()
+
+
+	func calc_total_area() -> void:
+		var area = 0
+		
+		for ring in dict.forest:
+			for forest in dict.forest[ring]:
+				forest.calculate_area()
+				area += forest.num.area.total
+		
+		print(area)
+
+
+	func calc_location_area() -> void:
+		var area = {}
+		area.total = 0
+		#area.center = 0
+		#area.suburb = 0
+		area.location = 0
+		
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						area.location += location.num.area
+				
+				for forest in habitat.arr.forest:
+					area.total += forest.num.area.total
+					#area.suburb += forest.num.area.suburb
+		
+		print(area)
+
+
 	func paint_someone() -> void:
+		num.paint = {}
+		num.paint.forest = {}
+		num.paint.forest.ring = 0
+		num.paint.forest.index = 0
+		num.paint.habitat = {}
+		num.paint.habitat.ring = 0
+		num.paint.habitat.index = 0
 #		for ring in dict.forest:
 #			print([ring, dict.forest[ring].size()])
 #			for forest in dict.forest[ring]:
@@ -333,36 +372,62 @@ class Sanctuary:
 #				forest.dict.neighbor[neighbor].scene.myself.paint_black()
 
 		
-#		for ring in dict.habitat:
-#			for habitat_ in dict.habitat[ring]:
-#				for forest in habitat_.arr.forest:
-#					forest.scene.myself.update_color_based_on_habitat_index()
+		for ring in dict.habitat:
+			for habitat_ in dict.habitat[ring]:
+				for forest in habitat_.arr.forest:
+					forest.scene.myself.update_color_based_on_habitat_index()
 		pass
 
 
 	func paint_next_forest() -> void:
-		dict.forest[num.paint.ring][num.paint.index].scene.myself.update_color_based_on_forest_shape()
-		for neighbor in dict.forest[num.paint.ring][num.paint.index].dict.neighbor:
-			dict.forest[num.paint.ring][num.paint.index].dict.neighbor[neighbor].scene.myself.visible = false
+		var forest = dict.forest[num.paint.forest.ring][num.paint.forest.index]
+		forest.scene.myself.update_color_based_on_forest_shape()
+		
+		for neighbor in forest.dict.neighbor:
+			forest.dict.neighbor[neighbor].scene.myself.visible = false
 			neighbor.scene.myself.update_color_based_on_forest_shape()
 		
-		num.paint.index += 1
+		num.paint.forest.index += 1
 		
-		if dict.forest[num.paint.ring].size() == num.paint.index:
-			num.paint.index = 0
-			num.paint.ring += 1
+		if dict.forest[num.paint.forest.ring].size() == num.paint.forest.index:
+			num.paint.forest.index = 0
+			num.paint.forest.ring += 1
 			
-			if !dict.forest.has(num.paint.ring):
-				num.paint.ring = 0
+			if !dict.forest.has(num.paint.forest.ring):
+				num.paint.forest.ring = 0
 		
-		dict.forest[num.paint.ring][num.paint.index].scene.myself.paint_white()
-		print(dict.forest[num.paint.ring][num.paint.index].dict.neighbor.size())
+		forest = dict.forest[num.paint.forest.ring][num.paint.forest.index]
+		forest.scene.myself.paint_white()
 		
-		for neighbor in dict.forest[num.paint.ring][num.paint.index].dict.neighbor:
-			dict.forest[num.paint.ring][num.paint.index].dict.neighbor[neighbor].scene.myself.visible = true
-			dict.forest[num.paint.ring][num.paint.index].dict.neighbor[neighbor].scene.myself.paint_black()
+		for neighbor in forest.dict.neighbor:
+			forest.dict.neighbor[neighbor].scene.myself.visible = true
+			forest.dict.neighbor[neighbor].scene.myself.paint_black()
 			neighbor.scene.myself.paint_black()
-			print(neighbor.flag.origin, neighbor.word.shape)
+
+
+	func paint_next_habitat() -> void:
+		var habitat = dict.habitat[num.paint.habitat.ring][num.paint.habitat.index]
+		
+		for forest in habitat.arr.forest:
+			forest.scene.myself.update_color_based_on_forest_shape()
+			
+			for neighbor in forest.dict.neighbor:
+				forest.dict.neighbor[neighbor].scene.myself.visible = false
+				neighbor.scene.myself.update_color_based_on_forest_shape()
+		
+		num.paint.habitat.index += 1
+		
+		if dict.habitat[num.paint.habitat.ring].size() == num.paint.habitat.index:
+			num.paint.habitat.index = 0
+			num.paint.habitat.ring += 1
+			
+			if !dict.habitat.has(num.paint.habitat.ring):
+				num.paint.habitat.ring = 0
+		
+		habitat = dict.habitat[num.paint.habitat.ring][num.paint.habitat.index]
+		#print([num.paint.habitat, habitat.arr.forest.size(),  habitat.arr.forest])
+		for forest in habitat.arr.forest:
+			forest.scene.myself.paint_white()
 
 
 #Лес forest
@@ -514,16 +579,34 @@ class Forest:
 		
 		for glade in arr.glade:
 			glade.arr.forest.erase(self)
-			
-#			if glade.flag.origin:
-#				if glade.flag.parity:
-#					glade.knock_out()
-#					obj.sanctuary.arr.glade.erase(self)
-#				else:
-#					glade
 		
 		obj.sanctuary.scene.myself.get_node("Forest").remove_child(scene.myself)
 		obj.sanctuary.dict.forest[num.ring].erase(self)
+
+
+	func calculate_area() -> void:
+		num.area = {}
+		num.area.total = 0
+		num.area.suburb = 0
+		num.area.center = []
+		
+		var first = arr.sequoia.front().vec.position
+		
+		for _i in range(1, arr.sequoia.size() - 1, 1):
+			var vertices = [first]
+			
+			for _j in 2:
+				var index = _i + _j
+				var vertex = arr.sequoia[index].vec.position
+				vertices.append(vertex)
+			
+			num.area.total += int(round(Global.get_area_of_triangle_based_on_vertices(vertices)))
+			var r = Global.get_radius_of_inscribed_circle_based_on_vertices(vertices)
+			var circle_area = int(round(PI * pow(r, 2)))
+			num.area.center.append(circle_area)
+			num.area.suburb -= circle_area
+		
+		num.area.suburb += num.area.total
 
 
 #Поляна glade
@@ -578,7 +661,6 @@ class Glade:
 
 
 	func make_forests_neighbors() -> void:
-		
 		if arr.forest.size() == 2:
 			if !arr.forest.front().dict.neighbor.has(arr.forest.back()):
 				arr.forest.front().dict.neighbor[arr.forest.back()] = self
@@ -658,25 +740,3 @@ class Sequoia:
 		scene.myself = Global.scene.sequoia.instantiate()
 		scene.myself.set_parent(self)
 		obj.sanctuary.scene.myself.get_node("Sequoia").add_child(scene.myself)
-
-
-#Ареал habitat
-class Habitat:
-	var arr = {}
-	var num = {}
-	var obj = {}
-	var dict = {}
-
-
-	func _init(input_: Dictionary) -> void:
-		num.ring = input_.ring
-		num.index = Global.num.index.habitat
-		Global.num.index.habitat += 1
-		arr.forest = input_.forests
-		obj.sanctuary = input_.sanctuary
-		dict.neighbor = {}
-		print([num.ring, arr.forest.size()])
-		
-		for forest in arr.forest:
-			forest.obj.habitat = self
-

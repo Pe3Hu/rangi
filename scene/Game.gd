@@ -3,6 +3,9 @@ extends Node
 
 func _ready() -> void:
 	Global.obj.cosmos = Classes_0.Cosmos.new()
+	
+	
+	
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
 	#012
 	
@@ -54,7 +57,7 @@ func _input(event) -> void:
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():
 					#branch.obj.factory.press_stamps()
-					Global.obj.cosmos.obj.planet.obj.sanctuary.paint_next_forest()
+					Global.obj.cosmos.obj.planet.obj.sanctuary.paint_next_habitat()#paint_next_forest()
 
 
 func _process(delta_) -> void:

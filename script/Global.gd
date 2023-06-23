@@ -81,7 +81,7 @@ func init_num() -> void:
 	num.size.continent.row = num.size.continent.col
 	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 2
+	num.size.sanctuary.ring = 1
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
@@ -569,6 +569,20 @@ func init_scene() -> void:
 	scene.sequoia = load("res://scene/10/sequoia.tscn")
 
 
+func test() -> void:
+	var vertices_ = []
+	var vertex = Vector2()
+	vertices_.append(vertex)
+	vertex = Vector2(0, 100)
+	vertices_.append(vertex)
+	vertex = Vector2(100, 0)
+	vertices_.append(vertex)
+	var a = Global.get_area_of_triangle_based_on_vertices(vertices_)
+	var p = Global.get_perimeter_of_triangle_based_on_vertices(vertices_)
+	var r = Global.get_radius_of_inscribed_circle_based_on_vertices(vertices_)
+	print(r)
+
+
 func get_random_element(arr_: Array):
 	if arr_.size() == 0:
 		print("!bug! empty array in get_random_element func")
@@ -625,3 +639,38 @@ func boundary_of_array_check(array_: Array, grid_: Vector2) -> bool:
 			return true
 	
 	return false
+
+
+func get_area_of_triangle_based_on_vertices(vertices_: Array) -> Variant:
+	if vertices_.size() == 3:
+		var a = vertices_[0]
+		var b = vertices_[1]
+		var c = vertices_[2]
+		var area = abs((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y)) * 0.5
+		return area
+	
+	return null
+
+
+func get_radius_of_inscribed_circle_based_on_vertices(vertices_: Array) -> Variant:
+	if vertices_.size() == 3:
+		var area = get_area_of_triangle_based_on_vertices(vertices_)
+		var perimeter = get_perimeter_of_triangle_based_on_vertices(vertices_)
+		var radius = area / perimeter * 2
+		return radius 
+	
+	return null
+
+
+func get_perimeter_of_triangle_based_on_vertices(vertices_: Array) -> Variant:
+	if vertices_.size() == 3:
+		var perimeter = 0
+		
+		for _i in vertices_.size():
+			var _j = (_i + 1) % vertices_.size()
+			var vector = vertices_[_i] - vertices_[_j]
+			perimeter += vector.length()
+		
+		return perimeter
+	
+	return null
