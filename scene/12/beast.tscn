@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3htxotaqeoox"]
+
+[ext_resource type="Script" path="res://scene/12/beast.gd" id="1_s0wyv"]
+
+[node name="Beast" type="Polygon2D"]
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_s0wyv")

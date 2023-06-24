@@ -3,5 +3,6 @@
 [ext_resource type="Script" path="res://scene/10/glade.gd" id="1_47ssk"]
 
 [node name="Glade" type="Line2D"]
+visible = false
 width = 2.0
 script = ExtResource("1_47ssk")

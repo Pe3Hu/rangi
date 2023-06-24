@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c75iscxv0r17l"]
+
+[ext_resource type="Script" path="res://scene/11/location.gd" id="1_324c2"]
+
+[node name="Location" type="Polygon2D"]
+script = ExtResource("1_324c2")
+
+[node name="Beast" type="Node2D" parent="."]

@@ -1,9 +1,9 @@
 Node2D
+Polygon2D
 ColorRect
 MarginContainer
-HBoxContainer
 VBoxContainer
+HBoxContainer
 Label
 GridContainer
-Polygon2D
 Control

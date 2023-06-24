@@ -3,5 +3,6 @@
 [ext_resource type="Script" path="res://scene/10/sequoia.gd" id="1_datpf"]
 
 [node name="Sequoia" type="Polygon2D"]
+visible = false
 color = Color(0, 0, 0, 1)
 script = ExtResource("1_datpf")

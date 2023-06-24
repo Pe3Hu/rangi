@@ -18,12 +18,24 @@ size_flags_horizontal = 6
 size_flags_vertical = 4
 script = ExtResource("1_reyk5")
 
-[node name="BG" type="ColorRect" parent="."]
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Map" type="MarginContainer" parent="HBox"]
+layout_mode = 2
+
+[node name="BG" type="ColorRect" parent="HBox/Map"]
 layout_mode = 2
 color = Color(0.811765, 1, 0.733333, 1)
 
-[node name="Forest" type="Node2D" parent="."]
+[node name="Forest" type="Node2D" parent="HBox/Map"]
 
-[node name="Glade" type="Node2D" parent="."]
+[node name="Glade" type="Node2D" parent="HBox/Map"]
 
-[node name="Sequoia" type="Node2D" parent="."]
+[node name="Sequoia" type="Node2D" parent="HBox/Map"]
+
+[node name="Habitat" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+alignment = 1

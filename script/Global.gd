@@ -37,6 +37,8 @@ func init_num() -> void:
 	num.index.schematic = 0
 	num.index.forest = 0
 	num.index.habitat = 0
+	num.index.beast = 0
+	
 	
 	num.factory = {}
 	num.factory.count = {}
@@ -81,7 +83,7 @@ func init_num() -> void:
 	num.size.continent.row = num.size.continent.col
 	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 1
+	num.size.sanctuary.ring = 2
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
@@ -98,6 +100,15 @@ func init_num() -> void:
 	num.size.glade.split = {}
 	num.size.glade.split.min = 1.0 / 3.0
 	num.size.glade.split.max = 2.0 / 3.0
+	
+	num.size.location = {}
+	num.size.location.r = {}
+	num.size.location.r.center = 32
+	num.size.location.r.suburb = num.size.location.r.center * 1.5
+	num.size.location.gap = (num.size.location.r.suburb + num.size.location.r.center ) * 1.05
+	
+	num.size.beast = {}
+	num.size.beast.r = 16
 
 
 func init_dict() -> void:
@@ -253,7 +264,7 @@ func init_corner() -> void:
 			dict.corner.vector[corners_][order_] = {}
 		
 			for _i in corners_:
-				var angle = 2*PI*_i/corners_-PI/2
+				var angle = 2 * PI * _i / corners_ - PI / 2
 				
 				if order_ == "odd":
 					angle += PI/corners_
@@ -537,6 +548,8 @@ func init_window_size():
 	vec.size.node = {}
 	vec.size.node.spielkarte = Vector2.ONE * num.size.spielkarte.r * 2
 	vec.size.node.sanctuary = Vector2.ONE * 560
+	vec.size.node.habitat = Vector2.ONE * (num.size.location.r.center + num.size.location.gap) * 2
+	
 
 
 func init_scene() -> void:
@@ -567,6 +580,9 @@ func init_scene() -> void:
 	scene.forest = load("res://scene/10/forest.tscn")
 	scene.glade = load("res://scene/10/glade.tscn")
 	scene.sequoia = load("res://scene/10/sequoia.tscn")
+	scene.location = load("res://scene/11/location.tscn")
+	scene.habitat = load("res://scene/11/habitat.tscn")
+	scene.beast = load("res://scene/12/beast.tscn")
 
 
 func test() -> void:

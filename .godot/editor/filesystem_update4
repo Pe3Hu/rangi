@@ -5,6 +5,14 @@ res://scene/10/sequoia.tscn
 res://scene/10/glade.tscn
 res://scene/10/sanctuary.tscn
 res://script/Classes_10.gd
-res://script/Global.gd
-res://scene/Game.gd
 res://script/Classes_11.gd
+res://scene/11/location.tscn
+res://script/Global.gd
+res://scene/11/location.gd
+res://scene/10/sanctuary.gd
+res://scene/11/habitat.tscn
+res://scene/11/habitat.gd
+res://script/Classes_12.gd
+res://scene/12/beast.tscn
+res://scene/12/beast.gd
+res://scene/10/glade.gd

@@ -10,6 +10,5 @@ func set_parent(parent_) -> void:
 
 
 func update_rec_size() -> void:
-	var map = get_node("HBox/Map")
-	map.custom_minimum_size = Vector2(Global.vec.size.node.sanctuary)
-	parent.vec.offset = map.custom_minimum_size * 0.5
+	custom_minimum_size = Vector2(Global.vec.size.node.habitat)
+	$Location.position = custom_minimum_size * 0.5

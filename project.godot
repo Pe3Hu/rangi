@@ -30,8 +30,9 @@ Classes_8="*res://script/Classes_8.gd"
 Classes_9="*res://script/Classes_9.gd"
 Classes_10="*res://script/Classes_10.gd"
 Classes_11="*res://script/Classes_11.gd"
+Classes_12="*res://script/Classes_12.gd"
 
 [display]
 
-window/size/viewport_width=600
+window/size/viewport_width=800
 window/size/viewport_height=800
