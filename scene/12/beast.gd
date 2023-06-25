@@ -24,10 +24,12 @@ func set_vertexs() -> void:
 
 
 func perform_task() -> void:
-	var time = 0.1
+	var time = 1.0
 	tween = create_tween()
-	tween.tween_property(self, "skew", PI, time / 2)
-	tween.tween_property(self, "skew", 0, time / 2)
+	tween.tween_property(self, "rotation", PI * 0.5, time)
+	tween.tween_property(self, "rotation", -PI * 0.5, time)
+	#tween.tween_property(self, "skew", PI, time * 0.5)
+	#tween.tween_property(self, "skew", 0, time * 0.5)
 	tween.tween_callback(call_follow_phase)
 
 
@@ -48,7 +50,7 @@ func call_follow_phase() -> void:
 		
 		Callable(parent, func_name).call()
 	else:
-		parent.close_current_task()
-		parent.get_new_task()
-		perform_task()
+		parent.close_primary_task()
+		#parent.get_new_task()
+		#perform_task()
 

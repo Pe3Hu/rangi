@@ -87,6 +87,7 @@ class Location:
 	var num = {}
 	var obj = {}
 	var vec = {}
+	var dict = {}
 	var word = {}
 	var scene = {}
 
@@ -97,6 +98,7 @@ class Location:
 		word.type = input_.type
 		obj.habitat = input_.habitat
 		arr.beast = []
+		dict.footprint = {}
 
 
 	func init_scene() -> void:
@@ -107,6 +109,11 @@ class Location:
 		scene.myself = Global.scene.location.instantiate()
 		scene.myself.set_parent(self)
 		obj.habitat.scene.myself.get_node("Location").add_child(scene.myself)
+
+
+	func get_assessment_based_on_goal(goal_: String) -> int:
+		var assessment = 1
+		return assessment
 
 
 #Локация occasion

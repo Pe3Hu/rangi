@@ -101,14 +101,17 @@ func init_num() -> void:
 	num.size.glade.split.min = 1.0 / 3.0
 	num.size.glade.split.max = 2.0 / 3.0
 	
+	num.size.beast = {}
+	num.size.beast.r = 8
+	
 	num.size.location = {}
 	num.size.location.r = {}
 	num.size.location.r.center = 32
 	num.size.location.r.suburb = num.size.location.r.center * 1.5
-	num.size.location.gap = (num.size.location.r.suburb + num.size.location.r.center ) * 1.05
-	
-	num.size.beast = {}
-	num.size.beast.r = 16
+	num.size.location.gap = (num.size.location.r.suburb + num.size.location.r.center )
+	num.size.location.offset = {}
+	num.size.location.offset.center = num.size.location.r.center - num.size.beast.r 
+	num.size.location.offset.suburb = num.size.location.r.suburb - num.size.beast.r
 
 
 func init_dict() -> void:
