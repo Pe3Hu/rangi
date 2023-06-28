@@ -1,0 +1,50 @@
+[
+ {
+  "Title": "Henbane",
+  "Effect": "Increase Onslaught"
+ },
+ {
+  "Title": "Amanita",
+  "Effect": "Increase Onslaught"
+ },
+ {
+  "Title": "Nettle",
+  "Effect": "Increase Resilience"
+ },
+ {
+  "Title": "Yarrow",
+  "Effect": "Increase Resilience"
+ },
+ {
+  "Title": "Lavanda",
+  "Effect": "Increase Sensory"
+ },
+ {
+  "Title": "Ginseng",
+  "Effect": "Increase Sensory"
+ },
+ {
+  "Title": "Rhodiola",
+  "Effect": "Increase Mobility"
+ },
+ {
+  "Title": "Hawthorn",
+  "Effect": "Increase Mobility"
+ },
+ {
+  "Title": "Echinacea",
+  "Effect": "Increase Balance"
+ },
+ {
+  "Title": "Fennel",
+  "Effect": "Increase Balance"
+ },
+ {
+  "Title": "Melissa",
+  "Effect": "Reduce Rot"
+ },
+ {
+  "Title": "Chamomile",
+  "Effect": "Reduce Rot"
+ }
+]

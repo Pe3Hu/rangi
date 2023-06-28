@@ -16,6 +16,7 @@ class Sanctuary:
 		obj.planet = input_.planet
 		init_scene()
 		init_zoo()
+		init_greenhouse()
 		init_center()
 		set_following_forest_rings()
 		split_glades()
@@ -36,6 +37,12 @@ class Sanctuary:
 		var input = {}
 		input.sanctuary = self
 		obj.zoo = Classes_12.Zoo.new(input)
+
+
+	func init_greenhouse() -> void:
+		var input = {}
+		input.sanctuary = self
+		obj.greenhouse = Classes_14.Greenhouse.new(input)
 
 
 	func init_center() -> void:

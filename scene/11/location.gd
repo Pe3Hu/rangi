@@ -57,4 +57,4 @@ func recalc_beasts_offset() -> void:
 			vector += beast.vec.offset
 		
 		beast.scene.myself.position = vector
-		
+

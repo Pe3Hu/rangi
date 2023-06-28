@@ -30,6 +30,7 @@ class Beast:
 	var obj = {}
 	var vec = {}
 	var dict = {}
+	var flag = {}
 	var scene = {}
 
 
@@ -41,6 +42,7 @@ class Beast:
 		obj.location = null
 		vec.offset = Vector2()
 		dict.task = {}
+		flag.cycle = false
 		init_scene()
 
 
@@ -168,6 +170,11 @@ class Beast:
 		return location
 
 
+	func seek_plant_prey() -> void:
+		pass
+
+
+
 	func change_primary_task(task_: String) -> void:
 		reset_primary_task()
 		arr.task.erase(task_)
@@ -195,6 +202,6 @@ class Beast:
 
 
 	func get_new_task() -> void:
-		var tasks = ["site survey"]
+		var tasks = ["harvest"]
 		var task = tasks.pick_random()
 		fill_task(task)

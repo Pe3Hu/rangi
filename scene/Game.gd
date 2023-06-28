@@ -4,8 +4,6 @@ extends Node
 func _ready() -> void:
 	Global.obj.cosmos = Classes_0.Cosmos.new()
 	
-	
-	
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
 	#012
 	

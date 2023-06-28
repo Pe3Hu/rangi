@@ -24,7 +24,7 @@ func set_vertexs() -> void:
 
 
 func perform_task() -> void:
-	var time = 1.0
+	var time = 0.1
 	tween = create_tween()
 	tween.tween_property(self, "rotation", PI * 0.5, time)
 	tween.tween_property(self, "rotation", -PI * 0.5, time)
@@ -51,6 +51,8 @@ func call_follow_phase() -> void:
 		Callable(parent, func_name).call()
 	else:
 		parent.close_primary_task()
-		#parent.get_new_task()
-		#perform_task()
+		
+		if parent.flag.cycle and parent.arr.task.is_empty():
+			parent.get_new_task()
+			perform_task()
 

@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://b2tnnl3twud2e"]
+
+[ext_resource type="Script" path="res://scene/13/chain.gd" id="1_mr0nm"]
+
+[node name="Chain" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_mr0nm")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+
+[node name="Link" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Head" type="HBoxContainer" parent="Link"]
+layout_mode = 2
+
+[node name="Limb" type="HBoxContainer" parent="Link"]
+layout_mode = 2
+
+[node name="Torso" type="HBoxContainer" parent="Link"]
+layout_mode = 2

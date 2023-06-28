@@ -29,6 +29,13 @@ func init_arr() -> void:
 	arr.polyhedron = [3,4,5,6]
 	arr.drone = ["arm","brain"]
 	arr.sequence["A000045"] = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+	
+	arr.plant = {}
+	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
+	
+	arr.aspect = {}
+	arr.aspect.beast = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
+	arr.aspect.wood = ["hardness", "density"]
 
 
 func init_num() -> void:
@@ -178,12 +185,16 @@ func init_dict() -> void:
 	dict.priority.avg = 5
 	dict.priority.title = ["finish construction", "pursuit of incentive", "take on hardest"]
 	dict.priority.total = dict.priority.avg * dict.priority.title.size()
+
 	
 	init_corner()
 	init_windrose()
 	init_compartment()
 	init_drone()
 	init_schematic()
+	init_chains()
+	init_bushs()
+	init_woods()
 
 
 func init_windrose() -> void:
@@ -533,6 +544,79 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 	return flag
 
 
+func init_chains() -> void:
+	dict.chain = {}
+	dict.chain.title = {}
+	dict.chain.link = []
+	var path = "res://asset/json/chain_data.json"
+	var array = load_data(path)
+	
+	for chain in array:
+		var data = {}
+
+		for key in chain.keys():
+			if key != "Title":
+				var words = key.to_lower().split(" ")
+				
+				if !data.has(words[0]):
+					data[words[0]] = {}
+				
+				if dict.chain.link.has(words[0]):
+					dict.chain.link.append(words[0])
+				
+				data[words[0]][words[1]] = chain[key]
+		
+		dict.chain.title[chain["Title"].to_lower()] = data
+
+
+func init_bushs() -> void:
+	dict.bush = {}
+	dict.bush.title = {}
+	var path = "res://asset/json/bush_data.json"
+	var array = load_data(path)
+	
+	for bush in array:
+		var data = {}
+
+		for key in bush.keys():
+			if key != "Title":
+				data[key.to_lower()] = bush[key]
+		
+		dict.bush.title[bush["Title"].to_lower()] = data
+
+
+func init_woods() -> void:
+	dict.wood = {}
+	dict.wood.title = {}
+	var path = "res://asset/json/wood_data.json"
+	var array = load_data(path)
+	
+	for wood in array:
+		var data = {}
+		
+		for key in wood.keys():
+			if key != "Title":
+				var flag = false
+				
+				for aspect in arr.aspect.wood:
+					if key.to_lower().contains(aspect):
+						flag = true
+				
+				if !flag:
+					data[key.to_lower()] = wood[key]
+				else:
+					var words = key.to_lower().split(" ")
+					
+					if !data.has(words[0]):
+						data[words[0]] = {}
+					
+					data[words[0]][words[1]] = wood[key]
+		
+		dict.wood.title[wood["Title"].to_lower()] = data
+	
+	print(dict.wood.title)
+
+
 func init_node() -> void:
 	node.game = get_node("/root/Game")
 
@@ -586,6 +670,8 @@ func init_scene() -> void:
 	scene.location = load("res://scene/11/location.tscn")
 	scene.habitat = load("res://scene/11/habitat.tscn")
 	scene.beast = load("res://scene/12/beast.tscn")
+	scene.chain = load("res://scene/13/chain.tscn")
+	scene.link = load("res://scene/13/link.tscn")
 
 
 func test() -> void:

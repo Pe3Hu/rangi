@@ -1,0 +1,242 @@
+[
+ {
+  "Title": "Fir",
+  "Rot resistance": 4,
+  "Hardness min": 350,
+  "Hardness max": 500,
+  "Density min": 350,
+  "Density max": 450,
+  "Breed": "Conifer",
+  "Biome": "All"
+ },
+ {
+  "Title": "Spruce",
+  "Rot resistance": 1,
+  "Hardness min": 600,
+  "Hardness max": 720,
+  "Density min": 400,
+  "Density max": 500,
+  "Breed": "Conifer",
+  "Biome": "All"
+ },
+ {
+  "Title": "Douglasia",
+  "Rot resistance": 3,
+  "Hardness min": 510,
+  "Hardness max": 710,
+  "Density min": 350,
+  "Density max": 770,
+  "Breed": "Conifer",
+  "Biome": "All"
+ },
+ {
+  "Title": "Larch",
+  "Rot resistance": 2,
+  "Hardness min": 1100,
+  "Hardness max": 1300,
+  "Density min": 950,
+  "Density max": 1020,
+  "Breed": "Conifer",
+  "Biome": "All"
+ },
+ {
+  "Title": "Linden",
+  "Rot resistance": 5,
+  "Hardness min": 400,
+  "Hardness max": 400,
+  "Density min": 320,
+  "Density max": 560,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Alder",
+  "Rot resistance": 5,
+  "Hardness min": 520,
+  "Hardness max": 560,
+  "Density min": 380,
+  "Density max": 600,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Rowan",
+  "Rot resistance": 1,
+  "Hardness min": 760,
+  "Hardness max": 900,
+  "Density min": 700,
+  "Density max": 750,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Cherry",
+  "Rot resistance": 5,
+  "Hardness min": 850,
+  "Hardness max": 1050,
+  "Density min": 490,
+  "Density max": 670,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Oak",
+  "Rot resistance": 2,
+  "Hardness min": 1280,
+  "Hardness max": 1440,
+  "Density min": 600,
+  "Density max": 930,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Briar",
+  "Rot resistance": 3,
+  "Hardness min": 1500,
+  "Hardness max": 1700,
+  "Density min": 540,
+  "Density max": 700,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Grab",
+  "Rot resistance": 5,
+  "Hardness min": 1770,
+  "Hardness max": 1950,
+  "Density min": 500,
+  "Density max": 820,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Boxwood",
+  "Rot resistance": 4,
+  "Hardness min": 2100,
+  "Hardness max": 2100,
+  "Density min": 980,
+  "Density max": 1000,
+  "Breed": "Leafy",
+  "Biome": "All"
+ },
+ {
+  "Title": "Teak ",
+  "Rot resistance": 4,
+  "Hardness min": 950,
+  "Hardness max": 1050,
+  "Density min": 440,
+  "Density max": 820,
+  "Breed": "Exotic",
+  "Biome": "Asia"
+ },
+ {
+  "Title": "Rosewood",
+  "Rot resistance": 3,
+  "Hardness min": 3000,
+  "Hardness max": 3340,
+  "Density min": 700,
+  "Density max": 800,
+  "Breed": "Exotic",
+  "Biome": "Asia"
+ },
+ {
+  "Title": "Ebony",
+  "Rot resistance": 2,
+  "Hardness min": 1640,
+  "Hardness max": 1800,
+  "Density min": 950,
+  "Density max": 1050,
+  "Breed": "Exotic",
+  "Biome": "Asia"
+ },
+ {
+  "Title": "Limba",
+  "Rot resistance": 4,
+  "Hardness min": 450,
+  "Hardness max": 530,
+  "Density min": 400,
+  "Density max": 690,
+  "Breed": "Exotic",
+  "Biome": "Africa"
+ },
+ {
+  "Title": "Khaya",
+  "Rot resistance": 2,
+  "Hardness min": 760,
+  "Hardness max": 900,
+  "Density min": 420,
+  "Density max": 570,
+  "Breed": "Exotic",
+  "Biome": "Africa"
+ },
+ {
+  "Title": "Wenge",
+  "Rot resistance": 1,
+  "Hardness min": 1630,
+  "Hardness max": 1630,
+  "Density min": 750,
+  "Density max": 800,
+  "Breed": "Exotic",
+  "Biome": "Africa"
+ },
+ {
+  "Title": "Lophira alata",
+  "Rot resistance": 4,
+  "Hardness min": 3200,
+  "Hardness max": 3500,
+  "Density min": 950,
+  "Density max": 1150,
+  "Breed": "Exotic",
+  "Biome": "Africa"
+ },
+ {
+  "Title": "Balsa",
+  "Rot resistance": 3,
+  "Hardness min": 80,
+  "Hardness max": 120,
+  "Density min": 120,
+  "Density max": 160,
+  "Breed": "Exotic",
+  "Biome": "America"
+ },
+ {
+  "Title": "Peltogyne",
+  "Rot resistance": 4,
+  "Hardness min": 1860,
+  "Hardness max": 1860,
+  "Density min": 860,
+  "Density max": 880,
+  "Breed": "Exotic",
+  "Biome": "America"
+ },
+ {
+  "Title": "Ipe",
+  "Rot resistance": 1,
+  "Hardness min": 3500,
+  "Hardness max": 3860,
+  "Density min": 800,
+  "Density max": 1200,
+  "Breed": "Exotic",
+  "Biome": "America"
+ },
+ {
+  "Title": "Yatoba",
+  "Rot resistance": 4,
+  "Hardness min": 2200,
+  "Hardness max": 2500,
+  "Density min": 900,
+  "Density max": 1150,
+  "Breed": "Exotic",
+  "Biome": "America"
+ },
+ {
+  "Title": "Bakaut",
+  "Rot resistance": 2,
+  "Hardness min": 4200,
+  "Hardness max": 4800,
+  "Density min": 1300,
+  "Density max": 1450,
+  "Breed": "Exotic",
+  "Biome": "America"
+ }
+]
