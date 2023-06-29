@@ -1,0 +1,51 @@
+[
+ {
+  "Title": "Bird",
+  "Offensive": 120,
+  "Resilience": 75,
+  "Sensory": 75,
+  "Mobility": 130
+ },
+ {
+  "Title": "Fish",
+  "Offensive": 115,
+  "Resilience": 100,
+  "Sensory": 95,
+  "Mobility": 90
+ },
+ {
+  "Title": "Animal",
+  "Offensive": 145,
+  "Resilience": 50,
+  "Sensory": 110,
+  "Mobility": 95
+ },
+ {
+  "Title": "Ball",
+  "Offensive": 50,
+  "Resilience": 250,
+  "Sensory": 50,
+  "Mobility": 50
+ },
+ {
+  "Title": "Hydra",
+  "Offensive": 110,
+  "Resilience": 70,
+  "Sensory": 150,
+  "Mobility": 70
+ },
+ {
+  "Title": "Serpent",
+  "Offensive": 75,
+  "Resilience": 175,
+  "Sensory": 90,
+  "Mobility": 60
+ },
+ {
+  "Title": "Spider",
+  "Offensive": 130,
+  "Resilience": 80,
+  "Sensory": 70,
+  "Mobility": 120
+ }
+]

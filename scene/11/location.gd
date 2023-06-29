@@ -31,6 +31,8 @@ func add_beast(beast_: Classes_12.Beast) -> void:
 	get_node("Beast").add_child(beast_.scene.myself)
 	recalc_beasts_offset()
 	color = Color.GOLD
+	
+	#print(self, "A", parent.arr.beast.size())
 
 
 func remove_beast(beast_: Classes_12.Beast) -> void:
@@ -38,6 +40,8 @@ func remove_beast(beast_: Classes_12.Beast) -> void:
 	get_node("Beast").remove_child(beast_.scene.myself)
 	recalc_beasts_offset()
 	beast_.vec.offset = Vector2()
+	
+	#print(self, "R", parent.arr.beast.size())
 
 
 func recalc_beasts_offset() -> void:

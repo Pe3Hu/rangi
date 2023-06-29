@@ -116,7 +116,7 @@ class Location:
 		return assessment
 
 
-#Локация occasion
+#Событие occasion
 class Occasion:
 	var arr = {}
 	var obj = {}

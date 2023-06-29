@@ -24,6 +24,7 @@ class Sanctuary:
 		paint_someone()
 		set_locations()
 		place_beast_in_locations()
+		#activate_beasts()
 
 
 	func init_scene() -> void:
@@ -339,11 +340,30 @@ class Sanctuary:
 					for location in habitat.arr.location[type]:
 						locations.append(location)
 		
-		for beast in obj.zoo.arr.beast:
-			var location = locations.pick_random()
-			locations.erase(location)
-			beast.step_into_location(location)
+		var _i = 0
+		var _j = 0
 		
+		while _i < obj.zoo.arr.beast.size():
+			var beast = obj.zoo.arr.beast[_i]
+			var location = locations[_j]
+			beast.step_into_location(location)
+			_i += 1
+			
+			if _i < obj.zoo.arr.beast.size():
+				beast = obj.zoo.arr.beast[_i]
+				beast.step_into_location(location)
+				_i += 1
+			
+			_j += 1
+		
+		
+#		for beast in obj.zoo.arr.beast:
+#			var location = locations.pick_random()
+#			locations.erase(location)
+#			beast.step_into_location(location)
+		
+
+	func activate_beasts() -> void:
 		for beast in obj.zoo.arr.beast:
 			beast.get_new_task()
 			beast.scene.myself.perform_task()
@@ -425,7 +445,7 @@ class Sanctuary:
 #			if !neighbor.flag.origin:
 #				forest.dict.neighbor[neighbor].scene.myself.visible = true
 #				forest.dict.neighbor[neighbor].scene.myself.paint_black()
-
+	
 		
 		for ring in dict.habitat:
 			for habitat_ in dict.habitat[ring]:

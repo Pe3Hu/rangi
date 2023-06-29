@@ -33,9 +33,11 @@ func init_arr() -> void:
 	arr.plant = {}
 	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
 	
-	arr.aspect = {}
-	arr.aspect.beast = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
-	arr.aspect.wood = ["hardness", "density"]
+	arr.beast = {}
+	arr.beast.aspect = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
+	
+	arr.wood = {}
+	arr.wood.attribute = ["hardness", "density"]
 
 
 func init_num() -> void:
@@ -185,14 +187,35 @@ func init_dict() -> void:
 	dict.priority.avg = 5
 	dict.priority.title = ["finish construction", "pursuit of incentive", "take on hardest"]
 	dict.priority.total = dict.priority.avg * dict.priority.title.size()
-
+	
+	
+	dict.beast = {}
+	dict.beast.resource = {}
+	dict.beast.resource["offensive"] = "overheat"
+	dict.beast.resource["resilience"] = "integrity"
+	dict.beast.resource["sensory"] = "overload"
+	dict.beast.resource["mobility"] = "energy"
+	
+	dict.beast.buff = {}
+	dict.beast.resource["offensive"] = "resonance"
+	dict.beast.resource["resilience"] = "ricochet"
+	dict.beast.resource["sensory"] = "hint"
+	dict.beast.resource["mobility"] = "synchronization"
+	
+	dict.beast.debuff = {}
+	dict.beast.resource["offensive"] = "misfire"
+	dict.beast.resource["resilience"] = "rust"
+	dict.beast.resource["sensory"] = "interference"
+	dict.beast.resource["mobility"] = "desynchronization"
 	
 	init_corner()
 	init_windrose()
 	init_compartment()
 	init_drone()
 	init_schematic()
-	init_chains()
+	init_subaspects()
+	init_links()
+	init_skeletons()
 	init_bushs()
 	init_woods()
 
@@ -544,29 +567,88 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 	return flag
 
 
-func init_chains() -> void:
-	dict.chain = {}
-	dict.chain.title = {}
-	dict.chain.link = []
-	var path = "res://asset/json/chain_data.json"
+func init_subaspects() -> void:
+	dict.aspect = {}
+	dict.subaspect = {}
+	dict.subaspect.title = {}
+	var path = "res://asset/json/subaspect_data.json"
 	var array = load_data(path)
 	
-	for chain in array:
+	for subaspect in array:
 		var data = {}
 
-		for key in chain.keys():
+		for key in subaspect.keys():
+			if key != "Title":
+				data[key.to_lower()] = subaspect[key].to_lower()
+			
+		dict.subaspect.title[subaspect["Title"].to_lower()] = data
+		
+		var aspect = subaspect["Aspect"].to_lower()
+		
+		if !dict.aspect.has(aspect):
+			dict.aspect[aspect] = []
+		
+		dict.aspect[aspect].append(subaspect["Title"].to_lower())
+
+
+func init_links() -> void:
+	dict.link = {}
+	dict.link.title = {}
+	dict.link.chain = []
+	dict.chain = {}
+	dict.chain.subclass = {}
+	var path = "res://asset/json/link_data.json"
+	var array = load_data(path)
+	
+	for link in array:
+		var data = {}
+		data.chain = {}
+
+		for key in link.keys():
 			if key != "Title":
 				var words = key.to_lower().split(" ")
 				
-				if !data.has(words[0]):
-					data[words[0]] = {}
+				if words.size() > 1:
+					if !data.chain.has(words[0]):
+						data.chain[words[0]] = {}
+					
+					if dict.link.chain.has(words[0]):
+						dict.link.chain.append(words[0])
 				
-				if dict.chain.link.has(words[0]):
-					dict.chain.link.append(words[0])
-				
-				data[words[0]][words[1]] = chain[key]
+					data.chain[words[0]][words[1]] = link[key]
+				else:
+					data[key.to_lower()] = link[key]
 		
-		dict.chain.title[chain["Title"].to_lower()] = data
+		dict.link.title[link["Title"].to_lower()] = data
+	
+	for title in dict.link.title:
+		var description = dict.link.title[title]
+		
+		for subclass in description.chain:
+			if !dict.chain.subclass.has(subclass):
+				dict.chain.subclass[subclass] = {}
+			
+			dict.chain.subclass[subclass][title] = {}
+			
+			for key in description.chain[subclass]:
+				#if description.chain[subclass][key] > 0:
+				dict.chain.subclass[subclass][title][key] = description.chain[subclass][key]
+
+
+func init_skeletons() -> void:
+	dict.skeleton = {}
+	dict.skeleton.title = {}
+	var path = "res://asset/json/skeleton_data.json"
+	var array = load_data(path)
+	
+	for skeleton in array:
+		var data = {}
+
+		for key in skeleton.keys():
+			if key != "Title":
+				data[key.to_lower()] = skeleton[key]
+		
+		dict.skeleton.title[skeleton["Title"].to_lower()] = data
 
 
 func init_bushs() -> void:
@@ -598,8 +680,8 @@ func init_woods() -> void:
 			if key != "Title":
 				var flag = false
 				
-				for aspect in arr.aspect.wood:
-					if key.to_lower().contains(aspect):
+				for attribute in arr.wood.attribute:
+					if key.to_lower().contains(attribute):
 						flag = true
 				
 				if !flag:
@@ -613,8 +695,6 @@ func init_woods() -> void:
 					data[words[0]][words[1]] = wood[key]
 		
 		dict.wood.title[wood["Title"].to_lower()] = data
-	
-	print(dict.wood.title)
 
 
 func init_node() -> void:

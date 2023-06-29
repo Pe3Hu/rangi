@@ -19,6 +19,8 @@ class Greenhouse:
 		for _i in n:
 			var input = {}
 			input.greenhouse = self
+			input.location = null
+			input.kind = ""
 			var plant = Classes_14.Plant.new(input)
 			arr.plant.append(plant)
 
@@ -32,6 +34,7 @@ class Plant:
 
 	func _init(input_: Dictionary) -> void:
 		obj.greenhouse = input_.greenhouse
-		obj.location = input_.greenhouse
+		obj.location = input_.location
+		word.kind = input_.kind
 		word.stage = {}
-		word.stage.current = 0
+		word.stage.current = Global.arr.plant.stage.front()

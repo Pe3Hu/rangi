@@ -15,10 +15,20 @@ class Zoo:
 	func init_beasts() -> void:
 		arr.beast = []
 		var n = 1
+		var chains = []
 		
-		for _i in n:
+		#for _i in n:
+		for subclass in Global.dict.chain.subclass:
+			var input = {}
+			input.subclass = subclass
+			#input.subclass = "animal"
+			var chain = Classes_13.Chain.new(input)
+			chains.append(chain)
+		
+		for chain in chains:
 			var input = {}
 			input.zoo = self
+			input.chain = chain
 			var beast = Classes_12.Beast.new(input)
 			arr.beast.append(beast)
 
@@ -31,6 +41,7 @@ class Beast:
 	var vec = {}
 	var dict = {}
 	var flag = {}
+	var word = {}
 	var scene = {}
 
 
@@ -39,6 +50,7 @@ class Beast:
 		num.beast = Global.num.index.beast
 		Global.num.index.beast += 1
 		obj.zoo = input_.zoo
+		obj.chain = input_.chain
 		obj.location = null
 		vec.offset = Vector2()
 		dict.task = {}
