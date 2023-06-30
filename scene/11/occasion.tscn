@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dt6qmrpu5kjln"]
+
+[ext_resource type="Script" path="res://scene/11/occasion.gd" id="1_f5k5o"]
+
+[node name="Occasion" type="Node2D"]
+script = ExtResource("1_f5k5o")

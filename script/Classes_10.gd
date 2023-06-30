@@ -17,6 +17,7 @@ class Sanctuary:
 		init_scene()
 		init_zoo()
 		init_greenhouse()
+		init_occasions()
 		init_center()
 		set_following_forest_rings()
 		split_glades()
@@ -24,6 +25,7 @@ class Sanctuary:
 		paint_someone()
 		set_locations()
 		place_beast_in_locations()
+		init_clashes()
 		#activate_beasts()
 
 
@@ -44,6 +46,13 @@ class Sanctuary:
 		var input = {}
 		input.sanctuary = self
 		obj.greenhouse = Classes_14.Greenhouse.new(input)
+
+
+	func init_occasions() -> void:
+		dict.occasion = {}
+		
+		for occasion in Global.arr.occasion:
+			dict.occasion[occasion] = []
 
 
 	func init_center() -> void:
@@ -332,6 +341,10 @@ class Sanctuary:
 
 
 	func place_beast_in_locations() -> void:
+#		for beast in obj.zoo.arr.beast:
+#			var location = locations.pick_random()
+#			locations.erase(location)
+#			beast.step_into_location(location)
 		var locations = []
 		
 		for ring in dict.habitat:
@@ -355,13 +368,26 @@ class Sanctuary:
 				_i += 1
 			
 			_j += 1
+
+
+	func init_clashes() -> void:
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						if location.arr.beast.size() > 1:
+							var input = {}
+							input.location = location
+							input.type = "clash"
+							var occasion = Classes_11.Occasion.new(input)
+							dict.occasion[input.type].append(occasion)
+							
+							for beast in location.arr.beast:
+								occasion.add_beast(beast)
 		
-		
-#		for beast in obj.zoo.arr.beast:
-#			var location = locations.pick_random()
-#			locations.erase(location)
-#			beast.step_into_location(location)
-		
+		for occasion in dict.occasion["clash"]:
+			occasion.start()
+
 
 	func activate_beasts() -> void:
 		for beast in obj.zoo.arr.beast:

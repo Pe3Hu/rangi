@@ -56,3 +56,40 @@ func call_follow_phase() -> void:
 			parent.get_new_task()
 			perform_task()
 
+
+func start_action_in_combat_mode() -> void:
+	if parent.obj.target != null:
+		var time = 0.1
+		tween = create_tween()
+		tween.tween_property(self, "rotation", PI * 0.5, time)
+		tween.tween_property(self, "rotation", -PI * 0.5, time)
+		#tween.tween_property(self, "skew", PI, time * 0.5)
+		#tween.tween_property(self, "skew", 0, time * 0.5)
+		tween.tween_callback(decide_in_combat_mode)
+
+
+func decide_in_combat_mode() -> void:
+	parent.choose_tactic()
+	
+	match parent.word.tactic.current:
+		"attack":
+			parent.choose_skill()
+			begin_preparing_skill()
+
+
+func begin_preparing_skill() -> void:
+	var time = Global.dict.skill.title[parent.word.skill.current].preparation * 0.01
+	tween = create_tween()
+	tween.tween_property(self, "rotation", PI * 0.5, time)
+	tween.tween_property(self, "rotation", -PI * 0.5, time)
+	#tween.tween_property(self, "skew", PI, time * 0.5)
+	#tween.tween_property(self, "skew", 0, time * 0.5)
+	tween.tween_callback(finish_preparing_skill)
+
+
+func finish_preparing_skill() -> void:
+	parent.obj.chain.expend_resources()
+	parent.activate_skill()
+	start_action_in_combat_mode()
+
+

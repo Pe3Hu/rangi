@@ -1,0 +1,233 @@
+[
+ {
+  "Title": "Flap",
+  "Subclass": "Bird",
+  "Energy": 40,
+  "Overload": 6,
+  "Overheat": 9,
+  "Wound": "Debuff",
+  "Preparation": 10,
+  "Cast": 2,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Peck",
+  "Subclass": "Bird",
+  "Energy": 20,
+  "Overload": 0,
+  "Overheat": 4,
+  "Wound": "Minor",
+  "Preparation": 5,
+  "Cast": 1,
+  "Accuracy": "Advantage"
+ },
+ {
+  "Title": "Swoop ",
+  "Subclass": "Bird",
+  "Energy": 75,
+  "Overload": 3,
+  "Overheat": 16,
+  "Wound": "Lethal",
+  "Preparation": 20,
+  "Cast": 3,
+  "Accuracy": "Hindrance"
+ },
+ {
+  "Title": "Whip",
+  "Subclass": "Fish",
+  "Energy": 30,
+  "Overload": 15,
+  "Overheat": 2,
+  "Wound": "Severe",
+  "Preparation": 17,
+  "Cast": 1,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Ram",
+  "Subclass": "Fish",
+  "Energy": 45,
+  "Overload": 10,
+  "Overheat": 2,
+  "Wound": "Severe",
+  "Preparation": 23,
+  "Cast": 2,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Geyser",
+  "Subclass": "Fish",
+  "Energy": 50,
+  "Overload": 20,
+  "Overheat": 5,
+  "Wound": "Debuff",
+  "Preparation": 37,
+  "Cast": 2,
+  "Accuracy": "Hindrance"
+ },
+ {
+  "Title": "Bite",
+  "Subclass": "Animal",
+  "Energy": 25,
+  "Overload": 8,
+  "Overheat": 6,
+  "Wound": "Severe",
+  "Preparation": 12,
+  "Cast": 2,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Rip",
+  "Subclass": "Animal",
+  "Energy": 35,
+  "Overload": 9,
+  "Overheat": 12,
+  "Wound": "Severe",
+  "Preparation": 16,
+  "Cast": 1,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Hop",
+  "Subclass": "Animal",
+  "Energy": 55,
+  "Overload": 15,
+  "Overheat": 15,
+  "Wound": "Lethal",
+  "Preparation": 30,
+  "Cast": 3,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Roll",
+  "Subclass": "Ball",
+  "Energy": 80,
+  "Overload": 0,
+  "Overheat": 20,
+  "Wound": "Severe",
+  "Preparation": 45,
+  "Cast": 1,
+  "Accuracy": "Hindrance"
+ },
+ {
+  "Title": "Spin",
+  "Subclass": "Ball",
+  "Energy": 60,
+  "Overload": 5,
+  "Overheat": 16,
+  "Wound": "Severe",
+  "Preparation": 35,
+  "Cast": 2,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Meteor",
+  "Subclass": "Ball",
+  "Energy": 120,
+  "Overload": 1,
+  "Overheat": 24,
+  "Wound": "Lethal",
+  "Preparation": 60,
+  "Cast": 3,
+  "Accuracy": "Hindrance"
+ },
+ {
+  "Title": "Triplet",
+  "Subclass": "Hydra",
+  "Energy": 25,
+  "Overload": 1,
+  "Overheat": 7,
+  "Wound": "Minor",
+  "Preparation": 15,
+  "Cast": 1,
+  "Accuracy": "Advantage"
+ },
+ {
+  "Title": "Acid",
+  "Subclass": "Hydra",
+  "Energy": 40,
+  "Overload": 0,
+  "Overheat": 9,
+  "Wound": "Debuff",
+  "Preparation": 40,
+  "Cast": 2,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Bite",
+  "Subclass": "Hydra",
+  "Energy": 10,
+  "Overload": 2,
+  "Overheat": 5,
+  "Wound": "Minor",
+  "Preparation": 30,
+  "Cast": 1,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Clench",
+  "Subclass": "Serpent",
+  "Energy": 60,
+  "Overload": 12,
+  "Overheat": 5,
+  "Wound": "Lethal",
+  "Preparation": 54,
+  "Cast": 7,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Lunge",
+  "Subclass": "Serpent",
+  "Energy": 20,
+  "Overload": 6,
+  "Overheat": 3,
+  "Wound": "Minor",
+  "Preparation": 18,
+  "Cast": 2,
+  "Accuracy": "Advantage"
+ },
+ {
+  "Title": "Poison",
+  "Subclass": "Serpent",
+  "Energy": 45,
+  "Overload": 10,
+  "Overheat": 4,
+  "Wound": "Debuff",
+  "Preparation": 27,
+  "Cast": 1,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Pierce",
+  "Subclass": "Spider",
+  "Energy": 25,
+  "Overload": 9,
+  "Overheat": 3,
+  "Wound": "Minor",
+  "Preparation": 11,
+  "Cast": 1,
+  "Accuracy": "Advantage"
+ },
+ {
+  "Title": "Bite",
+  "Subclass": "Spider",
+  "Energy": 15,
+  "Overload": 0,
+  "Overheat": 8,
+  "Wound": "Minor",
+  "Preparation": 7,
+  "Cast": 1,
+  "Accuracy": "Standard"
+ },
+ {
+  "Title": "Weave",
+  "Subclass": "Spider",
+  "Energy": 35,
+  "Overload": 7,
+  "Overheat": 9,
+  "Wound": "Debuff",
+  "Preparation": 17,
+  "Cast": 2,
+  "Accuracy": "Advantage"
+ }
+]

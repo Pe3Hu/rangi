@@ -29,6 +29,7 @@ class Zoo:
 			var input = {}
 			input.zoo = self
 			input.chain = chain
+			input.mentality = Global.arr.beast.mentality.back()
 			var beast = Classes_12.Beast.new(input)
 			arr.beast.append(beast)
 
@@ -47,20 +48,51 @@ class Beast:
 
 	func _init(input_: Dictionary) -> void:
 		arr.task = []
+		arr.opponent = []
 		num.beast = Global.num.index.beast
 		Global.num.index.beast += 1
 		obj.zoo = input_.zoo
 		obj.chain = input_.chain
+		obj.chain.obj.beast = self
 		obj.location = null
+		obj.occasion = null
+		obj.target = {}
 		vec.offset = Vector2()
 		dict.task = {}
 		flag.cycle = false
+		word.mentality = input_.mentality
 		init_scene()
+		init_priority_in_combat()
 
 
 	func init_scene() -> void:
 		scene.myself = Global.scene.beast.instantiate()
 		scene.myself.set_parent(self)
+
+
+	func init_priority_in_combat() -> void:
+		dict.priority = {}
+		dict.priority.tactic = {}
+		word.tactic = {}
+		word.tactic.current = null
+		
+		for tactic in Global.arr.beast.tactic:
+			dict.priority.tactic[tactic] = 1
+		
+		match word.mentality:
+			"careful":
+				dict.priority.tactic["bide"] += 2
+			"balanced":
+				pass
+			"aggressive":
+				dict.priority.tactic["attack"] += 2
+		
+		dict.priority.skill = {}
+		word.skill = {}
+		word.skill.current = null
+		
+		for skill in Global.dict.skill.subclass[obj.chain.word.subclass]:
+			dict.priority.skill[skill] = 1
 
 
 	func step_into_location(location_: Classes_11.Location) -> void:
@@ -186,7 +218,6 @@ class Beast:
 		pass
 
 
-
 	func change_primary_task(task_: String) -> void:
 		reset_primary_task()
 		arr.task.erase(task_)
@@ -217,3 +248,49 @@ class Beast:
 		var tasks = ["harvest"]
 		var task = tasks.pick_random()
 		fill_task(task)
+
+
+	func prepare_for_occasion() -> void:
+		obj.target = null
+		
+		match obj.occasion.word.type:
+			"clash":
+				select_target()
+
+
+	func select_target() -> void:
+		match obj.occasion.word.type:
+			"clash":
+				var options = []
+				
+				for beast in obj.occasion.arr.beast:
+					if beast != self:
+						options.append(beast)
+				
+				obj.target = options.pick_random()
+				obj.target.arr.opponent.append(self)
+
+
+	func choose_tactic() -> void:
+		if word.tactic.current == null:
+			word.tactic.current = Global.get_random_key(dict.priority.tactic)
+
+
+	func choose_skill() -> void:
+		if word.skill.current == null:
+			word.skill.current = Global.get_random_key(dict.priority.skill)
+
+
+	func activate_skill() -> void:
+		obj.target.obj.chain.take_attack(self)
+		if obj.target != null:
+			print(self, word.skill.current,obj.target.obj.chain.num.wound)
+		word.skill.current = null
+		
+
+
+	func die() -> void:
+		print(self, " dead")
+		
+		for opponent in arr.opponent:
+			opponent.obj.target = null

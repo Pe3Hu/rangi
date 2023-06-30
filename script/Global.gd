@@ -29,12 +29,16 @@ func init_arr() -> void:
 	arr.polyhedron = [3,4,5,6]
 	arr.drone = ["arm","brain"]
 	arr.sequence["A000045"] = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+	arr.occasion = ["clash"]
 	
 	arr.plant = {}
 	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
 	
 	arr.beast = {}
 	arr.beast.aspect = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
+	arr.beast.wound = ["minor","severe","lethal"]
+	arr.beast.tactic = ["bide", "attack"]
+	arr.beast.mentality = ["careful", "balanced", "aggressive"]
 	
 	arr.wood = {}
 	arr.wood.attribute = ["hardness", "density"]
@@ -47,7 +51,6 @@ func init_num() -> void:
 	num.index.forest = 0
 	num.index.habitat = 0
 	num.index.beast = 0
-	
 	
 	num.factory = {}
 	num.factory.count = {}
@@ -197,16 +200,39 @@ func init_dict() -> void:
 	dict.beast.resource["mobility"] = "energy"
 	
 	dict.beast.buff = {}
-	dict.beast.resource["offensive"] = "resonance"
-	dict.beast.resource["resilience"] = "ricochet"
-	dict.beast.resource["sensory"] = "hint"
-	dict.beast.resource["mobility"] = "synchronization"
+	dict.beast.buff["offensive"] = "resonance"
+	dict.beast.buff["resilience"] = "ricochet"
+	dict.beast.buff["sensory"] = "hint"
+	dict.beast.buff["mobility"] = "synchronization"
 	
 	dict.beast.debuff = {}
-	dict.beast.resource["offensive"] = "misfire"
-	dict.beast.resource["resilience"] = "rust"
-	dict.beast.resource["sensory"] = "interference"
-	dict.beast.resource["mobility"] = "desynchronization"
+	dict.beast.debuff["offensive"] = "misfire"
+	dict.beast.debuff["resilience"] = "rust"
+	dict.beast.debuff["sensory"] = "interference"
+	dict.beast.debuff["mobility"] = "desynchronization"
+	
+	dict.beast.response = {}
+	dict.beast.response["minor"] = {}
+	dict.beast.response["minor"].preparation = 3
+	dict.beast.response["minor"].activated = 3
+	dict.beast.response["severe"] = {}
+	dict.beast.response["severe"].preparation = 8
+	dict.beast.response["severe"].activated = 5
+	dict.beast.response["debuff"] = {}
+	dict.beast.response["debuff"].preparation = 10
+	dict.beast.response["debuff"].activated = 4
+	dict.beast.response["lethal"] = {}
+	dict.beast.response["lethal"].preparation = 15
+	dict.beast.response["lethal"].activated = 7
+	
+	dict.beast.respite = {}
+	dict.beast.respite["overload"] = {}
+	dict.beast.respite["overload"].preparation = 3
+	dict.beast.respite["overload"].effect = 5
+	dict.beast.respite["overheat"] = {}
+	dict.beast.respite["overheat"].preparation = 7
+	dict.beast.respite["overheat"].effect = 9
+	
 	
 	init_corner()
 	init_windrose()
@@ -218,6 +244,7 @@ func init_dict() -> void:
 	init_skeletons()
 	init_bushs()
 	init_woods()
+	init_skills()
 
 
 func init_windrose() -> void:
@@ -643,10 +670,15 @@ func init_skeletons() -> void:
 	
 	for skeleton in array:
 		var data = {}
+		data.aspect = {}
+		data.wound = {}
 
 		for key in skeleton.keys():
 			if key != "Title":
-				data[key.to_lower()] = skeleton[key]
+				
+				for key_ in arr.beast:
+					if arr.beast[key_].has(key.to_lower()):
+						data[key_][key.to_lower()] = skeleton[key]
 		
 		dict.skeleton.title[skeleton["Title"].to_lower()] = data
 
@@ -695,6 +727,29 @@ func init_woods() -> void:
 					data[words[0]][words[1]] = wood[key]
 		
 		dict.wood.title[wood["Title"].to_lower()] = data
+
+
+func init_skills() -> void:
+	dict.skill = {}
+	dict.skill.title = {}
+	dict.skill.subclass = {}
+	var path = "res://asset/json/skill_data.json"
+	var array = load_data(path)
+	
+	for skill in array:
+		var data = {}
+		if !dict.skill.subclass.has(skill["Subclass"].to_lower()):
+			dict.skill.subclass[skill["Subclass"].to_lower()] = []
+
+		for key in skill.keys():
+			if key != "Title":
+				data[key.to_lower()] = skill[key]
+				
+				if typeof(skill[key]) == TYPE_STRING:
+					data[key.to_lower()] = skill[key].to_lower()
+		
+		dict.skill.title[skill["Title"].to_lower()] = data
+		dict.skill.subclass[skill["Subclass"].to_lower()].append(skill["Title"].to_lower())
 
 
 func init_node() -> void:
@@ -747,8 +802,9 @@ func init_scene() -> void:
 	scene.forest = load("res://scene/10/forest.tscn")
 	scene.glade = load("res://scene/10/glade.tscn")
 	scene.sequoia = load("res://scene/10/sequoia.tscn")
-	scene.location = load("res://scene/11/location.tscn")
 	scene.habitat = load("res://scene/11/habitat.tscn")
+	scene.location = load("res://scene/11/location.tscn")
+	scene.occasion = load("res://scene/11/occasion.tscn")
 	scene.beast = load("res://scene/12/beast.tscn")
 	scene.chain = load("res://scene/13/chain.tscn")
 	scene.link = load("res://scene/13/link.tscn")
@@ -859,3 +915,8 @@ func get_perimeter_of_triangle_based_on_vertices(vertices_: Array) -> Variant:
 		return perimeter
 	
 	return null
+
+
+func get_aggravation(wound_: String) -> String:
+	var index = arr.beast.wound.find(wound_)
+	return arr.beast.wound[index + 1]

@@ -40,39 +40,39 @@
   "Description": "Damage recovery"
  },
  {
-  "Title": "Blood Sense",
+  "Title": "Attention",
   "Aspect": "Sensory",
-  "Description": "Finding wounded enemies"
+  "Description": "Gaining advantage before an event"
  },
  {
-  "Title": "Sense of Pollen",
+  "Title": "Bloodlust",
   "Aspect": "Sensory",
-  "Description": "Finding Hidden Plants"
+  "Description": "Gaining an advantage in combat"
  },
  {
-  "Title": "Sense of Silence",
+  "Title": "Analytics",
   "Aspect": "Sensory",
-  "Description": "Detect nearby noise"
+  "Description": "Gaining an advantage outside of combat"
  },
  {
   "Title": "Harmony",
   "Aspect": "Sensory",
-  "Description": "Crafting Bonus Effect Chance"
+  "Description": "Chance of bonus effect when crafting"
  },
  {
   "Title": "Disguise",
   "Aspect": "Mobility",
-  "Description": "Invisible in action"
+  "Description": "Gaining advantage before an event"
  },
  {
   "Title": "Sprint",
   "Aspect": "Mobility",
-  "Description": "Predisposition to swift action"
+  "Description": "Gaining an advantage in combat"
  },
  {
   "Title": "Marathon",
   "Aspect": "Mobility",
-  "Description": "Predisposition to standard actions"
+  "Description": "Gaining an advantage outside of combat"
  },
  {
   "Title": "Second Breath",

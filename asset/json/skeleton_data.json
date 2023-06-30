@@ -4,48 +4,69 @@
   "Offensive": 120,
   "Resilience": 75,
   "Sensory": 75,
-  "Mobility": 130
+  "Mobility": 130,
+  "Minor": 14,
+  "Severe": 2,
+  "Lethal": 1
  },
  {
   "Title": "Fish",
   "Offensive": 115,
   "Resilience": 100,
   "Sensory": 95,
-  "Mobility": 90
+  "Mobility": 90,
+  "Minor": 10,
+  "Severe": 5,
+  "Lethal": 1
  },
  {
   "Title": "Animal",
   "Offensive": 145,
   "Resilience": 50,
   "Sensory": 110,
-  "Mobility": 95
+  "Mobility": 95,
+  "Minor": 8,
+  "Severe": 2,
+  "Lethal": 1
  },
  {
   "Title": "Ball",
   "Offensive": 50,
   "Resilience": 250,
   "Sensory": 50,
-  "Mobility": 50
+  "Mobility": 50,
+  "Minor": 16,
+  "Severe": 8,
+  "Lethal": 1
  },
  {
   "Title": "Hydra",
   "Offensive": 110,
   "Resilience": 70,
   "Sensory": 150,
-  "Mobility": 70
+  "Mobility": 70,
+  "Minor": 9,
+  "Severe": 1,
+  "Lethal": 3
  },
  {
   "Title": "Serpent",
   "Offensive": 75,
   "Resilience": 175,
   "Sensory": 90,
-  "Mobility": 60
+  "Mobility": 60,
+  "Minor": 24,
+  "Severe": 4,
+  "Lethal": 1
  },
  {
   "Title": "Spider",
   "Offensive": 130,
   "Resilience": 80,
   "Sensory": 70,
-  "Mobility": 120
+  "Mobility": 120,
+  "Minor": 12,
+  "Severe": 3,
+  "Lethal": 1
  }
 ]

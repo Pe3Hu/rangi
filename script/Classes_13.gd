@@ -12,8 +12,37 @@ class Chain:
 	func _init(input_: Dictionary) -> void:
 		#obj.design = input_.design
 		word.subclass = input_.subclass
+		obj.beast = null
+		init_resources()
 		init_aspects()
 		init_links()
+
+
+	func init_resources() -> void:
+		num.resource = {}
+		num.wound = {}
+		
+		var description = Global.dict.skeleton.title[word.subclass].wound
+		
+		for wound in description:
+			num.wound[wound] = {}
+			num.wound[wound].max = description[wound]
+			num.wound[wound].current = 0
+		
+		for aspect in Global.dict.beast.resource:
+			var resource = Global.dict.beast.resource[aspect]
+			num.resource[resource] = {}
+			num.resource[resource].max = 100
+			
+			match resource:
+				"overheat":
+					num.resource[resource].current = 0
+				"integrity":
+					num.resource[resource].current = num.resource[resource].max
+				"overload":
+					num.resource[resource].current = 0
+				"energy":
+					num.resource[resource].current = num.resource[resource].max
 
 
 	func init_aspects() -> void:
@@ -39,7 +68,7 @@ class Chain:
 
 
 	func get_skeleton() -> void:
-		var description = Global.dict.skeleton.title[word.subclass]
+		var description = Global.dict.skeleton.title[word.subclass].aspect
 		
 		for aspect in description:
 			var value = {}
@@ -54,7 +83,6 @@ class Chain:
 				var subaspect = num.aspect[aspect].keys().pick_random()
 				num.aspect[aspect][subaspect].base += 1
 				value.free -= 1
-
 
 
 	func init_links() -> void:
@@ -94,14 +122,62 @@ class Chain:
 				num.indicator["threat"] += num.indicator[aspect] * sign
 		
 		num.indicator["threat"] = floor(sqrt(num.indicator["threat"]))
-		
-		print(word.subclass, num.indicator)
+		#print(word.subclass, num.indicator)
 
 
 	func update_aspects() -> void:
 		for aspect in num.aspect:
 			for subaspect in num.aspect[aspect]:
 				num.aspect[aspect][subaspect].current = num.aspect[aspect][subaspect].base
+
+
+	func expend_resources() -> void:
+		var description = Global.dict.skill.title[obj.beast.word.skill.current]
+		
+		for resource in num.resource:
+			if description.has(resource):
+				var value = description[resource]
+				expend_resource(resource, value) 
+
+
+	func expend_resource(resource_: String, value_: int) -> void:
+		var expend = null
+		var residue = num.resource[resource_].max - num.resource[resource_].current 
+		
+		match resource_:
+			"overheat":
+				expend = min(residue, value_)
+				num.resource[resource_].current += expend
+			"overload":
+				expend = min(residue, value_)
+				num.resource[resource_].current += expend
+			"energy":
+				expend = min(num.resource[resource_].current, value_)
+				num.resource[resource_].current -= expend
+
+
+	func take_attack(opponent_: Classes_12.Beast) -> void:
+		var wound = Global.dict.skill.title[opponent_.word.skill.current].wound
+		
+		if num.wound.has(wound):
+			take_wound(wound)
+		else:
+			take_debuff(opponent_)
+
+
+	func take_wound(wound_: String) -> void:
+		num.wound[wound_].current += 1
+		
+		if num.wound[wound_].current == num.wound[wound_].max and wound_ == "lethal":
+			obj.beast.die()
+		elif num.wound[wound_].current > num.wound[wound_].max:
+			num.wound[wound_].current = num.wound[wound_].max
+			var aggravation = Global.get_aggravation(wound_)
+			take_wound(aggravation)
+
+
+	func take_debuff(opponent_: Classes_12.Beast) -> void:
+		pass
 
 
 #Звено link
@@ -116,7 +192,6 @@ class Link:
 		obj.chain = input_.chain
 		word.type = input_.type
 		num.bonus = {}
-		#print(obj.chain, word, num)
 		roll_bonuses()
 
 

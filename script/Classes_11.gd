@@ -120,10 +120,34 @@ class Location:
 class Occasion:
 	var arr = {}
 	var obj = {}
+	var word = {}
 	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
-		arr.type = input_.type
+		arr.beast = []
 		obj.location = input_.location
+		word.type = input_.type
+		init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.occasion.instantiate()
+		scene.myself.set_parent(self)
+
+
+	func add_beast(beast_: Classes_12.Beast) -> void:
+		arr.beast.append(beast_)
+		beast_.obj.occasion = self
+
+
+	func start() -> void:
+		for beast in obj.location.arr.beast:
+			beast.prepare_for_occasion()
+			
+		match word.type:
+			"clash":
+				for beast in obj.location.arr.beast:
+					beast.scene.myself.start_action_in_combat_mode()
+
 
