@@ -21,6 +21,11 @@ class Chain:
 	func init_resources() -> void:
 		num.resource = {}
 		num.wound = {}
+		num.stage = {}
+		arr.trigger = {}
+		
+		for condition in Global.arr.condition:
+			arr.trigger[condition] = []
 		
 		var description = Global.dict.skeleton.title[word.subclass].wound
 		
@@ -37,10 +42,12 @@ class Chain:
 			match resource:
 				"overheat":
 					num.resource[resource].current = 0
+					num.stage[resource] = 0
 				"integrity":
 					num.resource[resource].current = num.resource[resource].max
 				"overload":
 					num.resource[resource].current = 0
+					num.stage[resource] = 0
 				"energy":
 					num.resource[resource].current = num.resource[resource].max
 
@@ -154,6 +161,72 @@ class Chain:
 			"energy":
 				expend = min(num.resource[resource_].current, value_)
 				num.resource[resource_].current -= expend
+				
+		if num.resource[resource_].current < 0:
+			num.resource[resource_].current = 0
+		
+		#print([resource_, num.resource[resource_].current])
+		update_trigger_based_on_overstage(resource_)
+
+
+	func update_trigger_based_on_overstage(resource_: String) -> void:
+		if Global.dict.trigger.condition.has(resource_):
+			var stage = get_overstage(resource_)
+			
+			if stage != null and num.stage[resource_] != stage:
+				var shift = stage - num.stage[resource_]
+				
+				if shift > 0:
+					set_trigger_to_next_overstage(resource_)
+				else:
+					set_trigger_to_previous_overstage(resource_)
+				
+				print(num.stage[resource_], arr.trigger)
+
+
+	func get_overstage(resource_: String) -> Variant:
+		var percentage = float(num.resource[resource_].current) / num.resource[resource_].max
+		var stages = Global.dict.trigger.condition[resource_].size()
+		
+		for stage in stages:
+			var stage_percentage = float(stage) / stages
+			
+			if percentage < stage_percentage:
+				if stage == 0:
+					return null
+				if stage != stages -1:
+					stage -= 1
+				
+				print([resource_, stage, stages, percentage, stage_percentage])
+				return stage
+		
+		return null
+
+
+	func set_trigger_to_next_overstage(resource_: String) -> void:
+		var stages = Global.dict.trigger.condition[resource_].size()
+		
+		if num.stage[resource_] < stages - 1:
+			num.stage[resource_] += 1
+			
+			var conditions = Global.dict.trigger.condition[resource_][num.stage[resource_]]
+			var debuffs = Global.dict.trigger.debuff[resource_][num.stage[resource_]]
+			
+			for condition in conditions:
+				for debuff in debuffs:
+					arr.trigger[condition].append(debuff)
+
+
+	func set_trigger_to_previous_overstage(resource_: String) -> void:
+		if num.stage[resource_] > 1:
+			num.stage[resource_] -= 1
+			
+			var conditions = Global.dict.trigger.condition[resource_][num.stage[resource_]]
+			var debuffs = Global.dict.trigger.debuff[resource_][num.stage[resource_]]
+			
+			for condition in conditions:
+				for debuff in debuffs:
+					arr.trigger[condition].append(debuff)
 
 
 	func take_attack(opponent_: Classes_12.Beast) -> void:
@@ -178,7 +251,8 @@ class Chain:
 
 	func take_debuff(opponent_: Classes_12.Beast) -> void:
 		pass
-
+		
+		
 
 #Звено link
 class Link:

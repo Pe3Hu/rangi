@@ -19,18 +19,21 @@ func _ready() -> void:
 
 func _input(event) -> void:
 	var branch = Global.obj.cosmos.obj.planet.arr.outpost.front().arr.branch.front()
+	var beast = Global.obj.cosmos.obj.planet.obj.sanctuary.obj.zoo.arr.beast.front()
 	
 	if event is InputEventKey:
 		match event.keycode:
 			KEY_D:
 				if event.is_pressed() && !event.is_echo():
-					branch.obj.factory.shift_selected_stamp(Vector2(1, 0))
+					#branch.obj.factory.shift_selected_stamp(Vector2(1, 0))
+					beast.obj.chain.expend_resource("overheat", 10)
 			KEY_S:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.factory.shift_selected_stamp(Vector2(0, 1))
 			KEY_A:
 				if event.is_pressed() && !event.is_echo():
-					branch.obj.factory.shift_selected_stamp(Vector2(-1, 0))
+					#branch.obj.factory.shift_selected_stamp(Vector2(-1, 0))
+					beast.obj.chain.expend_resource("overheat", -10)
 			KEY_W:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.factory.shift_selected_stamp(Vector2(0, -1))

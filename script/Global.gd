@@ -30,6 +30,7 @@ func init_arr() -> void:
 	arr.drone = ["arm","brain"]
 	arr.sequence["A000045"] = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 	arr.occasion = ["clash"]
+	arr.condition = ["on attack", "on defense"]
 	
 	arr.plant = {}
 	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
@@ -233,6 +234,13 @@ func init_dict() -> void:
 	dict.beast.respite["overheat"].preparation = 7
 	dict.beast.respite["overheat"].effect = 9
 	
+	dict.trigger = {}
+	dict.trigger.condition = {}
+	dict.trigger.condition["overheat"] = [["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
+	dict.trigger.condition["overload"] = [["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
+	dict.trigger.debuff = {}
+	dict.trigger.debuff["overheat"] = [["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
+	dict.trigger.debuff["overload"] = [["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
 	
 	init_corner()
 	init_windrose()

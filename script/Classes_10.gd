@@ -385,8 +385,8 @@ class Sanctuary:
 							for beast in location.arr.beast:
 								occasion.add_beast(beast)
 		
-		for occasion in dict.occasion["clash"]:
-			occasion.start()
+		#for occasion in dict.occasion["clash"]:
+		#	occasion.start()
 
 
 	func activate_beasts() -> void:
@@ -434,44 +434,7 @@ class Sanctuary:
 		num.paint.habitat = {}
 		num.paint.habitat.ring = 2
 		num.paint.habitat.index = 0
-#		for ring in dict.forest:
-#			print([ring, dict.forest[ring].size()])
-#			for forest in dict.forest[ring]:
-#				#print([ring, forest.num.index])
-#				forest.scene.myself.update_color_based_on_forest_index()
 		
-#		var forest = dict.forest[1].back()
-#		forest.scene.myself.paint_white()
-#		print(forest.arr.sequoia)
-#
-#
-#		for neighbor in forest.dict.neighbor:
-#			var sequoias = []
-#
-#			for sequoia in neighbor.arr.sequoia:
-#				if forest.arr.sequoia.has(sequoia):
-#					sequoias.append(sequoia)
-#
-#			print([neighbor.arr.sequoia.size(), sequoias.size(), neighbor.arr.sequoia])
-#			print([sequoias])
-#			neighbor.scene.myself.paint_black()
-		
-#		var glade = arr.glade[31]
-#		glade.scene.myself.visible = true
-#		glade.scene.myself.paint_black()
-#
-#		for forest in glade.arr.forest:
-#			forest.scene.myself.paint_white()
-		
-		#var forest = dict.forest[1][22]
-#		var forest = dict.forest[2][30]
-#		forest.scene.myself.paint_white()
-#
-#		for neighbor in forest.dict.neighbor:
-#			if !neighbor.flag.origin:
-#				forest.dict.neighbor[neighbor].scene.myself.visible = true
-#				forest.dict.neighbor[neighbor].scene.myself.paint_black()
-	
 		
 		for ring in dict.habitat:
 			for habitat_ in dict.habitat[ring]:
