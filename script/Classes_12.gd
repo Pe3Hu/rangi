@@ -282,12 +282,20 @@ class Beast:
 
 
 	func activate_skill() -> void:
-		obj.chain.obj.dice.offensive.roll()
-		obj.target.obj.chain.take_attack(self)
-		if obj.target != null:
-			print(self, word.skill.current,obj.target.obj.chain.num.wound)
-		word.skill.current = null
+		var result = {}
+		result["on attack"] = obj.chain.roll_value_based_on_skill_and_condition(word.skill.current, "on attack")
+		result["on defense"] = obj.target.obj.chain.roll_value_based_on_skill_and_condition(word.skill.current, "on defense")
 		
+		if result["on attack"] > result["on defense"]:
+			obj.target.obj.chain.take_attack(self)
+			print(["hit", result])
+		
+			if obj.target != null:
+				print(self, word.skill.current,obj.target.obj.chain.num.wound)
+		else:
+			print(["miss", result])
+		
+		word.skill.current = null
 
 
 	func die() -> void:

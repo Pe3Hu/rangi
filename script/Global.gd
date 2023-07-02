@@ -37,7 +37,7 @@ func init_arr() -> void:
 	
 	arr.beast = {}
 	arr.beast.aspect = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
-	arr.beast.wound = ["minor","severe","lethal"]
+	arr.beast.wound = ["minor","severe","lethal","debuff"]
 	arr.beast.tactic = ["bide", "attack"]
 	arr.beast.mentality = ["careful", "balanced", "aggressive"]
 	
@@ -192,7 +192,6 @@ func init_dict() -> void:
 	dict.priority.title = ["finish construction", "pursuit of incentive", "take on hardest"]
 	dict.priority.total = dict.priority.avg * dict.priority.title.size()
 	
-	
 	dict.beast = {}
 	dict.beast.resource = {}
 	dict.beast.resource["offensive"] = "overheat"
@@ -234,6 +233,19 @@ func init_dict() -> void:
 	dict.beast.respite["overheat"].preparation = 7
 	dict.beast.respite["overheat"].effect = 9
 	
+	dict.wound = {}
+	dict.wound.check = {}
+	dict.wound.check["on attack"] = {}
+	dict.wound.check["on attack"]["minor"] = "lightness"
+	dict.wound.check["on attack"]["severe"] = "heaviness"
+	dict.wound.check["on attack"]["lethal"] = "lethality"
+	dict.wound.check["on attack"]["debuff"] = "lethality"
+	dict.wound.check["on defense"] = {}
+	dict.wound.check["on defense"]["minor"] = "armor"
+	dict.wound.check["on defense"]["severe"] = "armor"
+	dict.wound.check["on defense"]["lethal"] = "instinct"
+	dict.wound.check["on defense"]["debuff"] = "instinct"
+	
 	dict.trigger = {}
 	dict.trigger.condition = {}
 	dict.trigger.condition["overheat"] = [[], ["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
@@ -241,6 +253,14 @@ func init_dict() -> void:
 	dict.trigger.debuff = {}
 	dict.trigger.debuff["overheat"] = [[], ["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
 	dict.trigger.debuff["overload"] = [[], ["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
+	
+	dict.gist = {}
+	dict.gist.attempt = {}
+	dict.gist.attempt["standard"] = 1
+	dict.gist.attempt["advantage"] = 2
+	dict.gist.attempt["critical advantage"] = 3
+	dict.gist.attempt["hindrance"] = 2
+	dict.gist.attempt["critical hindrance"] = 3
 	
 	init_corner()
 	init_windrose()
@@ -604,6 +624,7 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 
 func init_subaspects() -> void:
 	dict.aspect = {}
+	dict.aspect.subaspect = {}
 	dict.subaspect = {}
 	dict.subaspect.title = {}
 	var path = "res://asset/json/subaspect_data.json"
@@ -620,10 +641,32 @@ func init_subaspects() -> void:
 		
 		var aspect = subaspect["Aspect"].to_lower()
 		
-		if !dict.aspect.has(aspect):
-			dict.aspect[aspect] = []
+		if !dict.aspect.subaspect.has(aspect):
+			dict.aspect.subaspect[aspect] = []
 		
-		dict.aspect[aspect].append(subaspect["Title"].to_lower())
+		dict.aspect.subaspect[aspect].append(subaspect["Title"].to_lower())
+	
+	dict.aspect.condition = {}
+	dict.aspect.condition["on attack"] = "offensive"
+	dict.aspect.condition["on defense"] = "resilience"
+	
+	dict.subaspect.wound = {}
+	dict.subaspect.wound["lightness"] = ["minor"]
+	dict.subaspect.wound["heaviness"] = ["severe"]
+	dict.subaspect.wound["lethality"] = ["lethal", "debuff"]
+	dict.subaspect.wound["armor"] = ["minor", "severe"]
+	dict.subaspect.wound["instinct"] = ["lethal", "debuff"]
+
+
+func get_subaspect_based_on_wound_and_condition(wound_: String, condition_: String) -> Variant:
+	var aspect = dict.aspect.condition[condition_]
+	
+	for subaspect in dict.subaspect.wound:
+		if dict.subaspect.wound[subaspect].has(wound_):
+			if dict.aspect.subaspect[aspect].has(subaspect):
+				return subaspect
+	
+	return null
 
 
 func init_links() -> void:
@@ -838,7 +881,7 @@ func get_random_element(arr_: Array):
 		return null
 	
 	rng.randomize()
-	var index_r = rng.randi_range(0, arr_.size()-1)
+	var index_r = rng.randi_range(0, arr_.size() - 1)
 	return arr_[index_r]
 
 

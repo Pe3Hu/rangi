@@ -40,7 +40,6 @@ class Dice:
 
 	func roll() -> Edge:
 		var edge = arr.edge.pick_random()
-		print(edge.word.gist)
 		return edge
 
 

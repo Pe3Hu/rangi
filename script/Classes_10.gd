@@ -391,8 +391,8 @@ class Sanctuary:
 								for beast in location.arr.beast:
 									occasion.add_beast(beast)
 		
-#		for occasion in dict.occasion["clash"]:
-#			occasion.start()
+		for occasion in dict.occasion["clash"]:
+			occasion.start()
 
 
 	func activate_beasts() -> void:

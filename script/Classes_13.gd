@@ -74,8 +74,8 @@ class Chain:
 			num.aspect[aspect] = {}
 			num.indicator[aspect] = 0
 		
-			if Global.dict.aspect.has(aspect):
-				for subaspect in Global.dict.aspect[aspect]:
+			if Global.dict.aspect.subaspect.has(aspect):
+				for subaspect in Global.dict.aspect.subaspect[aspect]:
 					num.aspect[aspect][subaspect] = {}
 					num.aspect[aspect][subaspect].base = 0
 					num.aspect[aspect][subaspect].current = 0
@@ -192,8 +192,6 @@ class Chain:
 					set_trigger_to_next_overstage(resource_)
 				else:
 					set_trigger_to_previous_overstage(resource_)
-				
-				print([num.resource[resource_].current, num.stage[resource_], arr.trigger])
 
 
 	func get_overstage(resource_: String) -> Variant:
@@ -261,8 +259,37 @@ class Chain:
 
 	func take_debuff(opponent_: Classes_12.Beast) -> void:
 		pass
+
+
+	func roll_value_based_on_skill_and_condition(skill_: String, condition_: String) -> int:
+		var wound = Global.dict.skill.title[skill_].wound
+		var subaspect = Global.get_subaspect_based_on_wound_and_condition(wound, condition_)
+		var aspect = Global.dict.aspect.condition[condition_]
+		var edge = obj.dice[aspect].roll()
+		var attempts = Global.dict.gist.attempt[edge.word.gist]
+		var min = num.aspect[aspect][subaspect].current
+		var max = 0
 		
+		for _i in attempts:
+			Global.rng.randomize()
+			var value = Global.rng.randi_range(0, num.aspect[aspect][subaspect].current)
+			
+			if min > value:
+				min = value
+			
+			if max < value:
+				max = value
 		
+		var value = null
+		
+		if edge.word.gist.contains("advantage"):
+			return max
+		
+		if edge.word.gist.contains("hindrance"):
+			return min
+		
+		return max
+
 
 #Звено link
 class Link:
@@ -276,15 +303,15 @@ class Link:
 		obj.chain = input_.chain
 		word.type = input_.type
 		num.bonus = {}
-		roll_bonuses()
+		generate_basic_bonuses()
 
 
-	func roll_bonuses() -> void:
+	func generate_basic_bonuses() -> void:
 		var values = {}
 		var description = Global.dict.link.title[word.type]
 		
-		for aspect in Global.dict.aspect:
-			var subaspect = Global.dict.aspect[aspect].pick_random()
+		for aspect in Global.dict.aspect.subaspect:
+			var subaspect = Global.dict.aspect.subaspect[aspect].pick_random()
 			num.bonus[subaspect] = description[aspect]
 			obj.chain.num.aspect[aspect][subaspect].base += num.bonus[subaspect]
 
