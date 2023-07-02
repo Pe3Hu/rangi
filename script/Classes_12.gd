@@ -49,7 +49,7 @@ class Beast:
 	func _init(input_: Dictionary) -> void:
 		arr.task = []
 		arr.opponent = []
-		num.beast = Global.num.index.beast
+		num.index = Global.num.index.beast
 		Global.num.index.beast += 1
 		obj.zoo = input_.zoo
 		obj.chain = input_.chain
@@ -282,6 +282,7 @@ class Beast:
 
 
 	func activate_skill() -> void:
+		obj.chain.obj.dice.offensive.roll()
 		obj.target.obj.chain.take_attack(self)
 		if obj.target != null:
 			print(self, word.skill.current,obj.target.obj.chain.num.wound)

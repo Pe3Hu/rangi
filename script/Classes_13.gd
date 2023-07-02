@@ -13,9 +13,22 @@ class Chain:
 		#obj.design = input_.design
 		word.subclass = input_.subclass
 		obj.beast = null
+		init_dices()
 		init_resources()
 		init_aspects()
 		init_links()
+
+
+	func init_dices() -> void:
+		obj.dice = {}
+		var aspects = ["offensive", "resilience"]
+		
+		for aspect in aspects:
+			var input = {}
+			input.chain = self
+			#input.aspect = aspect
+			input.faces = 20
+			obj.dice[aspect] = Classes_14.Dice.new(input)
 
 
 	func init_resources() -> void:
@@ -165,7 +178,6 @@ class Chain:
 		if num.resource[resource_].current < 0:
 			num.resource[resource_].current = 0
 		
-		#print([resource_, num.resource[resource_].current])
 		update_trigger_based_on_overstage(resource_)
 
 
@@ -181,7 +193,7 @@ class Chain:
 				else:
 					set_trigger_to_previous_overstage(resource_)
 				
-				print(num.stage[resource_], arr.trigger)
+				print([num.resource[resource_].current, num.stage[resource_], arr.trigger])
 
 
 	func get_overstage(resource_: String) -> Variant:
@@ -189,15 +201,13 @@ class Chain:
 		var stages = Global.dict.trigger.condition[resource_].size()
 		
 		for stage in stages:
-			var stage_percentage = float(stage) / stages
+			var stage_percentage = float(stage) / (stages - 1)
 			
 			if percentage < stage_percentage:
-				if stage == 0:
-					return null
-				if stage != stages -1:
-					stage -= 1
-				
-				print([resource_, stage, stages, percentage, stage_percentage])
+				stage -= 1
+				return stage
+			
+			if stage == stages - 1:
 				return stage
 		
 		return null
@@ -218,15 +228,15 @@ class Chain:
 
 
 	func set_trigger_to_previous_overstage(resource_: String) -> void:
-		if num.stage[resource_] > 1:
-			num.stage[resource_] -= 1
-			
+		if num.stage[resource_] > 0:
 			var conditions = Global.dict.trigger.condition[resource_][num.stage[resource_]]
 			var debuffs = Global.dict.trigger.debuff[resource_][num.stage[resource_]]
 			
 			for condition in conditions:
 				for debuff in debuffs:
-					arr.trigger[condition].append(debuff)
+					arr.trigger[condition].erase(debuff)
+			
+			num.stage[resource_] -= 1
 
 
 	func take_attack(opponent_: Classes_12.Beast) -> void:

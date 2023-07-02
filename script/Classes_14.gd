@@ -1,40 +1,55 @@
 extends Node
 
 
-#Теплица greenhouse
-class Greenhouse:
+#Куб dice
+class Dice:
 	var arr = {}
+	var num = {}
 	var obj = {}
 
 
 	func _init(input_: Dictionary) -> void:
-		obj.sanctuary = input_.sanctuary
-		init_plants()
+		arr.edge = []
+		num.face = input_.faces
+		obj.chain = input_.chain
+		fill_with_default_edges()
 
 
-	func init_plants() -> void:
-		arr.plant = []
-		var n = 1
-		
-		for _i in n:
-			var input = {}
-			input.greenhouse = self
-			input.location = null
-			input.kind = ""
-			var plant = Classes_14.Plant.new(input)
-			arr.plant.append(plant)
+	func add_edge(edge_: Edge) -> void:
+		arr.edge.append(edge_)
+		edge_.obj.dice = self
 
 
-#Растение plant
-class Plant:
+	func fill_with_default_edges() -> void:
+		match num.face:
+			20:
+				var edges = {}
+				edges["advantage"] = 4
+				edges["critical advantage"] = 1
+				edges["hindrance"] = 4
+				edges["critical hindrance"] = 1
+				edges["standard"] = 10
+				
+				for gist in edges:
+					for _i in edges[gist]:
+						var input = {}
+						input.gist = gist
+						var edge = Classes_14.Edge.new(input)
+						add_edge(edge)
+
+
+	func roll() -> Edge:
+		var edge = arr.edge.pick_random()
+		print(edge.word.gist)
+		return edge
+
+
+#Грань edge
+class Edge:
 	var obj = {}
-	var vec = {}
 	var word = {}
 
 
 	func _init(input_: Dictionary) -> void:
-		obj.greenhouse = input_.greenhouse
-		obj.location = input_.location
-		word.kind = input_.kind
-		word.stage = {}
-		word.stage.current = Global.arr.plant.stage.front()
+		word.gist = input_.gist
+		obj.dice = null

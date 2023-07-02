@@ -236,11 +236,11 @@ func init_dict() -> void:
 	
 	dict.trigger = {}
 	dict.trigger.condition = {}
-	dict.trigger.condition["overheat"] = [["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
-	dict.trigger.condition["overload"] = [["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
+	dict.trigger.condition["overheat"] = [[], ["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
+	dict.trigger.condition["overload"] = [[], ["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
 	dict.trigger.debuff = {}
-	dict.trigger.debuff["overheat"] = [["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
-	dict.trigger.debuff["overload"] = [["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
+	dict.trigger.debuff["overheat"] = [[], ["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
+	dict.trigger.debuff["overload"] = [[], ["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
 	
 	init_corner()
 	init_windrose()

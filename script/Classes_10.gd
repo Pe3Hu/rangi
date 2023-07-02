@@ -45,7 +45,7 @@ class Sanctuary:
 	func init_greenhouse() -> void:
 		var input = {}
 		input.sanctuary = self
-		obj.greenhouse = Classes_14.Greenhouse.new(input)
+		obj.greenhouse = Classes_15.Greenhouse.new(input)
 
 
 	func init_occasions() -> void:
@@ -376,17 +376,23 @@ class Sanctuary:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
 						if location.arr.beast.size() > 1:
-							var input = {}
-							input.location = location
-							input.type = "clash"
-							var occasion = Classes_11.Occasion.new(input)
-							dict.occasion[input.type].append(occasion)
-							
+							var flag = false
 							for beast in location.arr.beast:
-								occasion.add_beast(beast)
+								if beast.num.index == 0:
+									flag = true
+							
+							if flag:
+								var input = {}
+								input.location = location
+								input.type = "clash"
+								var occasion = Classes_11.Occasion.new(input)
+								dict.occasion[input.type].append(occasion)
+								
+								for beast in location.arr.beast:
+									occasion.add_beast(beast)
 		
-		#for occasion in dict.occasion["clash"]:
-		#	occasion.start()
+#		for occasion in dict.occasion["clash"]:
+#			occasion.start()
 
 
 	func activate_beasts() -> void:
