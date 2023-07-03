@@ -1,7 +1,5 @@
-res://scene/11/occasion.tscn
-res://scene/3/tool.gd
-res://script/Classes_13.gd
 res://scene/0/planet.tscn
+res://scene/3/tool.gd
 res://scene/10/forest.tscn
 res://scene/10/sequoia.tscn
 res://scene/10/glade.tscn
@@ -11,9 +9,9 @@ res://scene/11/location.tscn
 res://scene/12/beast.tscn
 res://scene/13/chain.tscn
 res://scene/13/link.tscn
-res://script/Classes_10.gd
-res://script/Classes_14.gd
-res://script/Classes_15.gd
+res://scene/11/occasion.tscn
+res://scene/12/beast.gd
 res://script/Classes_12.gd
+res://script/Classes_13.gd
 res://script/Global.gd
-res://asset/json/subaspect_data.json
+res://asset/json/skill_data.json

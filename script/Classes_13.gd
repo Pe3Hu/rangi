@@ -142,6 +142,27 @@ class Chain:
 				num.indicator["threat"] += num.indicator[aspect] * sign
 		
 		num.indicator["threat"] = floor(sqrt(num.indicator["threat"]))
+		num.indicator["integrity"] = {}
+		num.indicator["integrity"].max = 0
+		
+		
+		for wound in num.wound:
+			num.indicator["integrity"].max += Global.dict.wound.weight[wound] * num.wound[wound].max
+		
+		num.indicator["integrity"].max -= Global.dict.wound.weight["lethal"]
+		num.indicator["integrity"].current = int(num.indicator["integrity"].max)
+		num.indicator["integrity"].value = 1.0
+		
+		
+		num.indicator["overlimit"] = {}
+		num.indicator["overlimit"].max = 0
+		
+		for resource in Global.dict.trigger.condition:
+			var size = Global.dict.trigger.condition[resource].size()
+			num.indicator["overlimit"].max += pow(size, 2)
+		
+		num.indicator["overlimit"].current = 0.0
+		num.indicator["overlimit"].value = 0.0
 		#print(word.subclass, num.indicator)
 
 
@@ -178,23 +199,25 @@ class Chain:
 		if num.resource[resource_].current < 0:
 			num.resource[resource_].current = 0
 		
-		update_trigger_based_on_overstage(resource_)
+		update_trigger_based_on_overlimit_stage(resource_)
 
 
-	func update_trigger_based_on_overstage(resource_: String) -> void:
+	func update_trigger_based_on_overlimit_stage(resource_: String) -> void:
 		if Global.dict.trigger.condition.has(resource_):
-			var stage = get_overstage(resource_)
+			var stage = get_overlimit_stage(resource_)
 			
 			if stage != null and num.stage[resource_] != stage:
 				var shift = stage - num.stage[resource_]
 				
 				if shift > 0:
-					set_trigger_to_next_overstage(resource_)
+					set_trigger_to_next_overlimit_stage(resource_)
 				else:
-					set_trigger_to_previous_overstage(resource_)
+					set_trigger_to_previous_overlimit_stage(resource_)
+				
+				update_overlimit()
 
 
-	func get_overstage(resource_: String) -> Variant:
+	func get_overlimit_stage(resource_: String) -> Variant:
 		var percentage = float(num.resource[resource_].current) / num.resource[resource_].max
 		var stages = Global.dict.trigger.condition[resource_].size()
 		
@@ -211,11 +234,13 @@ class Chain:
 		return null
 
 
-	func set_trigger_to_next_overstage(resource_: String) -> void:
+	func set_trigger_to_next_overlimit_stage(resource_: String) -> void:
 		var stages = Global.dict.trigger.condition[resource_].size()
 		
 		if num.stage[resource_] < stages - 1:
+			num.indicator["overlimit"].current -= pow(num.stage[resource_], 2)
 			num.stage[resource_] += 1
+			num.indicator["overlimit"].current += pow(num.stage[resource_], 2)
 			
 			var conditions = Global.dict.trigger.condition[resource_][num.stage[resource_]]
 			var debuffs = Global.dict.trigger.debuff[resource_][num.stage[resource_]]
@@ -225,7 +250,7 @@ class Chain:
 					arr.trigger[condition].append(debuff)
 
 
-	func set_trigger_to_previous_overstage(resource_: String) -> void:
+	func set_trigger_to_previous_overlimit_stage(resource_: String) -> void:
 		if num.stage[resource_] > 0:
 			var conditions = Global.dict.trigger.condition[resource_][num.stage[resource_]]
 			var debuffs = Global.dict.trigger.debuff[resource_][num.stage[resource_]]
@@ -234,7 +259,9 @@ class Chain:
 				for debuff in debuffs:
 					arr.trigger[condition].erase(debuff)
 			
+			num.indicator["overlimit"].current -= pow(num.stage[resource_], 2)
 			num.stage[resource_] -= 1
+			num.indicator["overlimit"].current += pow(num.stage[resource_], 2)
 
 
 	func take_attack(opponent_: Classes_12.Beast) -> void:
@@ -244,15 +271,23 @@ class Chain:
 			take_wound(wound)
 		else:
 			take_debuff(opponent_)
+		
+		update_integrity()
+		
+		if retreat_check():
+			obj.beast.retreat()
 
 
 	func take_wound(wound_: String) -> void:
 		num.wound[wound_].current += 1
+		num.indicator["integrity"].current -= Global.dict.wound.weight[wound_]
 		
 		if num.wound[wound_].current == num.wound[wound_].max and wound_ == "lethal":
+			#print(num.wound)
 			obj.beast.die()
 		elif num.wound[wound_].current > num.wound[wound_].max:
 			num.wound[wound_].current = num.wound[wound_].max
+			num.indicator["integrity"].current += Global.dict.wound.weight[wound_]
 			var aggravation = Global.get_aggravation(wound_)
 			take_wound(aggravation)
 
@@ -261,18 +296,64 @@ class Chain:
 		pass
 
 
+	func update_integrity() -> void:
+		if obj.beast.flag.alive:
+			num.indicator["integrity"].value = float(num.indicator["integrity"].current)/ num.indicator["integrity"].max
+		else:
+			num.indicator["integrity"].value = 0
+
+
+	func update_overlimit() -> void:
+		num.indicator["overlimit"].value = float(num.indicator["overlimit"].current)/ num.indicator["overlimit"].max
+
+
+	func retreat_check() -> bool:
+		if obj.beast.flag.alive:
+			var actions = Global.dict.beast.courage[obj.beast.word.courage]
+			var value = {}
+			Global.rng.randomize()
+			value["continue"] = Global.rng.randf_range(0, num.indicator["integrity"].value) * actions["continue"]
+			value["retreat"] = Global.rng.randf_range(0, 1.0 - num.indicator["integrity"].value) * actions["retreat"]
+			print(value)
+			
+			return value["retreat"] > value["continue"]
+		
+		return false
+
+
+	func rest_check() -> bool:
+		var actions = Global.dict.beast.mentality[obj.beast.word.mentality]
+		var value = {}
+		Global.rng.randomize()
+		value["rest"] = Global.rng.randf_range(0, num.indicator["overlimit"].value) * actions["rest"]
+		value["attack"] = Global.rng.randf_range(0, 1.0 - num.indicator["overlimit"].value) * actions["attack"]
+		print(num.indicator["overlimit"], value)
+		
+		return value["rest"] > value["attack"]
+
+
 	func roll_value_based_on_skill_and_condition(skill_: String, condition_: String) -> int:
-		var wound = Global.dict.skill.title[skill_].wound
-		var subaspect = Global.get_subaspect_based_on_wound_and_condition(wound, condition_)
+		var description = Global.dict.skill.title[skill_]
+		var subaspect = Global.get_subaspect_based_on_wound_and_condition(description.wound, condition_)
 		var aspect = Global.dict.aspect.condition[condition_]
 		var edge = obj.dice[aspect].roll()
 		var attempts = Global.dict.gist.attempt[edge.word.gist]
+		
+		if condition_ == "on attack":
+			attempts += Global.dict.accuracy.attempt[description.accuracy]
+			#print(Global.dict.accuracy.attempt[description.accuracy])
+		
+		var values = []
 		var min = num.aspect[aspect][subaspect].current
 		var max = 0
 		
-		for _i in attempts:
+		if attempts == 0:
+			attempts = -1
+		
+		for _i in abs(attempts):
 			Global.rng.randomize()
 			var value = Global.rng.randi_range(0, num.aspect[aspect][subaspect].current)
+			values.append(value)
 			
 			if min > value:
 				min = value
@@ -280,12 +361,12 @@ class Chain:
 			if max < value:
 				max = value
 		
-		var value = null
+		#print([attempts, values, min, max, num.aspect[aspect][subaspect].current])
 		
-		if edge.word.gist.contains("advantage"):
+		if attempts > 0:
 			return max
 		
-		if edge.word.gist.contains("hindrance"):
+		if attempts < 0:
 			return min
 		
 		return max

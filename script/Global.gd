@@ -38,7 +38,7 @@ func init_arr() -> void:
 	arr.beast = {}
 	arr.beast.aspect = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
 	arr.beast.wound = ["minor","severe","lethal","debuff"]
-	arr.beast.tactic = ["bide", "attack"]
+	arr.beast.tactic = ["rest", "attack"]
 	arr.beast.mentality = ["careful", "balanced", "aggressive"]
 	
 	arr.wood = {}
@@ -192,6 +192,66 @@ func init_dict() -> void:
 	dict.priority.title = ["finish construction", "pursuit of incentive", "take on hardest"]
 	dict.priority.total = dict.priority.avg * dict.priority.title.size()
 	
+	dict.wound = {}
+	dict.wound.check = {}
+	dict.wound.check["on attack"] = {}
+	dict.wound.check["on attack"]["minor"] = "lightness"
+	dict.wound.check["on attack"]["severe"] = "heaviness"
+	dict.wound.check["on attack"]["lethal"] = "lethality"
+	dict.wound.check["on attack"]["debuff"] = "lethality"
+	dict.wound.check["on defense"] = {}
+	dict.wound.check["on defense"]["minor"] = "armor"
+	dict.wound.check["on defense"]["severe"] = "armor"
+	dict.wound.check["on defense"]["lethal"] = "instinct"
+	dict.wound.check["on defense"]["debuff"] = "instinct"
+	
+	dict.wound.weight = {}
+	dict.wound.weight["minor"] = 1
+	dict.wound.weight["severe"] = 4
+	dict.wound.weight["lethal"] = 9
+	
+	dict.trigger = {}
+	dict.trigger.condition = {}
+	dict.trigger.condition["overheat"] = [[], ["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
+	dict.trigger.condition["overload"] = [[], ["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
+	dict.trigger.debuff = {}
+	dict.trigger.debuff["overheat"] = [[], ["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
+	dict.trigger.debuff["overload"] = [[], ["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
+	
+	dict.gist = {}
+	dict.gist.attempt = {}
+	dict.gist.attempt["standard"] = 1
+	dict.gist.attempt["advantage"] = 2
+	dict.gist.attempt["critical advantage"] = 3
+	dict.gist.attempt["hindrance"] = -2
+	dict.gist.attempt["critical hindrance"] = -3
+	
+	dict.accuracy = {}
+	dict.accuracy.attempt = {}
+	dict.accuracy.attempt["standard"] = 0
+	dict.accuracy.attempt["advantage"] = 1
+	dict.accuracy.attempt["critical advantage"] = 2
+	dict.accuracy.attempt["fundamental advantage"] = 3
+	dict.accuracy.attempt["hindrance"] = -1
+	dict.accuracy.attempt["critical hindrance"] = 2
+	dict.accuracy.attempt["fundamental hindrance"] = -3
+	
+	init_beast()
+	
+	init_windrose()
+	init_corner()
+	init_compartment()
+	init_drone()
+	init_schematic()
+	init_subaspects()
+	init_links()
+	init_skeletons()
+	init_bushs()
+	init_woods()
+	init_skills()
+
+
+func init_beast() -> void:
 	dict.beast = {}
 	dict.beast.resource = {}
 	dict.beast.resource["offensive"] = "overheat"
@@ -233,46 +293,33 @@ func init_dict() -> void:
 	dict.beast.respite["overheat"].preparation = 7
 	dict.beast.respite["overheat"].effect = 9
 	
-	dict.wound = {}
-	dict.wound.check = {}
-	dict.wound.check["on attack"] = {}
-	dict.wound.check["on attack"]["minor"] = "lightness"
-	dict.wound.check["on attack"]["severe"] = "heaviness"
-	dict.wound.check["on attack"]["lethal"] = "lethality"
-	dict.wound.check["on attack"]["debuff"] = "lethality"
-	dict.wound.check["on defense"] = {}
-	dict.wound.check["on defense"]["minor"] = "armor"
-	dict.wound.check["on defense"]["severe"] = "armor"
-	dict.wound.check["on defense"]["lethal"] = "instinct"
-	dict.wound.check["on defense"]["debuff"] = "instinct"
-	
-	dict.trigger = {}
-	dict.trigger.condition = {}
-	dict.trigger.condition["overheat"] = [[], ["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
-	dict.trigger.condition["overload"] = [[], ["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
-	dict.trigger.debuff = {}
-	dict.trigger.debuff["overheat"] = [[], ["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
-	dict.trigger.debuff["overload"] = [[], ["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
-	
-	dict.gist = {}
-	dict.gist.attempt = {}
-	dict.gist.attempt["standard"] = 1
-	dict.gist.attempt["advantage"] = 2
-	dict.gist.attempt["critical advantage"] = 3
-	dict.gist.attempt["hindrance"] = 2
-	dict.gist.attempt["critical hindrance"] = 3
-	
-	init_corner()
-	init_windrose()
-	init_compartment()
-	init_drone()
-	init_schematic()
-	init_subaspects()
-	init_links()
-	init_skeletons()
-	init_bushs()
-	init_woods()
-	init_skills()
+	dict.beast.mentality = {}
+	dict.beast.mentality["aggressive"] = {}
+	dict.beast.mentality["aggressive"]["rest"] = 3
+	dict.beast.mentality["aggressive"]["attack"] = 7
+	dict.beast.mentality["balanced"] = {}
+	dict.beast.mentality["balanced"]["rest"] = 5
+	dict.beast.mentality["balanced"]["attack"] = 5
+	dict.beast.mentality["careful"] = {}
+	dict.beast.mentality["careful"]["rest"] = 7
+	dict.beast.mentality["careful"]["attack"] = 3
+		
+	dict.beast.courage = {}
+	dict.beast.courage["berserker"] = {}
+	dict.beast.courage["berserker"]["continue"] = 9
+	dict.beast.courage["berserker"]["retreat"] = 1
+	dict.beast.courage["brave"] = {}
+	dict.beast.courage["brave"]["continue"] = 7
+	dict.beast.courage["brave"]["retreat"] = 3
+	dict.beast.courage["balanced"] = {}
+	dict.beast.courage["balanced"]["continue"] = 5
+	dict.beast.courage["balanced"]["retreat"] = 5
+	dict.beast.courage["cautious"] = {}
+	dict.beast.courage["cautious"]["continue"] = 3
+	dict.beast.courage["cautious"]["retreat"] = 7
+	dict.beast.courage["coward"] = {}
+	dict.beast.courage["coward"]["continue"] = 1
+	dict.beast.courage["coward"]["retreat"] = 9
 
 
 func init_windrose() -> void:

@@ -8,7 +8,7 @@
   "Wound": "Debuff",
   "Preparation": 10,
   "Cast": 2,
-  "Accuracy": "Standard"
+  "Accuracy": "Critical Hindrance"
  },
  {
   "Title": "Peck",
@@ -19,10 +19,10 @@
   "Wound": "Minor",
   "Preparation": 5,
   "Cast": 1,
-  "Accuracy": "Advantage"
+  "Accuracy": "Standard"
  },
  {
-  "Title": "Swoop ",
+  "Title": "Swoop",
   "Subclass": "Bird",
   "Energy": 75,
   "Overload": 3,
@@ -30,7 +30,7 @@
   "Wound": "Lethal",
   "Preparation": 20,
   "Cast": 3,
-  "Accuracy": "Hindrance"
+  "Accuracy": "Fundamental Hindrance"
  },
  {
   "Title": "Whip",
@@ -41,7 +41,7 @@
   "Wound": "Severe",
   "Preparation": 17,
   "Cast": 1,
-  "Accuracy": "Standard"
+  "Accuracy": "Hindrance"
  },
  {
   "Title": "Ram",
@@ -52,7 +52,7 @@
   "Wound": "Severe",
   "Preparation": 23,
   "Cast": 2,
-  "Accuracy": "Standard"
+  "Accuracy": "Advantage"
  },
  {
   "Title": "Geyser",
@@ -63,7 +63,7 @@
   "Wound": "Debuff",
   "Preparation": 37,
   "Cast": 2,
-  "Accuracy": "Hindrance"
+  "Accuracy": "Critical Hindrance"
  },
  {
   "Title": "Bite",
@@ -74,7 +74,7 @@
   "Wound": "Severe",
   "Preparation": 12,
   "Cast": 2,
-  "Accuracy": "Standard"
+  "Accuracy": "Hindrance"
  },
  {
   "Title": "Rip",
@@ -96,7 +96,7 @@
   "Wound": "Lethal",
   "Preparation": 30,
   "Cast": 3,
-  "Accuracy": "Standard"
+  "Accuracy": "Critical Hindrance"
  },
  {
   "Title": "Roll",
@@ -107,7 +107,7 @@
   "Wound": "Severe",
   "Preparation": 45,
   "Cast": 1,
-  "Accuracy": "Hindrance"
+  "Accuracy": "Critical Hindrance"
  },
  {
   "Title": "Spin",
@@ -129,7 +129,7 @@
   "Wound": "Lethal",
   "Preparation": 60,
   "Cast": 3,
-  "Accuracy": "Hindrance"
+  "Accuracy": "Fundamental Hindrance"
  },
  {
   "Title": "Triplet",
@@ -151,7 +151,7 @@
   "Wound": "Debuff",
   "Preparation": 40,
   "Cast": 2,
-  "Accuracy": "Standard"
+  "Accuracy": "Hindrance"
  },
  {
   "Title": "Bite",
@@ -159,7 +159,7 @@
   "Energy": 10,
   "Overload": 2,
   "Overheat": 5,
-  "Wound": "Minor",
+  "Wound": "Minor ",
   "Preparation": 30,
   "Cast": 1,
   "Accuracy": "Standard"
@@ -173,7 +173,7 @@
   "Wound": "Lethal",
   "Preparation": 54,
   "Cast": 7,
-  "Accuracy": "Standard"
+  "Accuracy": "Fundamental Hindrance"
  },
  {
   "Title": "Lunge",
@@ -195,7 +195,7 @@
   "Wound": "Debuff",
   "Preparation": 27,
   "Cast": 1,
-  "Accuracy": "Standard"
+  "Accuracy": "Hindrance"
  },
  {
   "Title": "Pierce",
@@ -228,6 +228,6 @@
   "Wound": "Debuff",
   "Preparation": 17,
   "Cast": 2,
-  "Accuracy": "Advantage"
+  "Accuracy": "Critical Hindrance"
  }
 ]

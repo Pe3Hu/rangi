@@ -30,6 +30,7 @@ class Zoo:
 			input.zoo = self
 			input.chain = chain
 			input.mentality = Global.arr.beast.mentality.back()
+			input.courage = Global.dict.beast.courage.keys()[2]
 			var beast = Classes_12.Beast.new(input)
 			arr.beast.append(beast)
 
@@ -60,7 +61,9 @@ class Beast:
 		vec.offset = Vector2()
 		dict.task = {}
 		flag.cycle = false
+		flag.alive = true
 		word.mentality = input_.mentality
+		word.courage = input_.courage
 		init_scene()
 		init_priority_in_combat()
 
@@ -72,20 +75,10 @@ class Beast:
 
 	func init_priority_in_combat() -> void:
 		dict.priority = {}
-		dict.priority.tactic = {}
 		word.tactic = {}
 		word.tactic.current = null
+		#Global.arr.beast.tactic[word.mentality][tactic]
 		
-		for tactic in Global.arr.beast.tactic:
-			dict.priority.tactic[tactic] = 1
-		
-		match word.mentality:
-			"careful":
-				dict.priority.tactic["bide"] += 2
-			"balanced":
-				pass
-			"aggressive":
-				dict.priority.tactic["attack"] += 2
 		
 		dict.priority.skill = {}
 		word.skill = {}
@@ -273,7 +266,12 @@ class Beast:
 
 	func choose_tactic() -> void:
 		if word.tactic.current == null:
-			word.tactic.current = Global.get_random_key(dict.priority.tactic)
+			if obj.chain.rest_check():
+				word.tactic.current = "rest"
+			else:
+				word.tactic.current = "attack"
+			
+			print([num.index, word.tactic.current])
 
 
 	func choose_skill() -> void:
@@ -287,19 +285,28 @@ class Beast:
 		result["on defense"] = obj.target.obj.chain.roll_value_based_on_skill_and_condition(word.skill.current, "on defense")
 		
 		if result["on attack"] > result["on defense"]:
-			obj.target.obj.chain.take_attack(self)
-			print(["hit", result])
+			print(["hit", word.skill.current, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
 		
-			if obj.target != null:
-				print(self, word.skill.current,obj.target.obj.chain.num.wound)
+			obj.target.obj.chain.take_attack(self)
+#			if obj.target != null:
+#				print(self, obj.target.obj.chain.num.wound)
 		else:
-			print(["miss", result])
+			print(["miss", word.skill.current, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
 		
 		word.skill.current = null
 
 
+	func retreat() -> void:
+		flag.alive = false
+		print(obj.chain.obj.beast.num.index, " beast is retreat")
+		
+		for opponent in arr.opponent:
+			opponent.obj.target = null
+
+
 	func die() -> void:
-		print(self, " dead")
+		flag.alive = false
+		print(obj.chain.obj.beast.num.index, " beast is dead")
 		
 		for opponent in arr.opponent:
 			opponent.obj.target = null
