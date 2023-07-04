@@ -49,7 +49,9 @@ class Beast:
 
 	func _init(input_: Dictionary) -> void:
 		arr.task = []
-		arr.opponent = []
+		arr.threat = {}
+		arr.threat.skill = []
+		arr.threat.beast = []
 		num.index = Global.num.index.beast
 		Global.num.index.beast += 1
 		obj.zoo = input_.zoo
@@ -77,8 +79,6 @@ class Beast:
 		dict.priority = {}
 		word.tactic = {}
 		word.tactic.current = null
-		#Global.arr.beast.tactic[word.mentality][tactic]
-		
 		
 		dict.priority.skill = {}
 		word.skill = {}
@@ -261,13 +261,13 @@ class Beast:
 						options.append(beast)
 				
 				obj.target = options.pick_random()
-				obj.target.arr.opponent.append(self)
+				obj.target.arr.threat.beast.append(self)
 
 
 	func choose_tactic() -> void:
 		if word.tactic.current == null:
-			if obj.chain.rest_check():
-				word.tactic.current = "rest"
+			if obj.chain.respite_check():
+				word.tactic.current = "respite"
 			else:
 				word.tactic.current = "attack"
 			
@@ -281,8 +281,8 @@ class Beast:
 
 	func activate_skill() -> void:
 		var result = {}
-		result["on attack"] = obj.chain.roll_value_based_on_skill_and_condition(word.skill.current, "on attack")
-		result["on defense"] = obj.target.obj.chain.roll_value_based_on_skill_and_condition(word.skill.current, "on defense")
+		result["on attack"] = obj.chain.roll_exodus_value_based_on_skill_and_condition(word.skill.current, "on attack")
+		result["on defense"] = obj.target.obj.chain.roll_exodus_value_based_on_skill_and_condition(word.skill.current, "on defense")
 		
 		if result["on attack"] > result["on defense"]:
 			print(["hit", word.skill.current, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
@@ -293,20 +293,36 @@ class Beast:
 		else:
 			print(["miss", word.skill.current, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
 		
+		word.tactic.current = null
 		word.skill.current = null
+		obj.target.arr.threat.skill.append(self)
+
+
+	func choose_respite_resource() -> void:
+		if word.respite.current == null:
+			word.respite.current = Global.get_random_key(dict.priority.skill)
+
+
+	func activate_respite() -> void:
+		
+		
+		word.tactic.current = null
+		word.respite.current = null
 
 
 	func retreat() -> void:
 		flag.alive = false
 		print(obj.chain.obj.beast.num.index, " beast is retreat")
 		
-		for opponent in arr.opponent:
+		for opponent in arr.threat.beast:
 			opponent.obj.target = null
 
 
 	func die() -> void:
 		flag.alive = false
 		print(obj.chain.obj.beast.num.index, " beast is dead")
+		scene.myself.stop_skill()
 		
-		for opponent in arr.opponent:
+		for opponent in arr.threat.beast:
 			opponent.obj.target = null
+			opponent.scene.myself.stop_skill()

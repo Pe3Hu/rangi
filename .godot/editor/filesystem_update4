@@ -10,8 +10,7 @@ res://scene/12/beast.tscn
 res://scene/13/chain.tscn
 res://scene/13/link.tscn
 res://scene/11/occasion.tscn
-res://scene/12/beast.gd
-res://script/Classes_12.gd
 res://script/Classes_13.gd
 res://script/Global.gd
-res://asset/json/skill_data.json
+res://scene/12/beast.gd
+res://script/Classes_12.gd

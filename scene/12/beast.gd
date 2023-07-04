@@ -59,13 +59,15 @@ func call_follow_phase() -> void:
 
 func start_action_in_combat_mode() -> void:
 	if parent.obj.target != null and parent.flag.alive:
-		var time = 0.1
-		tween = create_tween()
+		#var time = 0.1
+		#tween = create_tween()
 		#tween.tween_property(self, "rotation", PI * 0.5, time)
 		#tween.tween_property(self, "rotation", -PI * 0.5, time)
-		tween.tween_property(self, "skew", PI, time * 0.5)
-		tween.tween_property(self, "skew", 0, time * 0.5)
-		tween.tween_callback(decide_in_combat_mode)
+		#tween.tween_property(self, "skew", PI, time * 0.5)
+		#tween.tween_property(self, "skew", 0, time * 0.5)
+		#tween.tween_property(self, "skew", 0, time * 1)
+		#tween.tween_callback(decide_in_combat_mode)
+		decide_in_combat_mode()
 
 
 func decide_in_combat_mode() -> void:
@@ -75,15 +77,17 @@ func decide_in_combat_mode() -> void:
 		"attack":
 			parent.choose_skill()
 			begin_preparing_skill()
+		"respite":
+			parent.choose_respite_resource()
+			begin_preparing_respite()
 
 
 func begin_preparing_skill() -> void:
 	var time = Global.dict.skill.title[parent.word.skill.current].preparation * 0.1
+	parent.obj.target.arr.threat.skill.append(parent)
 	tween = create_tween()
 	tween.tween_property(self, "rotation", PI * 0.5, time)
 	tween.tween_property(self, "rotation", -PI * 0.5, time)
-	#tween.tween_property(self, "skew", PI, time * 0.5)
-	#tween.tween_property(self, "skew", 0, time * 0.5)
 	tween.tween_callback(finish_preparing_skill)
 
 
@@ -92,5 +96,26 @@ func finish_preparing_skill() -> void:
 		parent.obj.chain.expend_resources()
 		parent.activate_skill()
 		start_action_in_combat_mode()
+
+
+func begin_preparing_respite() -> void:
+	var time = Global.dict.beast.respite[parent.word.respite.current].preparation * 0.1
+	tween = create_tween()
+	tween.tween_property(self, "skew", PI, time * 0.5)
+	tween.tween_property(self, "skew", 0, time * 0.5)
+	tween.tween_callback(finish_preparing_respite)
+
+
+func finish_preparing_respite() -> void:
+	if parent.flag.alive:
+		parent.obj.chain.reduce_overlimit()
+		start_action_in_combat_mode()
+
+
+func stop_skill() -> void:
+	tween.stop()
+	tween = create_tween()
+	var time = 0
+	tween.tween_property(self, "rotation", 0, time)
 
 

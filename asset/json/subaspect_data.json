@@ -1,82 +1,62 @@
 [
  {
-  "Title": "Lightness",
-  "Aspect": "Offensive",
-  "Description": "Causing a minor wound"
- },
- {
-  "Title": "Heaviness",
-  "Aspect": "Offensive",
-  "Description": "Stabbed severely"
- },
- {
-  "Title": "Lethality",
-  "Aspect": "Offensive",
-  "Description": "Inflict mortal wound"
- },
- {
   "Title": "Onslaught",
   "Aspect": "Offensive",
-  "Description": "First strike in action"
+  "Description": "Gaining pre-event advantage"
  },
  {
-  "Title": "Vitality",
-  "Aspect": "Resilience",
-  "Description": "Wound Limit"
+  "Title": "Penetration",
+  "Aspect": "Offensive",
+  "Description": "Inflict a wound"
  },
  {
-  "Title": "Armor",
-  "Aspect": "Resilience",
-  "Description": "Resistance to Injuries"
- },
- {
-  "Title": "Instinct",
-  "Aspect": "Resilience",
-  "Description": "Resisting mortal wound"
+  "Title": "Stealth",
+  "Aspect": "Offensive",
+  "Description": "Conceal intention"
  },
  {
   "Title": "Regeneration",
   "Aspect": "Resilience",
-  "Description": "Damage recovery"
+  "Description": "Resource recovery"
+ },
+ {
+  "Title": "Armor",
+  "Aspect": "Resilience",
+  "Description": "Resistance to wounding"
+ },
+ {
+  "Title": "Instinct",
+  "Aspect": "Resilience",
+  "Description": "Prepare to be wounded"
  },
  {
   "Title": "Attention",
   "Aspect": "Sensory",
-  "Description": "Gaining advantage before an event"
+  "Description": "Gaining pre-event advantage"
  },
  {
   "Title": "Bloodlust",
   "Aspect": "Sensory",
-  "Description": "Gaining an advantage in combat"
+  "Description": "Gaining an advantage inside event"
  },
  {
   "Title": "Analytics",
   "Aspect": "Sensory",
-  "Description": "Gaining an advantage outside of combat"
+  "Description": "Gaining an advantage outside event"
  },
  {
-  "Title": "Harmony",
-  "Aspect": "Sensory",
-  "Description": "Chance of bonus effect when crafting"
- },
- {
-  "Title": "Disguise",
+  "Title": "Camouflage",
   "Aspect": "Mobility",
-  "Description": "Gaining advantage before an event"
+  "Description": "Gaining pre-event advantages"
  },
  {
   "Title": "Sprint",
   "Aspect": "Mobility",
-  "Description": "Gaining an advantage in combat"
+  "Description": "Gaining an advantage inside event"
  },
  {
   "Title": "Marathon",
   "Aspect": "Mobility",
-  "Description": "Gaining an advantage outside of combat"
- },
- {
-  "Title": "Second Breath",
-  "Aspect": "Mobility",
-  "Description": "Stamina Recovery"
+  "Description": "Gaining an advantage outside event"
  }
 ]

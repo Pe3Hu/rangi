@@ -35,6 +35,8 @@ class Chain:
 		num.resource = {}
 		num.wound = {}
 		num.stage = {}
+		num.indicator = {}
+		num.indicator.threat = 0
 		arr.trigger = {}
 		
 		for condition in Global.arr.condition:
@@ -57,7 +59,14 @@ class Chain:
 					num.resource[resource].current = 0
 					num.stage[resource] = 0
 				"integrity":
-					num.resource[resource].current = num.resource[resource].max
+					num.resource[resource].max = 0
+					
+					for wound in num.wound:
+						num.resource[resource].max += Global.dict.wound.weight[wound] * num.wound[wound].max
+					
+					num.resource[resource].max -= Global.dict.wound.weight["lethal"]
+					num.resource[resource].current = int(num.resource["integrity"].max)
+					num.indicator[resource] = 1.0
 				"overload":
 					num.resource[resource].current = 0
 					num.stage[resource] = 0
@@ -67,8 +76,6 @@ class Chain:
 
 	func init_aspects() -> void:
 		num.aspect = {}
-		num.indicator = {}
-		num.indicator.threat = 0
 		
 		for aspect in Global.arr.beast.aspect:
 			num.aspect[aspect] = {}
@@ -103,6 +110,9 @@ class Chain:
 				var subaspect = num.aspect[aspect].keys().pick_random()
 				num.aspect[aspect][subaspect].base += 1
 				value.free -= 1
+			
+			for subaspect in num.aspect[aspect]:
+				num.aspect[aspect][subaspect].current = int(num.aspect[aspect][subaspect].base)
 
 
 	func init_links() -> void:
@@ -142,18 +152,6 @@ class Chain:
 				num.indicator["threat"] += num.indicator[aspect] * sign
 		
 		num.indicator["threat"] = floor(sqrt(num.indicator["threat"]))
-		num.indicator["integrity"] = {}
-		num.indicator["integrity"].max = 0
-		
-		
-		for wound in num.wound:
-			num.indicator["integrity"].max += Global.dict.wound.weight[wound] * num.wound[wound].max
-		
-		num.indicator["integrity"].max -= Global.dict.wound.weight["lethal"]
-		num.indicator["integrity"].current = int(num.indicator["integrity"].max)
-		num.indicator["integrity"].value = 1.0
-		
-		
 		num.indicator["overlimit"] = {}
 		num.indicator["overlimit"].max = 0
 		
@@ -163,7 +161,15 @@ class Chain:
 		
 		num.indicator["overlimit"].current = 0.0
 		num.indicator["overlimit"].value = 0.0
-		#print(word.subclass, num.indicator)
+		
+		for event in Global.dict.subaspect.event:
+			num.indicator[event] = 0
+			
+			for subaspect in Global.dict.subaspect.event[event]:
+				var aspect = Global.dict.subaspect.title[subaspect].aspect
+				num.indicator[event] += num.aspect[aspect][subaspect].current
+			
+			num.indicator[event] = floor(num.indicator[event] / Global.dict.subaspect.event[event].size())
 
 
 	func update_aspects() -> void:
@@ -195,7 +201,7 @@ class Chain:
 			"energy":
 				expend = min(num.resource[resource_].current, value_)
 				num.resource[resource_].current -= expend
-				
+		
 		if num.resource[resource_].current < 0:
 			num.resource[resource_].current = 0
 		
@@ -214,7 +220,7 @@ class Chain:
 				else:
 					set_trigger_to_previous_overlimit_stage(resource_)
 				
-				update_overlimit()
+				update_overlimit_indicator()
 
 
 	func get_overlimit_stage(resource_: String) -> Variant:
@@ -272,7 +278,7 @@ class Chain:
 		else:
 			take_debuff(opponent_)
 		
-		update_integrity()
+		update_integrity_indicator()
 		
 		if retreat_check():
 			obj.beast.retreat()
@@ -280,14 +286,14 @@ class Chain:
 
 	func take_wound(wound_: String) -> void:
 		num.wound[wound_].current += 1
-		num.indicator["integrity"].current -= Global.dict.wound.weight[wound_]
+		num.resource["integrity"].current -= Global.dict.wound.weight[wound_]
 		
 		if num.wound[wound_].current == num.wound[wound_].max and wound_ == "lethal":
 			#print(num.wound)
 			obj.beast.die()
 		elif num.wound[wound_].current > num.wound[wound_].max:
 			num.wound[wound_].current = num.wound[wound_].max
-			num.indicator["integrity"].current += Global.dict.wound.weight[wound_]
+			num.resource["integrity"].current += Global.dict.wound.weight[wound_]
 			var aggravation = Global.get_aggravation(wound_)
 			take_wound(aggravation)
 
@@ -296,15 +302,21 @@ class Chain:
 		pass
 
 
-	func update_integrity() -> void:
+	func update_integrity_indicator() -> void:
 		if obj.beast.flag.alive:
-			num.indicator["integrity"].value = float(num.indicator["integrity"].current)/ num.indicator["integrity"].max
+			num.indicator["integrity"] = float(num.resource["integrity"].current)/ num.resource["integrity"].max
 		else:
-			num.indicator["integrity"].value = 0
+			num.indicator["integrity"] = 0
 
 
-	func update_overlimit() -> void:
+	func update_overlimit_indicator() -> void:
 		num.indicator["overlimit"].value = float(num.indicator["overlimit"].current)/ num.indicator["overlimit"].max
+
+
+	func reduce_overlimit() -> void:
+		var resource = obj.beast.word.respite.current
+		var value = Global.dict.beast.respite[resource].effect
+		expend_resource(resource, -value)
 
 
 	func retreat_check() -> bool:
@@ -312,27 +324,44 @@ class Chain:
 			var actions = Global.dict.beast.courage[obj.beast.word.courage]
 			var value = {}
 			Global.rng.randomize()
-			value["continue"] = Global.rng.randf_range(0, num.indicator["integrity"].value) * actions["continue"]
-			value["retreat"] = Global.rng.randf_range(0, 1.0 - num.indicator["integrity"].value) * actions["retreat"]
-			print(value)
+			value["continue"] = Global.rng.randf_range(0, num.indicator["integrity"]) * actions["continue"]
+			value["retreat"] = Global.rng.randf_range(0, 1.0 - num.indicator["integrity"]) * actions["retreat"]
 			
 			return value["retreat"] > value["continue"]
 		
 		return false
 
 
-	func rest_check() -> bool:
+	func respite_check() -> bool:
 		var actions = Global.dict.beast.mentality[obj.beast.word.mentality]
 		var value = {}
 		Global.rng.randomize()
-		value["rest"] = Global.rng.randf_range(0, num.indicator["overlimit"].value) * actions["rest"]
-		value["attack"] = Global.rng.randf_range(0, 1.0 - num.indicator["overlimit"].value) * actions["attack"]
-		print(num.indicator["overlimit"], value)
+		value["respite"] = Global.rng.randf_range(0, num.indicator["overlimit"].value) * actions["respite"]
+		value["action"] = Global.rng.randf_range(0, 1.0 - num.indicator["overlimit"].value) * actions["action"]
 		
-		return value["rest"] > value["attack"]
+		return value["respite"] > value["action"]
 
 
-	func roll_value_based_on_skill_and_condition(skill_: String, condition_: String) -> int:
+	func identify_threat_to_response() -> Variant:
+		var threats = []
+		
+		for beast in obj.beast.arr.threat.skill:
+			var threat = {}
+			threat.beast = beast
+			threat.wound = Global.dict.skill.title[beast.word.skill.current].wound
+			threat_detection_check(beast)
+		
+		
+		return null
+
+	func threat_detection_check(beast_: Classes_12.Beast) -> bool:
+		var wound = Global.dict.skill.title[beast_.word.skill.current].wound
+		
+		
+		return false
+
+
+	func roll_exodus_value_based_on_skill_and_condition(skill_: String, condition_: String) -> int:
 		var description = Global.dict.skill.title[skill_]
 		var subaspect = Global.get_subaspect_based_on_wound_and_condition(description.wound, condition_)
 		var aspect = Global.dict.aspect.condition[condition_]
@@ -340,28 +369,35 @@ class Chain:
 		var attempts = Global.dict.gist.attempt[edge.word.gist]
 		
 		if condition_ == "on attack":
-			attempts += Global.dict.accuracy.attempt[description.accuracy]
-			#print(Global.dict.accuracy.attempt[description.accuracy])
+			attempts += Global.dict.modifier.attempt[description.accuracy]
+			#print(Global.dict.modifier.attempt[description.accuracy])
+		
+		#correction for the sum of two hindrances
+		if edge.word.gist.contains("hindrance") and description.accuracy.contains("hindrance"):
+			attempts += 2
 		
 		var values = []
 		var min = num.aspect[aspect][subaspect].current
 		var max = 0
+		var value = {}
+		value.max = num.aspect[aspect][subaspect].current + num.indicator["inside event"]
 		
 		if attempts == 0:
 			attempts = -1
 		
 		for _i in abs(attempts):
 			Global.rng.randomize()
-			var value = Global.rng.randi_range(0, num.aspect[aspect][subaspect].current)
-			values.append(value)
+			value.current = Global.rng.randi_range(0, value.max)
+			values.append(value.current)
 			
-			if min > value:
-				min = value
+			if min > value.current:
+				min = value.current
 			
-			if max < value:
-				max = value
+			if max < value.current:
+				max = value.current
 		
-		#print([attempts, values, min, max, num.aspect[aspect][subaspect].current])
+		if description.wound == "lethal":
+			print([attempts, values, min, max, value.max])
 		
 		if attempts > 0:
 			return max
@@ -371,6 +407,51 @@ class Chain:
 		
 		return max
 
+
+	func roll_intention_value_based_on_skill_andcondition(skill_: String, condition_: String) -> int:
+		var description = Global.dict.skill.title[skill_]
+		var subaspect = Global.dict.subaspect.intention[condition_]
+		var aspect = Global.dict.aspect.condition[condition_]
+		var edge = obj.dice[aspect].roll()
+		var attempts = Global.dict.gist.attempt[edge.word.gist]
+		
+		if condition_ == "on attack":
+			attempts += Global.dict.modifier.attempt[description.notability]
+		
+		#correction for the sum of two hindrances
+		if edge.word.gist.contains("hindrance") and description.notability.contains("hindrance"):
+			attempts += 2
+		
+		var values = []
+		var min = num.aspect[aspect][subaspect].current
+		var max = 0
+		var value = {}
+		value.max = num.aspect[aspect][subaspect].current + num.indicator["inside event"]
+		
+		if attempts == 0:
+			attempts = -1
+		
+		for _i in abs(attempts):
+			Global.rng.randomize()
+			value.current = Global.rng.randi_range(0, value.max)
+			values.append(value.current)
+			
+			if min > value.current:
+				min = value.current
+			
+			if max < value.current:
+				max = value.current
+		
+		if description.wound == "lethal":
+			print([attempts, values, min, max, value.max])
+		
+		if attempts > 0:
+			return max
+		
+		if attempts < 0:
+			return min
+		
+		return max
 
 #Звено link
 class Link:

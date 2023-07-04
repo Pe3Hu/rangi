@@ -38,7 +38,7 @@ func init_arr() -> void:
 	arr.beast = {}
 	arr.beast.aspect = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
 	arr.beast.wound = ["minor","severe","lethal","debuff"]
-	arr.beast.tactic = ["rest", "attack"]
+	arr.beast.tactic = ["respite", "attack", "response"]
 	arr.beast.mentality = ["careful", "balanced", "aggressive"]
 	
 	arr.wood = {}
@@ -226,15 +226,15 @@ func init_dict() -> void:
 	dict.gist.attempt["hindrance"] = -2
 	dict.gist.attempt["critical hindrance"] = -3
 	
-	dict.accuracy = {}
-	dict.accuracy.attempt = {}
-	dict.accuracy.attempt["standard"] = 0
-	dict.accuracy.attempt["advantage"] = 1
-	dict.accuracy.attempt["critical advantage"] = 2
-	dict.accuracy.attempt["fundamental advantage"] = 3
-	dict.accuracy.attempt["hindrance"] = -1
-	dict.accuracy.attempt["critical hindrance"] = 2
-	dict.accuracy.attempt["fundamental hindrance"] = -3
+	dict.modifier = {}
+	dict.modifier.attempt = {}
+	dict.modifier.attempt["standard"] = 0
+	dict.modifier.attempt["advantage"] = 1
+	dict.modifier.attempt["critical advantage"] = 2
+	dict.modifier.attempt["fundamental advantage"] = 3
+	dict.modifier.attempt["hindrance"] = -3
+	dict.modifier.attempt["critical hindrance"] = -4
+	dict.modifier.attempt["fundamental hindrance"] = -5
 	
 	init_beast()
 	
@@ -276,14 +276,14 @@ func init_beast() -> void:
 	dict.beast.response["minor"].preparation = 3
 	dict.beast.response["minor"].activated = 3
 	dict.beast.response["severe"] = {}
-	dict.beast.response["severe"].preparation = 8
-	dict.beast.response["severe"].activated = 5
+	dict.beast.response["severe"].preparation = 5
+	dict.beast.response["severe"].activated = 9
 	dict.beast.response["debuff"] = {}
-	dict.beast.response["debuff"].preparation = 10
-	dict.beast.response["debuff"].activated = 4
+	dict.beast.response["debuff"].preparation = 7
+	dict.beast.response["debuff"].activated = 12
 	dict.beast.response["lethal"] = {}
-	dict.beast.response["lethal"].preparation = 15
-	dict.beast.response["lethal"].activated = 7
+	dict.beast.response["lethal"].preparation = 9
+	dict.beast.response["lethal"].activated = 6
 	
 	dict.beast.respite = {}
 	dict.beast.respite["overload"] = {}
@@ -292,17 +292,24 @@ func init_beast() -> void:
 	dict.beast.respite["overheat"] = {}
 	dict.beast.respite["overheat"].preparation = 7
 	dict.beast.respite["overheat"].effect = 9
+	dict.beast.respite["integrity"] = {}
+	dict.beast.respite["integrity"]["minor"] = {}
+	dict.beast.respite["integrity"]["minor"].preparation = 11
+	dict.beast.respite["integrity"]["minor"].effect = dict.wound.weight["minor"]
+	dict.beast.respite["integrity"]["severe"] = {}
+	dict.beast.respite["integrity"]["severe"].preparation = 19
+	dict.beast.respite["integrity"]["severe"].effect = dict.wound.weight["severe"]
 	
 	dict.beast.mentality = {}
 	dict.beast.mentality["aggressive"] = {}
-	dict.beast.mentality["aggressive"]["rest"] = 3
-	dict.beast.mentality["aggressive"]["attack"] = 7
+	dict.beast.mentality["aggressive"]["respite"] = 3
+	dict.beast.mentality["aggressive"]["action"] = 7
 	dict.beast.mentality["balanced"] = {}
-	dict.beast.mentality["balanced"]["rest"] = 5
-	dict.beast.mentality["balanced"]["attack"] = 5
+	dict.beast.mentality["balanced"]["respite"] = 5
+	dict.beast.mentality["balanced"]["action"] = 5
 	dict.beast.mentality["careful"] = {}
-	dict.beast.mentality["careful"]["rest"] = 7
-	dict.beast.mentality["careful"]["attack"] = 3
+	dict.beast.mentality["careful"]["respite"] = 7
+	dict.beast.mentality["careful"]["action"] = 3
 		
 	dict.beast.courage = {}
 	dict.beast.courage["berserker"] = {}
@@ -674,12 +681,16 @@ func init_subaspects() -> void:
 	dict.aspect.subaspect = {}
 	dict.subaspect = {}
 	dict.subaspect.title = {}
+	dict.subaspect.event = {}
+	dict.subaspect.event["pre-event"] = []
+	dict.subaspect.event["inside event"] = []
+	dict.subaspect.event["outside event"] = []
 	var path = "res://asset/json/subaspect_data.json"
 	var array = load_data(path)
 	
 	for subaspect in array:
 		var data = {}
-
+		
 		for key in subaspect.keys():
 			if key != "Title":
 				data[key.to_lower()] = subaspect[key].to_lower()
@@ -692,17 +703,22 @@ func init_subaspects() -> void:
 			dict.aspect.subaspect[aspect] = []
 		
 		dict.aspect.subaspect[aspect].append(subaspect["Title"].to_lower())
+		
+		for event in dict.subaspect.event:
+			if data.description.contains(event):
+				dict.subaspect.event[event].append(subaspect["Title"].to_lower())
 	
 	dict.aspect.condition = {}
 	dict.aspect.condition["on attack"] = "offensive"
 	dict.aspect.condition["on defense"] = "resilience"
 	
 	dict.subaspect.wound = {}
-	dict.subaspect.wound["lightness"] = ["minor"]
-	dict.subaspect.wound["heaviness"] = ["severe"]
-	dict.subaspect.wound["lethality"] = ["lethal", "debuff"]
-	dict.subaspect.wound["armor"] = ["minor", "severe"]
-	dict.subaspect.wound["instinct"] = ["lethal", "debuff"]
+	dict.subaspect.wound["penetration"] = ["minor", "severe", "lethal", "debuff"]
+	dict.subaspect.wound["armor"] = ["minor", "severe", "lethal", "debuff"]
+	
+	dict.subaspect.intention = {}
+	dict.subaspect.intention["on attack"] = "stealth"
+	dict.subaspect.intention["on defense"] = "instinct"
 
 
 func get_subaspect_based_on_wound_and_condition(wound_: String, condition_: String) -> Variant:
