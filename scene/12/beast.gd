@@ -85,9 +85,13 @@ func decide_in_combat_mode() -> void:
 
 func begin_preparing_skill() -> void:
 	var description = Global.dict.skill.title[parent.word.skill.title]
-	parent.num.skill.finish = Global.obj.cosmos.get_time() + description.preparation + description.cast
+	var multiplier = {}
+	multiplier.aspect = Global.arr.beast.roll["modify time"]
+	parent.obj.chain.obj.dice.aspect[multiplier.aspect].roll()
+	multiplier.value = parent.obj.chain.obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+	
+	parent.num.skill.finish = Global.obj.cosmos.get_time() + (description.preparation + description.cast) * multiplier.value 
 	parent.word.skill.stage = "preparing"
-	#print("begin_preparing_skill", parent.word.skill)
 	parent.attempt_to_hide_threat()
 	
 	var time = description.preparation
@@ -101,8 +105,11 @@ func begin_casting_skill() -> void:
 	if parent.obj.target != null and parent.flag.alive:
 		parent.word.skill.stage = "casting"
 		parent.attempt_to_hide_threat()
+		var multiplier = {}
+		multiplier.aspect = Global.arr.beast.roll["modify time"]
+		multiplier.value = parent.obj.chain.obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+		var time = Global.dict.skill.title[parent.word.skill.title].cast * multiplier.value
 		
-		var time = Global.dict.skill.title[parent.word.skill.title].cast
 		tween = create_tween()
 		tween.tween_property(self, "rotation", -PI * 0.5, time)
 		tween.tween_property(self, "rotation", PI * 0.5, time)
@@ -117,7 +124,11 @@ func finish_casting_skill() -> void:
 
 
 func begin_preparing_respite() -> void:
-	var time = Global.dict.beast.respite[parent.word.respite.current].preparation
+	var multiplier = {}
+	multiplier.aspect = Global.arr.beast.roll["modify time"]
+	multiplier.value = parent.obj.chain.obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+	var time = Global.dict.skill.title[parent.word.skill.title].preparation * multiplier.value
+	
 	tween = create_tween()
 	tween.tween_property(self, "skew", PI, time * 0.5)
 	tween.tween_property(self, "skew", 0, time * 0.5)

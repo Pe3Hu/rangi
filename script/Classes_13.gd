@@ -28,6 +28,7 @@ class Chain:
 			var input = {}
 			input.chain = self
 			input.type = "condition"
+			input.title = condition
 			#input.aspect = aspect
 			input.faces = 20
 			obj.dice.condition[condition] = Classes_14.Dice.new(input)
@@ -36,6 +37,7 @@ class Chain:
 			var input = {}
 			input.chain = self
 			input.type = "aspect"
+			input.title = aspect
 			#input.aspect = aspect
 			input.faces = 6
 			obj.dice.aspect[aspect] = Classes_14.Dice.new(input)
@@ -190,10 +192,15 @@ class Chain:
 
 	func expend_resources() -> void:
 		var description = Global.dict.skill.title[obj.beast.word.skill.title]
+		var multiplier = {}
+		multiplier.aspect = Global.arr.beast.roll["modify expend"]
+		obj.dice.aspect[multiplier.aspect].roll()
+		multiplier.value = obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+	
 		
 		for resource in num.resource:
 			if description.has(resource):
-				var value = description[resource]
+				var value = floor(description[resource] * multiplier.value)
 				expend_resource(resource, value) 
 
 
@@ -282,16 +289,30 @@ class Chain:
 
 	func take_attack(aggressor_: Classes_12.Beast) -> void:
 		var wound = Global.dict.skill.title[aggressor_.word.skill.title].wound
+		var multiplier = {}
+		multiplier.aspect = Global.arr.beast.roll["modify wound"]
+		obj.dice.aspect[multiplier.aspect].roll()
+		multiplier.value = obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
 		
-		if num.wound.has(wound):
-			take_wound(wound)
-		else:
-			take_debuff(aggressor_)
+		if multiplier.value != 0:
+			var aggravation = str(wound)
+			
+			for _i in abs(multiplier.value):
+				if multiplier.value > 0:
+					wound = Global.get_aggravation(wound)
+				else:
+					wound = Global.get_remission(wound)
 		
-		update_integrity_indicator()
-		
-		if retreat_check():
-			obj.beast.retreat()
+		if wound != null:
+			if num.wound.has(wound):
+				take_wound(wound)
+			else:
+				take_debuff(aggressor_)
+			
+			update_integrity_indicator()
+			
+			if retreat_check():
+				obj.beast.retreat()
 
 
 	func take_wound(wound_: String) -> void:
@@ -360,7 +381,8 @@ class Chain:
 		var description = Global.dict.skill.title[aggressor_.word.skill.title]
 		var subaspect = Global.get_subaspect_based_on_wound_and_condition(description.wound, condition_)
 		var aspect = Global.dict.aspect.condition[condition_]
-		var edge = obj.dice.condition[condition_].roll()
+		obj.dice.condition[condition_].roll()
+		var edge = obj.dice.condition[condition_].obj.edge
 		var attempts = Global.dict.gist.attempt[edge.word.gist.current]
 		
 		if condition_ == "on attack":
@@ -408,7 +430,8 @@ class Chain:
 		var description = Global.dict.skill.title[aggressor_.word.skill.title]
 		var subaspect = Global.dict.subaspect.intention[condition_]
 		var aspect = Global.dict.aspect.condition[condition_]
-		var edge = obj.dice.condition[condition_].roll()
+		obj.dice.condition[condition_].roll()
+		var edge = obj.dice.condition[condition_].obj.edge
 		var attempts = Global.dict.gist.attempt[edge.word.gist.current]
 		
 		if condition_ == "on attack":
@@ -423,6 +446,13 @@ class Chain:
 		var max = 0
 		var value = {}
 		value.max = num.aspect[aspect][subaspect].current + num.indicator["inside event"]
+		
+		var multiplier = {}
+		multiplier.aspect = Global.arr.beast.roll["modify intention"]
+		obj.dice.aspect[multiplier.aspect].roll()
+		multiplier.value = obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+		
+		value.max = floor(value.max * multiplier.value)
 		
 		if attempts == 0:
 			attempts = -1

@@ -40,6 +40,13 @@ func init_arr() -> void:
 	arr.beast.wound = ["minor","severe","lethal","debuff"]
 	arr.beast.tactic = ["respite", "attack", "response"]
 	arr.beast.mentality = ["careful", "balanced", "aggressive"]
+	arr.beast.roll = {}
+	
+	arr.beast.roll["modify time"] = "offensive"
+	arr.beast.roll["modify wound"] = "resilience"
+	arr.beast.roll["modify intention"] = "sensory"
+	arr.beast.roll["modify expend"] = "mobility"
+	
 	
 	arr.wood = {}
 	arr.wood.attribute = ["hardness", "density"]
@@ -248,7 +255,6 @@ func init_dict() -> void:
 	dict.modifier.attempt["hindrance"] = -3
 	dict.modifier.attempt["critical hindrance"] = -4
 	dict.modifier.attempt["fundamental hindrance"] = -5
-	
 	#dict.threat = {}
 	#dict.threat.weight = {}
 	
@@ -1072,3 +1078,13 @@ func get_perimeter_of_triangle_based_on_vertices(vertices_: Array) -> Variant:
 func get_aggravation(wound_: String) -> String:
 	var index = arr.beast.wound.find(wound_)
 	return arr.beast.wound[index + 1]
+
+
+func get_remission(wound_: Variant) -> Variant:
+	if wound_ != null:
+		var index = arr.beast.wound.find(wound_)
+		
+		if index > 1:
+			return arr.beast.wound[index - 1]
+	
+	return null

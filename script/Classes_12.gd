@@ -159,7 +159,6 @@ class Beast:
 	func walk_through_habitat() -> void:
 		var location = select_unvisited_location()
 		
-		print(location)
 		if location != null:
 			step_into_location(location)
 			repeat_current_phase()
@@ -274,8 +273,6 @@ class Beast:
 				word.tactic.current = "respite"
 			else:
 				word.tactic.current = "attack"
-			
-			print([num.index, word.tactic.current])
 
 
 	func choose_skill() -> void:
