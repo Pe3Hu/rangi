@@ -76,6 +76,7 @@ func decide_in_combat_mode() -> void:
 	match parent.word.tactic.current:
 		"attack":
 			parent.choose_skill()
+			
 			begin_preparing_skill()
 		"respite":
 			parent.choose_respite_resource()
@@ -83,15 +84,32 @@ func decide_in_combat_mode() -> void:
 
 
 func begin_preparing_skill() -> void:
-	var time = Global.dict.skill.title[parent.word.skill.current].preparation * 0.1
-	parent.obj.target.arr.threat.skill.append(parent)
+	var description = Global.dict.skill.title[parent.word.skill.title]
+	parent.num.skill.finish = Global.obj.cosmos.get_time() + description.preparation + description.cast
+	parent.word.skill.stage = "preparing"
+	#print("begin_preparing_skill", parent.word.skill)
+	parent.attempt_to_hide_threat()
+	
+	var time = description.preparation
 	tween = create_tween()
 	tween.tween_property(self, "rotation", PI * 0.5, time)
 	tween.tween_property(self, "rotation", -PI * 0.5, time)
-	tween.tween_callback(finish_preparing_skill)
+	tween.tween_callback(begin_casting_skill)
 
 
-func finish_preparing_skill() -> void:
+func begin_casting_skill() -> void:
+	if parent.obj.target != null and parent.flag.alive:
+		parent.word.skill.stage = "casting"
+		parent.attempt_to_hide_threat()
+		
+		var time = Global.dict.skill.title[parent.word.skill.title].cast
+		tween = create_tween()
+		tween.tween_property(self, "rotation", -PI * 0.5, time)
+		tween.tween_property(self, "rotation", PI * 0.5, time)
+		tween.tween_callback(finish_casting_skill)
+
+
+func finish_casting_skill() -> void:
 	if parent.obj.target != null and parent.flag.alive:
 		parent.obj.chain.expend_resources()
 		parent.activate_skill()
@@ -99,7 +117,7 @@ func finish_preparing_skill() -> void:
 
 
 func begin_preparing_respite() -> void:
-	var time = Global.dict.beast.respite[parent.word.respite.current].preparation * 0.1
+	var time = Global.dict.beast.respite[parent.word.respite.current].preparation
 	tween = create_tween()
 	tween.tween_property(self, "skew", PI, time * 0.5)
 	tween.tween_property(self, "skew", 0, time * 0.5)

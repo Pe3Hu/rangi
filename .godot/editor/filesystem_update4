@@ -11,6 +11,13 @@ res://scene/13/chain.tscn
 res://scene/13/link.tscn
 res://scene/11/occasion.tscn
 res://script/Classes_13.gd
-res://script/Global.gd
 res://scene/12/beast.gd
+res://script/Global.gd
 res://script/Classes_12.gd
+res://scene/0/planet.gd
+res://script/Classes_0.gd
+res://script/Classes_10.gd
+res://scene/Game.gd
+res://script/Classes_11.gd
+res://asset/json/skill_data.json
+res://script/Classes_14.gd

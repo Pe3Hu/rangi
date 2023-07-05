@@ -50,10 +50,13 @@ class Beast:
 	func _init(input_: Dictionary) -> void:
 		arr.task = []
 		arr.threat = {}
-		arr.threat.skill = []
+		arr.threat.recognized = []
+		arr.threat.unrecognized = []
 		arr.threat.beast = []
 		num.index = Global.num.index.beast
 		Global.num.index.beast += 1
+		num.skill = {}
+		num.skill.finish = null
 		obj.zoo = input_.zoo
 		obj.chain = input_.chain
 		obj.chain.obj.beast = self
@@ -66,6 +69,9 @@ class Beast:
 		flag.alive = true
 		word.mentality = input_.mentality
 		word.courage = input_.courage
+		word.skill = {}
+		word.skill.title = null
+		word.skill.stage = null
 		init_scene()
 		init_priority_in_combat()
 
@@ -81,8 +87,6 @@ class Beast:
 		word.tactic.current = null
 		
 		dict.priority.skill = {}
-		word.skill = {}
-		word.skill.current = null
 		
 		for skill in Global.dict.skill.subclass[obj.chain.word.subclass]:
 			dict.priority.skill[skill] = 1
@@ -275,27 +279,32 @@ class Beast:
 
 
 	func choose_skill() -> void:
-		if word.skill.current == null:
-			word.skill.current = Global.get_random_key(dict.priority.skill)
+		if word.skill.title == null:
+			word.skill.title = Global.get_random_key(dict.priority.skill)
 
 
 	func activate_skill() -> void:
 		var result = {}
-		result["on attack"] = obj.chain.roll_exodus_value_based_on_skill_and_condition(word.skill.current, "on attack")
-		result["on defense"] = obj.target.obj.chain.roll_exodus_value_based_on_skill_and_condition(word.skill.current, "on defense")
+		result["on attack"] = obj.chain.roll_exodus_value(self, "on attack")
+		result["on defense"] = obj.target.obj.chain.roll_exodus_value(self, "on defense")
 		
 		if result["on attack"] > result["on defense"]:
-			print(["hit", word.skill.current, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
+			print(["hit", word.skill.title, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
 		
 			obj.target.obj.chain.take_attack(self)
 #			if obj.target != null:
 #				print(self, obj.target.obj.chain.num.wound)
 		else:
-			print(["miss", word.skill.current, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
+			print(["miss", word.skill.title, result, obj.chain.obj.beast.num.index, obj.target.obj.chain.obj.beast.num.index])
 		
 		word.tactic.current = null
-		word.skill.current = null
-		obj.target.arr.threat.skill.append(self)
+		word.skill.title = null
+		word.skill.stage = null
+		num.skill.finish = null
+		
+		if obj.target != null:
+			obj.target.arr.threat.recognized.erase(self)
+			obj.target.arr.threat.unrecognized.erase(self)
 
 
 	func choose_respite_resource() -> void:
@@ -304,10 +313,50 @@ class Beast:
 
 
 	func activate_respite() -> void:
-		
-		
 		word.tactic.current = null
 		word.respite.current = null
+
+
+	func attempt_to_hide_threat() -> void:
+		#print("attempt_to_hide_threat", word.skill)
+		var result = {}
+		result["on attack"] = obj.chain.roll_intention_value(self, "on attack")
+		result["on defense"] = obj.target.obj.chain.roll_intention_value(self, "on defense")
+		
+		if result["on attack"] > result["on defense"]:
+			obj.target.arr.threat.unrecognized.append(self)
+		else:
+			obj.target.arr.threat.recognized.append(self)
+			obj.target.identify_threat_to_response()
+
+
+	func identify_threat_to_response() -> Variant:
+		var threats = []
+		var max = Global.dict.wound.weight["max"]
+		var courage = Global.dict.beast.courage[word.courage]
+		
+		for aggressor in arr.threat.recognized:
+			var threat = {}
+			threat.beast = aggressor
+			threat.wound = Global.dict.skill.title[aggressor.word.skill.title].wound
+			threat.weight = Global.dict.wound.weight[threat.wound]
+			Global.rng.randomize()
+			threat.react = Global.rng.randi_range(0, (max - threat.weight) * courage["continue"])
+			Global.rng.randomize()
+			threat.ignore = Global.rng.randi_range(0, threat.weight * courage["retreat"])
+			
+			if threat.react > threat.ignore:
+				threats.append(threat)
+		
+		if threats.size() > 0:
+			threats.sort_custom(func(a, b): return a.weight < b.weight)
+			
+		
+		return null
+
+
+	func threat_response() -> void:
+		pass
 
 
 	func retreat() -> void:

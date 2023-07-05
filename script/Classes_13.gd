@@ -21,14 +21,24 @@ class Chain:
 
 	func init_dices() -> void:
 		obj.dice = {}
-		var aspects = ["offensive", "resilience"]
+		obj.dice.aspect = {}
+		obj.dice.condition = {}
 		
-		for aspect in aspects:
+		for condition in Global.arr.condition:
 			var input = {}
 			input.chain = self
+			input.type = "condition"
 			#input.aspect = aspect
 			input.faces = 20
-			obj.dice[aspect] = Classes_14.Dice.new(input)
+			obj.dice.condition[condition] = Classes_14.Dice.new(input)
+		
+		for aspect in Global.arr.beast.aspect:
+			var input = {}
+			input.chain = self
+			input.type = "aspect"
+			#input.aspect = aspect
+			input.faces = 6
+			obj.dice.aspect[aspect] = Classes_14.Dice.new(input)
 
 
 	func init_resources() -> void:
@@ -179,7 +189,7 @@ class Chain:
 
 
 	func expend_resources() -> void:
-		var description = Global.dict.skill.title[obj.beast.word.skill.current]
+		var description = Global.dict.skill.title[obj.beast.word.skill.title]
 		
 		for resource in num.resource:
 			if description.has(resource):
@@ -270,13 +280,13 @@ class Chain:
 			num.indicator["overlimit"].current += pow(num.stage[resource_], 2)
 
 
-	func take_attack(opponent_: Classes_12.Beast) -> void:
-		var wound = Global.dict.skill.title[opponent_.word.skill.current].wound
+	func take_attack(aggressor_: Classes_12.Beast) -> void:
+		var wound = Global.dict.skill.title[aggressor_.word.skill.title].wound
 		
 		if num.wound.has(wound):
 			take_wound(wound)
 		else:
-			take_debuff(opponent_)
+			take_debuff(aggressor_)
 		
 		update_integrity_indicator()
 		
@@ -298,8 +308,12 @@ class Chain:
 			take_wound(aggravation)
 
 
-	func take_debuff(opponent_: Classes_12.Beast) -> void:
-		pass
+	func take_debuff(aggressor_: Classes_12.Beast) -> void:
+		var debuff = Global.dict.subclass.debuff[aggressor_.obj.chain.word.subclass].pick_random()
+		var aspect = Global.get_aspect_based_on_debuff(debuff)
+		obj.dice.aspect[aspect].apply_debuff()
+		
+		take_wound("minor")
 
 
 	func update_integrity_indicator() -> void:
@@ -342,38 +356,19 @@ class Chain:
 		return value["respite"] > value["action"]
 
 
-	func identify_threat_to_response() -> Variant:
-		var threats = []
-		
-		for beast in obj.beast.arr.threat.skill:
-			var threat = {}
-			threat.beast = beast
-			threat.wound = Global.dict.skill.title[beast.word.skill.current].wound
-			threat_detection_check(beast)
-		
-		
-		return null
-
-	func threat_detection_check(beast_: Classes_12.Beast) -> bool:
-		var wound = Global.dict.skill.title[beast_.word.skill.current].wound
-		
-		
-		return false
-
-
-	func roll_exodus_value_based_on_skill_and_condition(skill_: String, condition_: String) -> int:
-		var description = Global.dict.skill.title[skill_]
+	func roll_exodus_value(aggressor_: Classes_12.Beast, condition_: String) -> int:
+		var description = Global.dict.skill.title[aggressor_.word.skill.title]
 		var subaspect = Global.get_subaspect_based_on_wound_and_condition(description.wound, condition_)
 		var aspect = Global.dict.aspect.condition[condition_]
-		var edge = obj.dice[aspect].roll()
-		var attempts = Global.dict.gist.attempt[edge.word.gist]
+		var edge = obj.dice.condition[condition_].roll()
+		var attempts = Global.dict.gist.attempt[edge.word.gist.current]
 		
 		if condition_ == "on attack":
 			attempts += Global.dict.modifier.attempt[description.accuracy]
 			#print(Global.dict.modifier.attempt[description.accuracy])
 		
 		#correction for the sum of two hindrances
-		if edge.word.gist.contains("hindrance") and description.accuracy.contains("hindrance"):
+		if edge.word.gist.current.contains("hindrance") and description.accuracy.contains("hindrance"):
 			attempts += 2
 		
 		var values = []
@@ -408,18 +403,19 @@ class Chain:
 		return max
 
 
-	func roll_intention_value_based_on_skill_andcondition(skill_: String, condition_: String) -> int:
-		var description = Global.dict.skill.title[skill_]
+	func roll_intention_value(aggressor_: Classes_12.Beast, condition_: String) -> int:
+		#print("roll_intention_value",aggressor_.word.skill)
+		var description = Global.dict.skill.title[aggressor_.word.skill.title]
 		var subaspect = Global.dict.subaspect.intention[condition_]
 		var aspect = Global.dict.aspect.condition[condition_]
-		var edge = obj.dice[aspect].roll()
-		var attempts = Global.dict.gist.attempt[edge.word.gist]
+		var edge = obj.dice.condition[condition_].roll()
+		var attempts = Global.dict.gist.attempt[edge.word.gist.current]
 		
 		if condition_ == "on attack":
 			attempts += Global.dict.modifier.attempt[description.notability]
 		
 		#correction for the sum of two hindrances
-		if edge.word.gist.contains("hindrance") and description.notability.contains("hindrance"):
+		if edge.word.gist.current.contains("hindrance") and description.notability.contains("hindrance"):
 			attempts += 2
 		
 		var values = []
@@ -452,6 +448,7 @@ class Chain:
 			return min
 		
 		return max
+
 
 #Звено link
 class Link:

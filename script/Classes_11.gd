@@ -141,10 +141,12 @@ class Occasion:
 		beast_.obj.occasion = self
 
 
-	func start() -> void:
+	func prepare() -> void:
 		for beast in obj.location.arr.beast:
 			beast.prepare_for_occasion()
-			
+
+
+	func start() -> void:
 		match word.type:
 			"clash":
 				for beast in obj.location.arr.beast:

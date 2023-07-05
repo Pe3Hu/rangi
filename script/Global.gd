@@ -125,6 +125,9 @@ func init_num() -> void:
 	num.size.location.offset = {}
 	num.size.location.offset.center = num.size.location.r.center - num.size.beast.r 
 	num.size.location.offset.suburb = num.size.location.r.suburb - num.size.beast.r
+	
+	num.time = {}
+	num.time.compression = 0.01
 
 
 func init_dict() -> void:
@@ -208,7 +211,17 @@ func init_dict() -> void:
 	dict.wound.weight = {}
 	dict.wound.weight["minor"] = 1
 	dict.wound.weight["severe"] = 4
+	dict.wound.weight["debuff"] = 6
 	dict.wound.weight["lethal"] = 9
+	dict.wound.weight["max"] = 10
+	
+	dict.subclass = {}
+	dict.subclass.debuff = {}
+	dict.subclass.debuff["bird"] = ["interference"]
+	dict.subclass.debuff["fish"] = ["misfire"]
+	dict.subclass.debuff["hydra"] = ["rust"]
+	dict.subclass.debuff["serpent"] = ["desynchronization"]
+	dict.subclass.debuff["spider"] = ["misfire", "rust", "interference", "desynchronization"]   
 	
 	dict.trigger = {}
 	dict.trigger.condition = {}
@@ -235,6 +248,9 @@ func init_dict() -> void:
 	dict.modifier.attempt["hindrance"] = -3
 	dict.modifier.attempt["critical hindrance"] = -4
 	dict.modifier.attempt["fundamental hindrance"] = -5
+	
+	#dict.threat = {}
+	#dict.threat.weight = {}
 	
 	init_beast()
 	
@@ -310,7 +326,7 @@ func init_beast() -> void:
 	dict.beast.mentality["careful"] = {}
 	dict.beast.mentality["careful"]["respite"] = 7
 	dict.beast.mentality["careful"]["action"] = 3
-		
+	
 	dict.beast.courage = {}
 	dict.beast.courage["berserker"] = {}
 	dict.beast.courage["berserker"]["continue"] = 9
@@ -679,6 +695,8 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 func init_subaspects() -> void:
 	dict.aspect = {}
 	dict.aspect.subaspect = {}
+	dict.aspect.debuff = {}
+	dict.aspect.buff = {}
 	dict.subaspect = {}
 	dict.subaspect.title = {}
 	dict.subaspect.event = {}
@@ -719,6 +737,17 @@ func init_subaspects() -> void:
 	dict.subaspect.intention = {}
 	dict.subaspect.intention["on attack"] = "stealth"
 	dict.subaspect.intention["on defense"] = "instinct"
+	
+	dict.aspect.buff = {}
+	dict.aspect.buff["offensive"] = "resonance"
+	dict.aspect.buff["resilience"] = "ricochet"
+	dict.aspect.buff["sensory"] = "hint"
+	dict.aspect.buff["mobility"] = "synchronization"
+	dict.aspect.debuff = {}
+	dict.aspect.debuff["offensive"] = "misfire"
+	dict.aspect.debuff["resilience"] = "rust"
+	dict.aspect.debuff["sensory"] = "interference"
+	dict.aspect.debuff["mobility"] = "desynchronization"
 
 
 func get_subaspect_based_on_wound_and_condition(wound_: String, condition_: String) -> Variant:
@@ -731,6 +760,13 @@ func get_subaspect_based_on_wound_and_condition(wound_: String, condition_: Stri
 	
 	return null
 
+
+func get_aspect_based_on_debuff(debuff_: String) -> Variant:
+	for aspect in dict.aspect.debuff:
+		if dict.aspect.debuff[aspect] == debuff_:
+			return aspect
+	
+	return null
 
 func init_links() -> void:
 	dict.link = {}
@@ -861,6 +897,9 @@ func init_skills() -> void:
 				
 				if typeof(skill[key]) == TYPE_STRING:
 					data[key.to_lower()] = skill[key].to_lower()
+					
+				if key == "Preparation" or key == "Cast":
+					data[key.to_lower()] = floor(data[key.to_lower()] * num.time.compression)
 		
 		dict.skill.title[skill["Title"].to_lower()] = data
 		dict.skill.subclass[skill["Subclass"].to_lower()].append(skill["Title"].to_lower())
@@ -885,7 +924,6 @@ func init_window_size():
 	vec.size.node.spielkarte = Vector2.ONE * num.size.spielkarte.r * 2
 	vec.size.node.sanctuary = Vector2.ONE * 560
 	vec.size.node.habitat = Vector2.ONE * (num.size.location.r.center + num.size.location.gap) * 2
-	
 
 
 func init_scene() -> void:

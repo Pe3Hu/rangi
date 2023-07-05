@@ -15,6 +15,8 @@ func _ready() -> void:
 #
 #	outpost.obj.conveyor.establish_starter_schematics()
 #	outpost.arr.branch.front().obj.director.prioritize()
+	
+	Global.obj.cosmos.obj.planet.obj.sanctuary.init_clashes()
 
 
 func _input(event) -> void:

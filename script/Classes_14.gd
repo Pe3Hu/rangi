@@ -36,11 +36,46 @@ class Dice:
 						input.gist = gist
 						var edge = Classes_14.Edge.new(input)
 						add_edge(edge)
+			6:
+				var edges = {}
+				edges["debuff"] = 1
+				edges["buff"] = 1
+				edges["standard"] = 4
+				
+				for gist in edges:
+					for _i in edges[gist]:
+						var input = {}
+						input.gist = gist
+						var edge = Classes_14.Edge.new(input)
+						add_edge(edge)
 
 
 	func roll() -> Edge:
 		var edge = arr.edge.pick_random()
 		return edge
+
+
+	func apply_debuff() -> void:
+		var edge = find_standart_edge()
+		
+		if edge != null:
+			edge.set_temp_gist("debuff")
+
+
+	func apply_buff() -> void:
+		var edge = find_standart_edge()
+		
+		if edge != null:
+			edge.set_temp_gist("buff")
+
+
+	func find_standart_edge() -> Edge:
+		for edge in arr.edge:
+			if edge.word.gist.current == "standart":
+				return edge
+		
+		return null
+
 
 
 #Грань edge
@@ -50,5 +85,11 @@ class Edge:
 
 
 	func _init(input_: Dictionary) -> void:
-		word.gist = input_.gist
 		obj.dice = null
+		word.gist = {}
+		word.gist.current = input_.gist
+		word.gist.base = input_.gist
+
+
+	func set_temp_gist(gist_: String) -> void:
+		word.gist.current = gist_

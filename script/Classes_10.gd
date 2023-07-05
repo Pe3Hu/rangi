@@ -25,7 +25,7 @@ class Sanctuary:
 		paint_someone()
 		set_locations()
 		place_beast_in_locations()
-		init_clashes()
+		#init_clashes()
 		#activate_beasts()
 
 
@@ -391,6 +391,9 @@ class Sanctuary:
 								for beast in location.arr.beast:
 									occasion.add_beast(beast)
 		
+		for occasion in dict.occasion["clash"]:
+			occasion.prepare()
+			
 		for occasion in dict.occasion["clash"]:
 			occasion.start()
 

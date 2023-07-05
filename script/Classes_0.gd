@@ -36,6 +36,10 @@ class Cosmos:
 			arr.corporation.append(corporation)
 
 
+	func get_time() -> float:
+		return obj.planet.scene.myself.get_node("Time").get_time_left()
+
+
 #Планета planet  
 class Planet:
 	var arr = {}

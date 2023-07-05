@@ -18,6 +18,10 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_hcntl")
 
+[node name="Time" type="Timer" parent="."]
+wait_time = 0.05
+autostart = true
+
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(0.588235, 0.588235, 0.588235, 1)
