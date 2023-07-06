@@ -37,7 +37,7 @@ func init_arr() -> void:
 	
 	arr.beast = {}
 	arr.beast.aspect = ["offensive", "resilience", "sensory", "mobility", "balance", "decay"]
-	arr.beast.wound = ["minor","severe","lethal","debuff"]
+	arr.beast.wound = ["minor", "severe", "lethal", "debuff"]
 	arr.beast.tactic = ["respite", "attack", "response"]
 	arr.beast.mentality = ["careful", "balanced", "aggressive"]
 	arr.beast.roll = {}
@@ -309,18 +309,23 @@ func init_beast() -> void:
 	
 	dict.beast.respite = {}
 	dict.beast.respite["overload"] = {}
-	dict.beast.respite["overload"].preparation = 3
-	dict.beast.respite["overload"].effect = 5
+	dict.beast.respite["overload"]["standard"] = {}
+	dict.beast.respite["overload"]["standard"].preparation = 3
+	dict.beast.respite["overload"]["standard"].effect = 5
 	dict.beast.respite["overheat"] = {}
-	dict.beast.respite["overheat"].preparation = 7
-	dict.beast.respite["overheat"].effect = 9
+	dict.beast.respite["overheat"]["standard"] = {}
+	dict.beast.respite["overheat"]["standard"].preparation = 7
+	dict.beast.respite["overheat"]["standard"].effect = 9
 	dict.beast.respite["integrity"] = {}
 	dict.beast.respite["integrity"]["minor"] = {}
 	dict.beast.respite["integrity"]["minor"].preparation = 11
 	dict.beast.respite["integrity"]["minor"].effect = dict.wound.weight["minor"]
 	dict.beast.respite["integrity"]["severe"] = {}
-	dict.beast.respite["integrity"]["severe"].preparation = 19
+	dict.beast.respite["integrity"]["severe"].preparation = 23
 	dict.beast.respite["integrity"]["severe"].effect = dict.wound.weight["severe"]
+	dict.beast.respite["integrity"]["debuff"] = {}
+	dict.beast.respite["integrity"]["debuff"].preparation = 19
+	dict.beast.respite["integrity"]["debuff"].effect = dict.wound.weight["minor"]
 	
 	dict.beast.mentality = {}
 	dict.beast.mentality["aggressive"] = {}

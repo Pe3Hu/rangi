@@ -11,8 +11,9 @@ class Chain:
 
 	func _init(input_: Dictionary) -> void:
 		#obj.design = input_.design
-		word.subclass = input_.subclass
+		num.debuff = 0
 		obj.beast = null
+		word.subclass = input_.subclass
 		init_dices()
 		init_resources()
 		init_aspects()
@@ -294,7 +295,7 @@ class Chain:
 		obj.dice.aspect[multiplier.aspect].roll()
 		multiplier.value = obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
 		
-		if multiplier.value != 0:
+		if multiplier.value != 0 and wound != "debuff":
 			var aggravation = str(wound)
 			
 			for _i in abs(multiplier.value):
@@ -333,7 +334,6 @@ class Chain:
 		var debuff = Global.dict.subclass.debuff[aggressor_.obj.chain.word.subclass].pick_random()
 		var aspect = Global.get_aspect_based_on_debuff(debuff)
 		obj.dice.aspect[aspect].apply_debuff()
-		
 		take_wound("minor")
 
 
@@ -349,9 +349,20 @@ class Chain:
 
 
 	func reduce_overlimit() -> void:
-		var resource = obj.beast.word.respite.current
-		var value = Global.dict.beast.respite[resource].effect
+		var resource = obj.beast.word.respite.resource
+		var description = Global.dict.beast.respite[resource][obj.beast.word.respite.type]
+		var value = description.effect
 		expend_resource(resource, -value)
+		
+		if obj.beast.word.respite.type == "debuff":
+			clean_debuff()
+		
+		obj.beast.word.respite.resource = null
+		obj.beast.word.respite.type = null
+
+
+	func clean_debuff() -> void:
+		print("debuff not cleaned")
 
 
 	func retreat_check() -> bool:
@@ -413,8 +424,8 @@ class Chain:
 			if max < value.current:
 				max = value.current
 		
-		if description.wound == "lethal":
-			print([attempts, values, min, max, value.max])
+		#if description.wound == "lethal":
+		#	print([attempts, values, min, max, value.max])
 		
 		if attempts > 0:
 			return max
@@ -468,8 +479,8 @@ class Chain:
 			if max < value.current:
 				max = value.current
 		
-		if description.wound == "lethal":
-			print([attempts, values, min, max, value.max])
+		#if description.wound == "lethal":
+		#	print([attempts, values, min, max, value.max])
 		
 		if attempts > 0:
 			return max

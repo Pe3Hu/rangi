@@ -63,6 +63,7 @@ class Dice:
 
 
 	func apply_debuff() -> void:
+		obj.chain.num.debuff += 1
 		var edge = find_standard_edge()
 		
 		if edge != null:

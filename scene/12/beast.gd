@@ -72,15 +72,34 @@ func start_action_in_combat_mode() -> void:
 
 func decide_in_combat_mode() -> void:
 	parent.choose_tactic()
-	
+	follow_tactic()
+
+
+func follow_tactic() -> void:
 	match parent.word.tactic.current:
 		"attack":
 			parent.choose_skill()
-			
 			begin_preparing_skill()
 		"respite":
-			parent.choose_respite_resource()
+			if parent.word.respite.resource == null:
+				if parent.obj.response == null:
+					parent.choose_respite_resource(null)
+				else:
+					parent.threat_response()
+			
 			begin_preparing_respite()
+		"response":
+			if parent.obj.response == null:
+				var multiplier = {}
+				multiplier.aspect = Global.arr.beast.roll["modify time"]
+				parent.obj.chain.obj.dice.aspect[multiplier.aspect].roll()
+				parent.threat_response()
+			
+			if parent.word.respite.resource != null:
+				parent.word.tactic.current = "respite"
+				follow_tactic()
+			else:
+				begin_preparing_response()
 
 
 func begin_preparing_skill() -> void:
@@ -127,7 +146,7 @@ func begin_preparing_respite() -> void:
 	var multiplier = {}
 	multiplier.aspect = Global.arr.beast.roll["modify time"]
 	multiplier.value = parent.obj.chain.obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
-	var time = Global.dict.skill.title[parent.word.skill.title].preparation * multiplier.value
+	var time = Global.dict.beast.respite[parent.word.respite.resource][parent.word.respite.type].preparation * multiplier.value
 	
 	tween = create_tween()
 	tween.tween_property(self, "skew", PI, time * 0.5)
@@ -138,6 +157,23 @@ func begin_preparing_respite() -> void:
 func finish_preparing_respite() -> void:
 	if parent.flag.alive:
 		parent.obj.chain.reduce_overlimit()
+		start_action_in_combat_mode()
+
+
+func begin_preparing_response() -> void:
+	var multiplier = {}
+	multiplier.aspect = Global.arr.beast.roll["modify time"]
+	multiplier.value = parent.obj.chain.obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+	var time = Global.dict.skill.title[parent.word.skill.title].preparation * multiplier.value
+	
+	tween = create_tween()
+	tween.tween_property(self, "position", -10, time * 0.5)
+	tween.tween_property(self, "skew", 0, time * 0.5)
+	tween.tween_callback(finish_preparing_response)
+
+
+func finish_preparing_response() -> void:
+	if parent.flag.alive:
 		start_action_in_combat_mode()
 
 

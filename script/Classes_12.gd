@@ -53,6 +53,9 @@ class Beast:
 		arr.threat.recognized = []
 		arr.threat.unrecognized = []
 		arr.threat.beast = []
+		arr.plan = {}
+		arr.plan.respite = []
+		arr.plan.response = []
 		num.index = Global.num.index.beast
 		Global.num.index.beast += 1
 		num.skill = {}
@@ -63,6 +66,7 @@ class Beast:
 		obj.location = null
 		obj.occasion = null
 		obj.target = {}
+		obj.response = null
 		vec.offset = Vector2()
 		dict.task = {}
 		flag.cycle = false
@@ -272,7 +276,12 @@ class Beast:
 			if obj.chain.respite_check():
 				word.tactic.current = "respite"
 			else:
-				word.tactic.current = "attack"
+				identify_threat_to_response()
+				
+				if obj.response != null:
+					word.tactic.current = "response"
+				else:
+					word.tactic.current = "attack"
 
 
 	func choose_skill() -> void:
@@ -304,9 +313,57 @@ class Beast:
 			obj.target.arr.threat.unrecognized.erase(self)
 
 
-	func choose_respite_resource() -> void:
+	func choose_respite_resource(time_: Variant) -> void:
+		var multiplier = {}
+		multiplier.aspect = Global.arr.beast.roll["modify time"]
+		multiplier.value = obj.chain.obj.dice.aspect[multiplier.aspect].obj.edge.get_value()
+		
 		if word.respite.current == null:
-			word.respite.current = Global.get_random_key(dict.priority.skill)
+			var datas = []
+			
+			for resource in Global.dict.beast.respite:
+				var data = {}
+				data.weight = null
+				data.resource = resource
+				
+				for type in Global.dict.beast.respite[resource]:
+					data.preparation = Global.dict.beast.respite[resource][type].preparation * multiplier.value
+					var flag = true
+					
+					if time_ != null:
+						if data.preparation > time_.left:
+							flag = false
+					
+					if flag:
+						data.effect = Global.dict.beast.respite[resource][type].effect
+						data.type = type
+						datas.append(data)
+			
+			if datas.size() == 1:
+				word.respite.resource = datas.front().resource
+				word.respite.type = datas.front().type
+			
+			if datas.size() > 1:
+				for data in datas:
+					match data.resource:
+						"overload":
+							data.max = float(obj.chain.num.resource[data.resource].current) / obj.chain.num.resource[data.resource].max
+						"overheat":
+							data.max = float(obj.chain.num.resource[data.resource].current) / obj.chain.num.resource[data.resource].max
+						"integrity":
+							data.max = Global.dict.wound.weight[data.type]
+							
+							if data.type == "debuff":
+								data.max = obj.chain.num.debuff + 1
+							
+							data.max = float(data.max) / Global.dict.wound.weight["max"]
+					
+					Global.rng.randomize()
+					data.weight = Global.rng.randi_range(0, data.max)
+				
+				datas.sort_custom(func(a, b): return a.weight > b.weight)
+				word.respite.resource = datas.front().resource
+				word.respite.type = datas.front().type
 
 
 	func activate_respite() -> void:
@@ -315,45 +372,59 @@ class Beast:
 
 
 	func attempt_to_hide_threat() -> void:
-		#print("attempt_to_hide_threat", word.skill)
-		var result = {}
-		result["on attack"] = obj.chain.roll_intention_value(self, "on attack")
-		result["on defense"] = obj.target.obj.chain.roll_intention_value(self, "on defense")
-		
-		if result["on attack"] > result["on defense"]:
-			obj.target.arr.threat.unrecognized.append(self)
-		else:
-			obj.target.arr.threat.recognized.append(self)
-			obj.target.identify_threat_to_response()
+		if !obj.target.arr.threat.recognized.has(self):
+			#print("attempt_to_hide_threat", word.skill)
+			var result = {}
+			result["on attack"] = obj.chain.roll_intention_value(self, "on attack")
+			result["on defense"] = obj.target.obj.chain.roll_intention_value(self, "on defense")
+			
+			if result["on attack"] > result["on defense"]:
+				obj.target.arr.threat.unrecognized.append(self)
+			else:
+				if obj.target.arr.threat.unrecognized.has(self):
+					obj.target.arr.threat.unrecognized.erase(self)
+				
+				obj.target.arr.threat.recognized.append(self)
 
 
-	func identify_threat_to_response() -> Variant:
+	func identify_threat_to_response() -> void:
 		var threats = []
 		var max = Global.dict.wound.weight["max"]
 		var courage = Global.dict.beast.courage[word.courage]
 		
 		for aggressor in arr.threat.recognized:
 			var threat = {}
-			threat.beast = aggressor
+			threat.aggressor = aggressor
 			threat.wound = Global.dict.skill.title[aggressor.word.skill.title].wound
 			threat.weight = Global.dict.wound.weight[threat.wound]
 			Global.rng.randomize()
 			threat.react = Global.rng.randi_range(0, (max - threat.weight) * courage["continue"])
 			Global.rng.randomize()
 			threat.ignore = Global.rng.randi_range(0, threat.weight * courage["retreat"])
+			threat.time = null
 			
 			if threat.react > threat.ignore:
-				threats.append(threat)
+				threat.time = threat.aggressor.num.skill.finish - Global.obj.cosmos.get_time()
+				
+				if threat.time > Global.dict.beast.response[threat.wound].preparation:
+					threats.append(threat)
 		
 		if threats.size() > 0:
-			threats.sort_custom(func(a, b): return a.weight < b.weight)
-			
-		
-		return null
+			threats.sort_custom(func(a, b): return a.weight > b.weight)
+			var threat = threats.front()
+			obj.response = threat.aggressor
 
 
 	func threat_response() -> void:
-		pass
+		if obj.response != null:
+			var time = {}
+			time.left = obj.response.num.skill.finish - Global.obj.cosmos.get_time()
+			var wound = Global.dict.skill.title[obj.response.word.skill.title].wound
+			var description = Global.dict.beast.response[wound]
+			time.left -= description.preparation
+			time.min = float(time.left - description.activated)
+			time.max = float(time.left)
+			choose_respite_resource(time.left)
 
 
 	func retreat() -> void:
