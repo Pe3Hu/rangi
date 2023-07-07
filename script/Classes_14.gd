@@ -4,16 +4,17 @@ extends Node
 #Куб dice
 class Dice:
 	var arr = {}
-	var num = {}
+	#var num = {}
 	var obj = {}
 	var word = {}
 
 
 	func _init(input_: Dictionary) -> void:
 		arr.edge = []
-		num.face = input_.faces
-		obj.chain = input_.chain
+		#num.face = input_.faces
+		obj.parent = input_.parent
 		obj.edge = null
+		word.kind = input_.kind
 		word.type = input_.type
 		word.title = input_.title
 		fill_with_default_edges()
@@ -25,33 +26,62 @@ class Dice:
 
 
 	func fill_with_default_edges() -> void:
-		match num.face:
-			20:
-				var edges = {}
-				edges["advantage"] = 4
-				edges["critical advantage"] = 1
-				edges["hindrance"] = 4
-				edges["critical hindrance"] = 1
-				edges["standard"] = 10
-				
-				for gist in edges:
-					for _i in edges[gist]:
-						var input = {}
-						input.gist = gist
-						var edge = Classes_14.Edge.new(input)
-						add_edge(edge)
-			6:
-				var edges = {}
-				edges["debuff"] = 1
-				edges["buff"] = 1
-				edges["standard"] = 4
-				
-				for gist in edges:
-					for _i in edges[gist]:
-						var input = {}
-						input.gist = gist
-						var edge = Classes_14.Edge.new(input)
-						add_edge(edge)
+		match word.kind:
+			"chain":
+				match word.type:
+					"condition":
+						var edges = {}
+						edges["advantage"] = 4
+						edges["critical advantage"] = 1
+						edges["hindrance"] = 4
+						edges["critical hindrance"] = 1
+						edges["standard"] = 10
+						
+						for gist in edges:
+							for _i in edges[gist]:
+								var input = {}
+								input.gist = gist
+								var edge = Classes_14.Edge.new(input)
+								add_edge(edge)
+					"aspect":
+						var edges = {}
+						edges["debuff"] = 1
+						edges["buff"] = 1
+						edges["standard"] = 4
+						
+						for gist in edges:
+							for _i in edges[gist]:
+								var input = {}
+								input.gist = gist
+								var edge = Classes_14.Edge.new(input)
+								add_edge(edge)
+			"wood":
+				match word.type:
+					"ascension":
+						var edges = {}
+						edges["advantage"] = 6
+						edges["critical advantage"] = 2
+						edges["hindrance"] = 3
+						edges["critical hindrance"] = 1
+						edges["standard"] = 8
+						
+						for gist in edges:
+							for _i in edges[gist]:
+								var input = {}
+								input.gist = gist
+								var edge = Classes_14.Edge.new(input)
+								add_edge(edge)
+					"growth":
+						var edges = {}
+						edges["double growth"] = 1
+						edges["single growth"] = 5
+						
+						for gist in edges:
+							for _i in edges[gist]:
+								var input = {}
+								input.gist = gist
+								var edge = Classes_14.Edge.new(input)
+								add_edge(edge)
 
 
 	func roll() -> void:
@@ -140,5 +170,11 @@ class Edge:
 								value = 1.0 / 2.0
 							"debuff":
 								value = 3.0 / 2.0
+			"condition":
+				value = Global.dict.gist.attempt[word.gist.current]
+			"growth":
+				value = Global.dict.wood.growth[word.gist.current]
+			"ascension":
+				value = Global.dict.gist.attempt[word.gist.current]
 		
 		return value

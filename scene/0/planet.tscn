@@ -22,6 +22,10 @@ script = ExtResource("1_hcntl")
 wait_time = 0.05
 autostart = true
 
+[node name="Day" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2
 color = Color(0.588235, 0.588235, 0.588235, 1)
@@ -38,3 +42,5 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
+
+[connection signal="timeout" from="Day" to="." method="_on_day_timeout"]

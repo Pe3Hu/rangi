@@ -17,11 +17,11 @@ class Zoo:
 		var n = 1
 		var chains = []
 		
-		#for _i in n:
-		for subclass in Global.dict.chain.subclass:
+		for _i in n:
+		#for subclass in Global.dict.chain.subclass:
 			var input = {}
-			input.subclass = subclass
-			#input.subclass = "animal"
+			#input.subclass = subclass
+			input.subclass = "animal"
 			var chain = Classes_13.Chain.new(input)
 			chains.append(chain)
 		
@@ -48,6 +48,26 @@ class Beast:
 
 
 	func _init(input_: Dictionary) -> void:
+		num.index = Global.num.index.beast
+		Global.num.index.beast += 1
+		num.skill = {}
+		num.skill.finish = null
+		obj.zoo = input_.zoo
+		obj.chain = input_.chain
+		obj.chain.obj.beast = self
+		vec.offset = Vector2()
+		dict.task = {}
+		flag.cycle = false
+		flag.alive = true
+		word.mentality = input_.mentality
+		word.courage = input_.courage
+		init_arr()
+		init_obj()
+		init_scene()
+		init_priority_in_combat()
+
+
+	func init_arr() -> void:
 		arr.task = []
 		arr.threat = {}
 		arr.threat.recognized = []
@@ -56,28 +76,13 @@ class Beast:
 		arr.plan = {}
 		arr.plan.respite = []
 		arr.plan.response = []
-		num.index = Global.num.index.beast
-		Global.num.index.beast += 1
-		num.skill = {}
-		num.skill.finish = null
-		obj.zoo = input_.zoo
-		obj.chain = input_.chain
-		obj.chain.obj.beast = self
+
+
+	func init_obj() -> void:
 		obj.location = null
 		obj.occasion = null
 		obj.target = {}
 		obj.response = null
-		vec.offset = Vector2()
-		dict.task = {}
-		flag.cycle = false
-		flag.alive = true
-		word.mentality = input_.mentality
-		word.courage = input_.courage
-		word.skill = {}
-		word.skill.title = null
-		word.skill.stage = null
-		init_scene()
-		init_priority_in_combat()
 
 
 	func init_scene() -> void:
@@ -89,6 +94,10 @@ class Beast:
 		dict.priority = {}
 		word.tactic = {}
 		word.tactic.current = null
+		
+		word.skill = {}
+		word.skill.title = null
+		word.skill.stage = null
 		
 		dict.priority.skill = {}
 		
@@ -250,13 +259,7 @@ class Beast:
 		fill_task(task)
 
 
-	func prepare_for_occasion() -> void:
-		obj.target = null
-		
-		match obj.occasion.word.type:
-			"clash":
-				select_target()
-
+#Clash section
 
 	func select_target() -> void:
 		match obj.occasion.word.type:
@@ -443,3 +446,10 @@ class Beast:
 		for opponent in arr.threat.beast:
 			opponent.obj.target = null
 			opponent.scene.myself.stop_skill()
+
+
+#Harvest section
+
+	func find_place_to_harvest() -> void:
+		pass
+

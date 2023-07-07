@@ -184,3 +184,7 @@ func stop_skill() -> void:
 	tween.tween_property(self, "rotation", 0, time)
 
 
+func start_action_in_harvest_mode() -> void:
+	parent.find_place_to_harvest()
+
+

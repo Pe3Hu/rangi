@@ -72,6 +72,30 @@ func update_color_based_on_forest_index() -> void:
 		set_color(Color.BLACK)
 
 
+func update_color_based_on_biome() -> void:
+	if parent.word.biome != null:
+		var max_h = 360.0
+		var h = null
+		var s = 0.6 
+		var v = 1
+		
+		match parent.word.biome:
+			"north":
+				h = 180.0 / max_h
+			"east":
+				h = 90.0 / max_h
+			"south":
+				h = 0.0 / max_h
+			"west":
+				h = 270.0 / max_h
+		
+		var color_ = Color.from_hsv(h, s, v)
+		set_color(color_)
+		#visible = false
+	else:
+		set_color(Color.BLACK)
+
+
 func paint_black() -> void:
 	color = Color.BLACK
 

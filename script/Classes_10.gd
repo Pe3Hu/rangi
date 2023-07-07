@@ -22,8 +22,11 @@ class Sanctuary:
 		set_following_forest_rings()
 		split_glades()
 		init_habitats()
+		init_biomes()
+		init_breeds()
+		init_woods()
 		paint_someone()
-		set_locations()
+		#set_locations()
 		place_beast_in_locations()
 		#init_clashes()
 		#activate_beasts()
@@ -335,16 +338,150 @@ class Sanctuary:
 				habitat.init_locations()
 
 
+	func init_biomes() -> void:
+		var biomes = {}
+		biomes.habitat = []
+		biomes.forest = {}
+		biomes.neighbor = {}
+		
+		for ring in dict.habitat:
+			if ring != 0:
+				for habitat in dict.habitat[ring]:
+					biomes.habitat.append(habitat)
+		
+		for biome in Global.arr.biome:
+			biomes.forest[biome] = []
+			biomes.neighbor[biome] = []
+		
+		var triangles = []
+		
+		for forest in dict.forest[1]:
+			if forest.word.shape == "triangle":
+				triangles.append(forest)
+		
+		for _i in range(1, triangles.size(), 2):
+			var forest = triangles[_i]
+			var index = ((_i - 1) / 2 + 1) % Global.arr.biome.size()
+			var biome = Global.arr.biome[index]
+			forest.obj.habitat.set_biome(biome)
+			biomes.forest[biome].append_array(forest.obj.habitat.arr.forest)
+			biomes.habitat.erase(forest.obj.habitat)
+			
+			for neighbor in forest.obj.habitat.dict.neighbor:
+				if biomes.habitat.has(neighbor):
+					biomes.neighbor[biome].append(neighbor)
+		
+		
+		while biomes.habitat.size() > 0:
+			var biome = get_smallest_biome(biomes)
+			find_an_adjacent_habitat_for_biome(biomes, biome)
+
+
+	func get_smallest_biome(biomes_: Dictionary) -> String:
+		var biome = {}
+		biome.title = ""
+		biome.forests = Global.num.index.forest
+		
+		for biome_ in biomes_.forest:
+			if biome.forests > biomes_.forest[biome_].size():
+				biome.title = biome_
+				biome.forests = biomes_.forest[biome_].size()
+		
+		return biome.title
+
+
+	func find_an_adjacent_habitat_for_biome(biomes_: Dictionary, biome_: String) -> void:
+		if biomes_.neighbor[biome_].size() > 0:
+			var habitat = biomes_.neighbor[biome_].pick_random()
+			
+			for biome in biomes_.neighbor:
+				biomes_.neighbor[biome].erase(habitat)
+			
+			for neighbor in habitat.dict.neighbor:
+				if biomes_.habitat.has(neighbor):
+					biomes_.neighbor[biome_].append(neighbor)
+			
+			habitat.set_biome(biome_)
+			biomes_.forest[biome_].append_array(habitat.arr.forest)
+			biomes_.habitat.erase(habitat)
+		else:
+			biomes_.forest.erase(biome_)
+			biomes_.neighbor.erase(biome_)
+
+
+	func init_breeds() -> void:
+		var locations = []
+		
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						locations.append(location)
+		
+		while locations.size() > 0:
+			var location = locations.pick_random()
+			locations.erase(location)
+			var breeds = {}
+			
+			for breed in Global.dict.breed.weight:
+				breeds[breed] = Global.dict.breed.weight[breed]
+			
+			if location.word.biome == "north":
+				breeds.erase("exotic")
+			
+			for type in location.obj.habitat.arr.location:
+				for neighbor in location.obj.habitat.arr.location[type]:
+					if neighbor.word.breed != null:
+						breeds[neighbor.word.breed] += 1
+			
+			var breed = Global.get_random_key(breeds)
+			location.set_breed(breed)
+
+
+	func init_woods() -> void:
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						location.init_woods()
+
+
 	func set_locations() -> void:
 		var habitat = dict.habitat[0].front()
 		#habitat.select_to_show()
 
 
 	func place_beast_in_locations() -> void:
-#		for beast in obj.zoo.arr.beast:
-#			var location = locations.pick_random()
-#			locations.erase(location)
-#			beast.step_into_location(location)
+		var locations = []
+		
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						locations.append(location)
+		
+		for beast in obj.zoo.arr.beast:
+			var location = locations.pick_random()
+			locations.erase(location)
+			beast.step_into_location(location)
+
+
+	func place_beast_in_harvest_locations() -> void:
+		var locations = []
+		
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						locations.append(location)
+		
+		for beast in obj.zoo.arr.beast:
+			var location = locations.pick_random()
+			locations.erase(location)
+			beast.step_into_location(location)
+
+
+	func place_beasts_in_clashe_locations() -> void:
 		var locations = []
 		
 		for ring in dict.habitat:
@@ -370,7 +507,30 @@ class Sanctuary:
 			_j += 1
 
 
+	func init_harvests() -> void:
+		var title = "harvest"
+		
+		for ring in dict.habitat:
+			for habitat in dict.habitat[ring]:
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						if location.arr.beast.size() > 1:
+							var input = {}
+							input.location = location
+							input.type = title
+							var occasion = Classes_11.Occasion.new(input)
+							dict.occasion[input.type].append(occasion)
+		
+		for occasion in dict.occasion[title]:
+			occasion.prepare()
+		
+		for occasion in dict.occasion[title]:
+			occasion.start()
+
+
 	func init_clashes() -> void:
+		var title = "clash"
+		
 		for ring in dict.habitat:
 			for habitat in dict.habitat[ring]:
 				for type in habitat.arr.location:
@@ -384,17 +544,17 @@ class Sanctuary:
 							if flag:
 								var input = {}
 								input.location = location
-								input.type = "clash"
+								input.type = title
 								var occasion = Classes_11.Occasion.new(input)
 								dict.occasion[input.type].append(occasion)
 								
 								for beast in location.arr.beast:
 									occasion.add_beast(beast)
 		
-		for occasion in dict.occasion["clash"]:
+		for occasion in dict.occasion[title]:
 			occasion.prepare()
-			
-		for occasion in dict.occasion["clash"]:
+		
+		for occasion in dict.occasion[title]:
 			occasion.start()
 
 
@@ -448,7 +608,7 @@ class Sanctuary:
 		for ring in dict.habitat:
 			for habitat_ in dict.habitat[ring]:
 				for forest in habitat_.arr.forest:
-					forest.scene.myself.update_color_based_on_habitat_index()
+					forest.scene.myself.update_color_based_on_biome()
 		pass
 
 
@@ -516,15 +676,16 @@ class Forest:
 
 
 	func _init(input_: Dictionary) -> void:
-		num.index = null
 		arr.sequoia = []
 		arr.sequoia.append_array(input_.sequoias)
+		num.ring = input_.ring
+		num.index = null
 		obj.sanctuary = input_.sanctuary
 		obj.habitat = null
-		num.ring = input_.ring
 		dict.neighbor = {}
 		flag.origin = input_.origin
 		word.shape = input_.shape
+		word.biome = null
 		
 		if !flag.origin:
 			num.index = Global.num.index.forest

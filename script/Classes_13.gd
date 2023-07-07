@@ -27,20 +27,20 @@ class Chain:
 		
 		for condition in Global.arr.condition:
 			var input = {}
-			input.chain = self
+			input.parent = self
+			input.kind = "chain"
 			input.type = "condition"
 			input.title = condition
-			#input.aspect = aspect
-			input.faces = 20
+			#input.faces = 20
 			obj.dice.condition[condition] = Classes_14.Dice.new(input)
 		
 		for aspect in Global.arr.beast.aspect:
 			var input = {}
-			input.chain = self
+			input.parent = self
+			input.kind = "chain"
 			input.type = "aspect"
 			input.title = aspect
-			#input.aspect = aspect
-			input.faces = 6
+			#input.faces = 6
 			obj.dice.aspect[aspect] = Classes_14.Dice.new(input)
 
 
@@ -394,7 +394,7 @@ class Chain:
 		var aspect = Global.dict.aspect.condition[condition_]
 		obj.dice.condition[condition_].roll()
 		var edge = obj.dice.condition[condition_].obj.edge
-		var attempts = Global.dict.gist.attempt[edge.word.gist.current]
+		var attempts = edge.get_value()
 		
 		if condition_ == "on attack":
 			attempts += Global.dict.modifier.attempt[description.accuracy]
@@ -443,7 +443,7 @@ class Chain:
 		var aspect = Global.dict.aspect.condition[condition_]
 		obj.dice.condition[condition_].roll()
 		var edge = obj.dice.condition[condition_].obj.edge
-		var attempts = Global.dict.gist.attempt[edge.word.gist.current]
+		var attempts = edge.get_value()
 		
 		if condition_ == "on attack":
 			attempts += Global.dict.modifier.attempt[description.notability]

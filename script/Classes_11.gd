@@ -81,6 +81,15 @@ class Habitat:
 			forest.scene.myself.update_color_based_on_habitat_index()
 
 
+	func set_biome(biome_: String) -> void:
+		for forest in arr.forest:
+			forest.word.biome = biome_
+			
+		for type in arr.location:
+			for location in arr.location[type]:
+				location.word.biome = biome_
+
+
 #Локация location
 class Location:
 	var arr = {}
@@ -93,12 +102,15 @@ class Location:
 
 
 	func _init(input_: Dictionary) -> void:
+		arr.beast = []
 		num.area = input_.area
 		num.order = input_.order
-		word.type = input_.type
 		obj.habitat = input_.habitat
-		arr.beast = []
+		obj.greenhouse = obj.habitat.obj.sanctuary.obj.greenhouse
 		dict.footprint = {}
+		word.type = input_.type
+		word.biome = null
+		word.breed = null
 
 
 	func init_scene() -> void:
@@ -114,6 +126,39 @@ class Location:
 	func get_assessment_based_on_goal(goal_: String) -> int:
 		var assessment = 1
 		return assessment
+
+
+	func set_breed(breed_: String) -> void:
+		word.breed = breed_
+		obj.greenhouse.arr.breed[breed_].append(self)
+		scene.myself.update_color_based_on_breed()
+
+
+	func init_woods() -> void:
+		if word.biome != null:
+			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
+			arr.wood = []
+			var titles = []
+			
+			if word.breed != "exotic":
+				for title in Global.dict.wood.breed[word.breed]:
+					titles.append(title)
+			else:
+				for title in Global.dict.wood.biome[word.biome]:
+					titles.append(title)
+			
+			for _i in Global.num.size.location.wood:
+				for _j in Global.num.size.location.wood:
+					if _i % num.narrowness == 0 and _j % num.narrowness == 0:
+						var input = {}
+						input.location = self
+						input.greenhouse = obj.greenhouse
+						input.title = titles.pick_random()
+						var wood = Classes_15.Wood.new(input)
+						arr.wood.append(wood)
+						obj.greenhouse.arr.wood.append(wood)
+			
+			
 
 
 #Событие occasion
@@ -143,7 +188,10 @@ class Occasion:
 
 	func prepare() -> void:
 		for beast in obj.location.arr.beast:
-			beast.prepare_for_occasion()
+			match beast.obj.occasion.word.type:
+				"clash":
+					beast.obj.target = null
+					beast.select_target()
 
 
 	func start() -> void:
@@ -151,5 +199,8 @@ class Occasion:
 			"clash":
 				for beast in obj.location.arr.beast:
 					beast.scene.myself.start_action_in_combat_mode()
+			"harvest":
+				for beast in obj.location.arr.beast:
+					beast.scene.myself.start_action_in_harvest_mode()
 
 

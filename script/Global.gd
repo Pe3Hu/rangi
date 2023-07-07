@@ -29,8 +29,10 @@ func init_arr() -> void:
 	arr.polyhedron = [3,4,5,6]
 	arr.drone = ["arm","brain"]
 	arr.sequence["A000045"] = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
-	arr.occasion = ["clash"]
+	arr.occasion = ["clash", "harvest", "chase"]
 	arr.condition = ["on attack", "on defense"]
+	arr.biome = ["north", "east", "south", "west"]
+	arr.growth = ["root", "branch"]
 	
 	arr.plant = {}
 	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
@@ -47,7 +49,6 @@ func init_arr() -> void:
 	arr.beast.roll["modify intention"] = "sensory"
 	arr.beast.roll["modify expend"] = "mobility"
 	
-	
 	arr.wood = {}
 	arr.wood.attribute = ["hardness", "density"]
 
@@ -59,6 +60,7 @@ func init_num() -> void:
 	num.index.forest = 0
 	num.index.habitat = 0
 	num.index.beast = 0
+	num.index.day = 0
 	
 	num.factory = {}
 	num.factory.count = {}
@@ -132,6 +134,7 @@ func init_num() -> void:
 	num.size.location.offset = {}
 	num.size.location.offset.center = num.size.location.r.center - num.size.beast.r 
 	num.size.location.offset.suburb = num.size.location.r.suburb - num.size.beast.r
+	num.size.location.wood = 13
 	
 	num.time = {}
 	num.time.compression = 0.01
@@ -258,6 +261,22 @@ func init_dict() -> void:
 	#dict.threat = {}
 	#dict.threat.weight = {}
 	
+	dict.breed = {}
+	dict.breed.weight = {}
+	dict.breed.weight["conifer"] = 5
+	dict.breed.weight["leafy"] = 4
+	dict.breed.weight["exotic"] = 3
+	
+	dict.biome = {}
+	dict.biome.narrowness = {}
+	dict.biome.narrowness["north"] = [6, 3, 3, 3, 3, 2]
+	dict.biome.narrowness["east"] = [3, 3, 2, 2, 2, 1]
+	dict.biome.narrowness["south"] = [3, 2, 2, 2, 1, 1]
+	dict.biome.narrowness["west"] = [6, 6, 3, 3, 2, 2]
+	
+	#dict.biome = {}
+	#dict.biome.direction = {}
+	
 	init_beast()
 	
 	init_windrose()
@@ -270,6 +289,7 @@ func init_dict() -> void:
 	init_skeletons()
 	init_bushs()
 	init_woods()
+	init_rarities()
 	init_skills()
 
 
@@ -779,6 +799,7 @@ func get_aspect_based_on_debuff(debuff_: String) -> Variant:
 	
 	return null
 
+
 func init_links() -> void:
 	dict.link = {}
 	dict.link.title = {}
@@ -863,6 +884,8 @@ func init_bushs() -> void:
 func init_woods() -> void:
 	dict.wood = {}
 	dict.wood.title = {}
+	dict.wood.biome = {}
+	dict.wood.breed = {}
 	var path = "res://asset/json/wood_data.json"
 	var array = load_data(path)
 	
@@ -879,6 +902,9 @@ func init_woods() -> void:
 				
 				if !flag:
 					data[key.to_lower()] = wood[key]
+					
+					if typeof(wood[key]) == TYPE_STRING:
+						data[key.to_lower()] = wood[key].to_lower()
 				else:
 					var words = key.to_lower().split(" ")
 					
@@ -887,7 +913,52 @@ func init_woods() -> void:
 					
 					data[words[0]][words[1]] = wood[key]
 		
+		if !dict.wood.biome.has(data.biome):
+			dict.wood.biome[data.biome] = []
+		
+		dict.wood.biome[data.biome].append(wood["Title"].to_lower())
+		
+		if !dict.wood.breed.has(data.breed):
+			dict.wood.breed[data.breed] = []
+		
+		dict.wood.breed[data.breed].append(wood["Title"].to_lower())
+		
 		dict.wood.title[wood["Title"].to_lower()] = data
+	
+	#print(dict.wood.biome)
+	#print(dict.wood.breed)
+	
+	dict.wood.growth = {}
+	dict.wood.growth["single growth"] = 1
+	dict.wood.growth["double growth"] = 2
+	dict.wood.growth["triple growth"] = 3
+	
+	dict.wood.accumulation = {}
+	dict.wood.accumulation["root"] = 3
+	dict.wood.accumulation["branch"] = 6
+	
+	dict.wood.day = {}
+	dict.wood.rarity = {}
+	dict.wood.rarity.limit  = null
+
+
+func init_rarities() -> void:
+	dict.rarity = {}
+	dict.rarity.title = {}
+	var path = "res://asset/json/rarity_data.json"
+	var array = load_data(path)
+	
+	for rarity in array:
+		var data = {}
+
+		for key in rarity.keys():
+			if key != "Title":
+				data[key.to_lower()] = rarity[key]
+		
+		dict.rarity.title[rarity["Title"].to_lower()] = data
+		dict.wood.rarity.limit = rarity["Title"].to_lower()
+	
+	print(dict.rarity.title)
 
 
 func init_skills() -> void:
@@ -1093,3 +1164,9 @@ func get_remission(wound_: Variant) -> Variant:
 			return arr.beast.wound[index - 1]
 	
 	return null
+
+
+func get_wood_ascend(rarity_: String) -> String:
+	var index = dict.rarity.title.keys().find(rarity_)
+	#print(dict.rarity.title.keys()[index + 1])
+	return dict.rarity.title.keys()[index + 1]

@@ -127,7 +127,7 @@
   "Density min": 440,
   "Density max": 820,
   "Breed": "Exotic",
-  "Biome": "Asia"
+  "Biome": "East"
  },
  {
   "Title": "Rosewood",
@@ -137,7 +137,7 @@
   "Density min": 700,
   "Density max": 800,
   "Breed": "Exotic",
-  "Biome": "Asia"
+  "Biome": "East"
  },
  {
   "Title": "Ebony",
@@ -147,7 +147,7 @@
   "Density min": 950,
   "Density max": 1050,
   "Breed": "Exotic",
-  "Biome": "Asia"
+  "Biome": "East"
  },
  {
   "Title": "Limba",
@@ -157,7 +157,7 @@
   "Density min": 400,
   "Density max": 690,
   "Breed": "Exotic",
-  "Biome": "Africa"
+  "Biome": "South"
  },
  {
   "Title": "Khaya",
@@ -167,7 +167,7 @@
   "Density min": 420,
   "Density max": 570,
   "Breed": "Exotic",
-  "Biome": "Africa"
+  "Biome": "South"
  },
  {
   "Title": "Wenge",
@@ -177,7 +177,7 @@
   "Density min": 750,
   "Density max": 800,
   "Breed": "Exotic",
-  "Biome": "Africa"
+  "Biome": "South"
  },
  {
   "Title": "Lophira alata",
@@ -187,7 +187,7 @@
   "Density min": 950,
   "Density max": 1150,
   "Breed": "Exotic",
-  "Biome": "Africa"
+  "Biome": "South"
  },
  {
   "Title": "Balsa",
@@ -197,7 +197,7 @@
   "Density min": 120,
   "Density max": 160,
   "Breed": "Exotic",
-  "Biome": "America"
+  "Biome": "West"
  },
  {
   "Title": "Peltogyne",
@@ -207,7 +207,7 @@
   "Density min": 860,
   "Density max": 880,
   "Breed": "Exotic",
-  "Biome": "America"
+  "Biome": "West"
  },
  {
   "Title": "Ipe",
@@ -217,7 +217,7 @@
   "Density min": 800,
   "Density max": 1200,
   "Breed": "Exotic",
-  "Biome": "America"
+  "Biome": "West"
  },
  {
   "Title": "Yatoba",
@@ -227,7 +227,7 @@
   "Density min": 900,
   "Density max": 1150,
   "Breed": "Exotic",
-  "Biome": "America"
+  "Biome": "West"
  },
  {
   "Title": "Bakaut",
@@ -237,6 +237,6 @@
   "Density min": 1300,
   "Density max": 1450,
   "Breed": "Exotic",
-  "Biome": "America"
+  "Biome": "West"
  }
 ]

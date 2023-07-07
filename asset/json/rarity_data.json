@@ -1,0 +1,37 @@
+[
+ {
+  "Title": "Common",
+  "Color": "White",
+  "Wood ascension": 32
+ },
+ {
+  "Title": "Uncommon",
+  "Color": "Green",
+  "Wood ascension": 64
+ },
+ {
+  "Title": "Rare",
+  "Color": "Blue",
+  "Wood ascension": 128
+ },
+ {
+  "Title": "Mythical",
+  "Color": "Purple",
+  "Wood ascension": 256
+ },
+ {
+  "Title": "Ancient",
+  "Color": "Red",
+  "Wood ascension": 512
+ },
+ {
+  "Title": "Legendary",
+  "Color": "Orange",
+  "Wood ascension": 1024
+ },
+ {
+  "Title": "Immortal",
+  "Color": "Yellow",
+  "Wood ascension": 2048
+ }
+]

@@ -30,7 +30,7 @@ func add_beast(beast_: Classes_12.Beast) -> void:
 	parent.arr.beast.append(beast_)
 	get_node("Beast").add_child(beast_.scene.myself)
 	recalc_beasts_offset()
-	color = Color.GOLD
+	#color = Color.GOLD
 	
 	#print(self, "A", parent.arr.beast.size())
 
@@ -62,3 +62,24 @@ func recalc_beasts_offset() -> void:
 		
 		beast.scene.myself.position = vector
 
+
+func update_color_based_on_breed() -> void:
+	if parent.word.breed != null:
+		var max_h = 360.0
+		var h = null
+		var s = 0.6 
+		var v = 1
+		
+		match parent.word.breed:
+			"conifer":
+				h = 120.0 / max_h
+			"leafy":
+				h = 30.0 / max_h
+			"exotic":
+				h = 270.0 / max_h
+		
+		var color_ = Color.from_hsv(h, s, v)
+		set_color(color_)
+		#visible = false
+	else:
+		set_color(Color.BLACK)
