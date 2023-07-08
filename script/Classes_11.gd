@@ -82,12 +82,17 @@ class Habitat:
 
 
 	func set_biome(biome_: String) -> void:
+		var climate = Global.dict.biome.climate[biome_].pick_random()
+		
 		for forest in arr.forest:
 			forest.word.biome = biome_
+			#forest.word.climate = climate
 			
 		for type in arr.location:
 			for location in arr.location[type]:
 				location.word.biome = biome_
+				location.word.climate = climate
+				location.set_circumstance()
 
 
 #Локация location
@@ -111,6 +116,9 @@ class Location:
 		word.type = input_.type
 		word.biome = null
 		word.breed = null
+		word.climate = null
+		word.circumstance = {}
+		
 
 
 	func init_scene() -> void:
@@ -157,8 +165,22 @@ class Location:
 						var wood = Classes_15.Wood.new(input)
 						arr.wood.append(wood)
 						obj.greenhouse.arr.wood.append(wood)
-			
-			
+
+
+	func set_circumstance() -> void:
+		word.circumstance.title = Global.get_random_key(Global.dict.circumstance.climate[word.climate])
+		word.circumstance.size = Global.get_random_key(Global.dict.circumstance.size)
+
+
+	func get_circumstance_influence() -> Variant:
+		var result = null
+		
+		if word.circumstance.title != "typical":
+			result = {}
+			result.influence = Global.dict.circumstance.title[word.circumstance.title].influence
+			result.accumulation = Global.dict.circumstance.title[word.circumstance.title][word.circumstance.size]
+		
+		return result
 
 
 #Событие occasion

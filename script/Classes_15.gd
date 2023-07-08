@@ -52,11 +52,24 @@ class Wood:
 		num.resin.limit = Global.dict.rarity.title[word.rarity]["wood ascension"]
 		
 		num.accumulation = 0
-		num.root = 1
-		num.branch = 1
+		num.root = {}
+		num.branch = {}
+		
+		var circumstance = obj.location.get_circumstance_influence()
 		
 		for key in Global.dict.wood.accumulation:
-			num.accumulation += num[key] * Global.dict.wood.accumulation[key]
+			num[key].count = 1
+			num[key].accumulation = int(Global.dict.wood.accumulation[key])
+			
+			if circumstance != null:
+				if key == circumstance.influence:
+					num[key].accumulation += circumstance.accumulation
+			
+			num.accumulation += num[key].count * num[key].accumulation
+		
+		if circumstance != null:
+			if circumstance.influence == "accumulation":
+				num.accumulation += circumstance.accumulation
 		
 		growth()
 
@@ -94,7 +107,7 @@ class Wood:
 
 
 	func try_to_ascend() -> void:
-		var value = roll_ascend_value() + num.root
+		var value = roll_ascend_value() + num.root.count
 		#print("try to ascend " + word.rarity, [value, num.resin.limit])
 		
 		if value > num.resin.limit:
@@ -150,5 +163,5 @@ class Wood:
 		
 		for _i in count:
 			var key = Global.arr.growth.pick_random()
-			num[key] += 1
-			num.accumulation += Global.dict.wood.accumulation[key]
+			num[key].count += 1
+			num.accumulation += num[key].accumulation

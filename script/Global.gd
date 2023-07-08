@@ -33,6 +33,7 @@ func init_arr() -> void:
 	arr.condition = ["on attack", "on defense"]
 	arr.biome = ["north", "east", "south", "west"]
 	arr.growth = ["root", "branch"]
+	arr.climate = ["tropical", "equatorial", "moderate", "polar"]
 	
 	arr.plant = {}
 	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
@@ -135,6 +136,9 @@ func init_num() -> void:
 	num.size.location.offset.center = num.size.location.r.center - num.size.beast.r 
 	num.size.location.offset.suburb = num.size.location.r.suburb - num.size.beast.r
 	num.size.location.wood = 13
+	
+	num.size.circumstance = {}
+	num.size.circumstance.total = 140
 	
 	num.time = {}
 	num.time.compression = 0.01
@@ -274,6 +278,12 @@ func init_dict() -> void:
 	dict.biome.narrowness["south"] = [3, 2, 2, 2, 1, 1]
 	dict.biome.narrowness["west"] = [6, 6, 3, 3, 2, 2]
 	
+	dict.biome.climate = {}
+	dict.biome.climate["north"] = ["polar", "polar", "polar", "polar", "polar", "moderate"]
+	dict.biome.climate["east"] = ["tropical", "equatorial", "equatorial", "equatorial", "moderate", "moderate"]
+	dict.biome.climate["south"] = ["polar", "moderate", "moderate", "moderate", "moderate", "equatorial"]
+	dict.biome.climate["west"] = ["tropical", "tropical", "tropical", "tropical", "equatorial", "moderate"]
+	
 	#dict.biome = {}
 	#dict.biome.direction = {}
 	
@@ -290,6 +300,7 @@ func init_dict() -> void:
 	init_bushs()
 	init_woods()
 	init_rarities()
+	init_circumstances()
 	init_skills()
 
 
@@ -958,7 +969,50 @@ func init_rarities() -> void:
 		dict.rarity.title[rarity["Title"].to_lower()] = data
 		dict.wood.rarity.limit = rarity["Title"].to_lower()
 	
-	print(dict.rarity.title)
+	#print(dict.rarity.title)
+
+
+func init_circumstances() -> void:
+	dict.circumstance = {}
+	dict.circumstance.title = {}
+	dict.circumstance.climate = {}
+	
+	for climate in arr.climate:
+		dict.circumstance.climate[climate] = {}
+		dict.circumstance.climate[climate].total = 0
+	
+	var path = "res://asset/json/circumstance_data.json"
+	var array = load_data(path)
+	
+	for circumstance in array:
+		var data = {}
+
+		for key in circumstance.keys():
+			if key != "Title":
+				data[key.to_lower()] = circumstance[key]
+			
+				if arr.climate.has(key.to_lower()):
+					var climate = key.to_lower()
+					var value = data[climate] * circumstance["Rarity"]
+					
+					if value > 0:
+						dict.circumstance.climate[climate][circumstance["Title"].to_lower()] = value
+						dict.circumstance.climate[climate].total += value
+		
+		dict.circumstance.title[circumstance["Title"].to_lower()] = data
+	
+	for climate in dict.circumstance.climate:
+		var value = num.size.circumstance.total - dict.circumstance.climate[climate].total
+		dict.circumstance.climate[climate]["typical"] = value
+		dict.circumstance.climate[climate].erase("total")
+		#print([climate, dict.circumstance.climate[climate]])
+	
+	dict.circumstance.size = {}
+	dict.circumstance.size["small"] = 9
+	dict.circumstance.size["medium"] = 4
+	dict.circumstance.size["large"] = 1
+
+
 
 
 func init_skills() -> void:

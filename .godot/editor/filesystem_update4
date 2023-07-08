@@ -11,13 +11,5 @@ res://scene/13/chain.tscn
 res://scene/13/link.tscn
 res://scene/11/occasion.tscn
 res://script/Global.gd
-res://scene/12/beast.gd
-res://script/Classes_10.gd
 res://script/Classes_11.gd
-res://script/Classes_12.gd
-res://scene/10/forest.gd
-res://scene/11/location.gd
 res://script/Classes_15.gd
-res://script/Classes_13.gd
-res://script/Classes_14.gd
-res://scene/0/planet.gd
