@@ -32,8 +32,9 @@ func init_arr() -> void:
 	arr.occasion = ["clash", "harvest", "chase"]
 	arr.condition = ["on attack", "on defense"]
 	arr.biome = ["north", "east", "south", "west"]
-	arr.growth = ["root", "branch"]
+	arr.growth = ["root", "twig"]
 	arr.climate = ["tropical", "equatorial", "moderate", "polar"]
+	arr.impact = ["harmful", "beneficial"]
 	
 	arr.plant = {}
 	arr.plant.stage = ["germination", "leaf formation", "inflorescence formation", "fruit formation", "die off"]
@@ -139,6 +140,7 @@ func init_num() -> void:
 	
 	num.size.circumstance = {}
 	num.size.circumstance.total = 140
+	num.size.circumstance.separator = 5
 	
 	num.time = {}
 	num.time.compression = 0.01
@@ -271,6 +273,11 @@ func init_dict() -> void:
 	dict.breed.weight["leafy"] = 4
 	dict.breed.weight["exotic"] = 3
 	
+	dict.breed.biome = {}
+	dict.breed.biome["conifer"] = ["north", "west"]
+	dict.breed.biome["leafy"] = ["east", "south", "west"]
+	dict.breed.biome["exotic"] = ["east", "south", "west"]
+	
 	dict.biome = {}
 	dict.biome.narrowness = {}
 	dict.biome.narrowness["north"] = [6, 3, 3, 3, 3, 2]
@@ -284,107 +291,35 @@ func init_dict() -> void:
 	dict.biome.climate["south"] = ["polar", "moderate", "moderate", "moderate", "moderate", "equatorial"]
 	dict.biome.climate["west"] = ["tropical", "tropical", "tropical", "tropical", "equatorial", "moderate"]
 	
+	dict.biome.breed = {}
+	dict.biome.breed["north"] = ["conifer"]
+	dict.biome.breed["east"] = ["leafy", "exotic"]
+	dict.biome.breed["south"] = ["leafy", "exotic"]
+	dict.biome.breed["west"] = ["conifer", "leafy", "exotic"]
+	
 	#dict.biome = {}
 	#dict.biome.direction = {}
 	
-	init_beast()
-	
 	init_windrose()
 	init_corner()
+	
+	#branch
 	init_compartment()
 	init_drone()
 	init_schematic()
+	
+	#zoo
+	init_beast()
 	init_subaspects()
 	init_links()
 	init_skeletons()
+	
+	#greenhouse
+	init_circumstances()
 	init_bushs()
 	init_woods()
 	init_rarities()
-	init_circumstances()
 	init_skills()
-
-
-func init_beast() -> void:
-	dict.beast = {}
-	dict.beast.resource = {}
-	dict.beast.resource["offensive"] = "overheat"
-	dict.beast.resource["resilience"] = "integrity"
-	dict.beast.resource["sensory"] = "overload"
-	dict.beast.resource["mobility"] = "energy"
-	
-	dict.beast.buff = {}
-	dict.beast.buff["offensive"] = "resonance"
-	dict.beast.buff["resilience"] = "ricochet"
-	dict.beast.buff["sensory"] = "hint"
-	dict.beast.buff["mobility"] = "synchronization"
-	
-	dict.beast.debuff = {}
-	dict.beast.debuff["offensive"] = "misfire"
-	dict.beast.debuff["resilience"] = "rust"
-	dict.beast.debuff["sensory"] = "interference"
-	dict.beast.debuff["mobility"] = "desynchronization"
-	
-	dict.beast.response = {}
-	dict.beast.response["minor"] = {}
-	dict.beast.response["minor"].preparation = 3
-	dict.beast.response["minor"].activated = 3
-	dict.beast.response["severe"] = {}
-	dict.beast.response["severe"].preparation = 5
-	dict.beast.response["severe"].activated = 9
-	dict.beast.response["debuff"] = {}
-	dict.beast.response["debuff"].preparation = 7
-	dict.beast.response["debuff"].activated = 12
-	dict.beast.response["lethal"] = {}
-	dict.beast.response["lethal"].preparation = 9
-	dict.beast.response["lethal"].activated = 6
-	
-	dict.beast.respite = {}
-	dict.beast.respite["overload"] = {}
-	dict.beast.respite["overload"]["standard"] = {}
-	dict.beast.respite["overload"]["standard"].preparation = 3
-	dict.beast.respite["overload"]["standard"].effect = 5
-	dict.beast.respite["overheat"] = {}
-	dict.beast.respite["overheat"]["standard"] = {}
-	dict.beast.respite["overheat"]["standard"].preparation = 7
-	dict.beast.respite["overheat"]["standard"].effect = 9
-	dict.beast.respite["integrity"] = {}
-	dict.beast.respite["integrity"]["minor"] = {}
-	dict.beast.respite["integrity"]["minor"].preparation = 11
-	dict.beast.respite["integrity"]["minor"].effect = dict.wound.weight["minor"]
-	dict.beast.respite["integrity"]["severe"] = {}
-	dict.beast.respite["integrity"]["severe"].preparation = 23
-	dict.beast.respite["integrity"]["severe"].effect = dict.wound.weight["severe"]
-	dict.beast.respite["integrity"]["debuff"] = {}
-	dict.beast.respite["integrity"]["debuff"].preparation = 19
-	dict.beast.respite["integrity"]["debuff"].effect = dict.wound.weight["minor"]
-	
-	dict.beast.mentality = {}
-	dict.beast.mentality["aggressive"] = {}
-	dict.beast.mentality["aggressive"]["respite"] = 3
-	dict.beast.mentality["aggressive"]["action"] = 7
-	dict.beast.mentality["balanced"] = {}
-	dict.beast.mentality["balanced"]["respite"] = 5
-	dict.beast.mentality["balanced"]["action"] = 5
-	dict.beast.mentality["careful"] = {}
-	dict.beast.mentality["careful"]["respite"] = 7
-	dict.beast.mentality["careful"]["action"] = 3
-	
-	dict.beast.courage = {}
-	dict.beast.courage["berserker"] = {}
-	dict.beast.courage["berserker"]["continue"] = 9
-	dict.beast.courage["berserker"]["retreat"] = 1
-	dict.beast.courage["brave"] = {}
-	dict.beast.courage["brave"]["continue"] = 7
-	dict.beast.courage["brave"]["retreat"] = 3
-	dict.beast.courage["balanced"] = {}
-	dict.beast.courage["balanced"]["continue"] = 5
-	dict.beast.courage["balanced"]["retreat"] = 5
-	dict.beast.courage["cautious"] = {}
-	dict.beast.courage["cautious"]["continue"] = 3
-	dict.beast.courage["cautious"]["retreat"] = 7
-	dict.beast.courage["coward"] = {}
-	dict.beast.courage["coward"]["continue"] = 1
-	dict.beast.courage["coward"]["retreat"] = 9
 
 
 func init_windrose() -> void:
@@ -734,6 +669,89 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 	return flag
 
 
+func init_beast() -> void:
+	dict.beast = {}
+	dict.beast.resource = {}
+	dict.beast.resource["offensive"] = "overheat"
+	dict.beast.resource["resilience"] = "integrity"
+	dict.beast.resource["sensory"] = "overload"
+	dict.beast.resource["mobility"] = "energy"
+	
+	dict.beast.buff = {}
+	dict.beast.buff["offensive"] = "resonance"
+	dict.beast.buff["resilience"] = "ricochet"
+	dict.beast.buff["sensory"] = "hint"
+	dict.beast.buff["mobility"] = "synchronization"
+	
+	dict.beast.debuff = {}
+	dict.beast.debuff["offensive"] = "misfire"
+	dict.beast.debuff["resilience"] = "rust"
+	dict.beast.debuff["sensory"] = "interference"
+	dict.beast.debuff["mobility"] = "desynchronization"
+	
+	dict.beast.response = {}
+	dict.beast.response["minor"] = {}
+	dict.beast.response["minor"].preparation = 3
+	dict.beast.response["minor"].activated = 3
+	dict.beast.response["severe"] = {}
+	dict.beast.response["severe"].preparation = 5
+	dict.beast.response["severe"].activated = 9
+	dict.beast.response["debuff"] = {}
+	dict.beast.response["debuff"].preparation = 7
+	dict.beast.response["debuff"].activated = 12
+	dict.beast.response["lethal"] = {}
+	dict.beast.response["lethal"].preparation = 9
+	dict.beast.response["lethal"].activated = 6
+	
+	dict.beast.respite = {}
+	dict.beast.respite["overload"] = {}
+	dict.beast.respite["overload"]["standard"] = {}
+	dict.beast.respite["overload"]["standard"].preparation = 3
+	dict.beast.respite["overload"]["standard"].effect = 5
+	dict.beast.respite["overheat"] = {}
+	dict.beast.respite["overheat"]["standard"] = {}
+	dict.beast.respite["overheat"]["standard"].preparation = 7
+	dict.beast.respite["overheat"]["standard"].effect = 9
+	dict.beast.respite["integrity"] = {}
+	dict.beast.respite["integrity"]["minor"] = {}
+	dict.beast.respite["integrity"]["minor"].preparation = 11
+	dict.beast.respite["integrity"]["minor"].effect = dict.wound.weight["minor"]
+	dict.beast.respite["integrity"]["severe"] = {}
+	dict.beast.respite["integrity"]["severe"].preparation = 23
+	dict.beast.respite["integrity"]["severe"].effect = dict.wound.weight["severe"]
+	dict.beast.respite["integrity"]["debuff"] = {}
+	dict.beast.respite["integrity"]["debuff"].preparation = 19
+	dict.beast.respite["integrity"]["debuff"].effect = dict.wound.weight["minor"]
+	
+	dict.beast.mentality = {}
+	dict.beast.mentality["aggressive"] = {}
+	dict.beast.mentality["aggressive"]["respite"] = 3
+	dict.beast.mentality["aggressive"]["action"] = 7
+	dict.beast.mentality["balanced"] = {}
+	dict.beast.mentality["balanced"]["respite"] = 5
+	dict.beast.mentality["balanced"]["action"] = 5
+	dict.beast.mentality["careful"] = {}
+	dict.beast.mentality["careful"]["respite"] = 7
+	dict.beast.mentality["careful"]["action"] = 3
+	
+	dict.beast.courage = {}
+	dict.beast.courage["berserker"] = {}
+	dict.beast.courage["berserker"]["continue"] = 9
+	dict.beast.courage["berserker"]["retreat"] = 1
+	dict.beast.courage["brave"] = {}
+	dict.beast.courage["brave"]["continue"] = 7
+	dict.beast.courage["brave"]["retreat"] = 3
+	dict.beast.courage["balanced"] = {}
+	dict.beast.courage["balanced"]["continue"] = 5
+	dict.beast.courage["balanced"]["retreat"] = 5
+	dict.beast.courage["cautious"] = {}
+	dict.beast.courage["cautious"]["continue"] = 3
+	dict.beast.courage["cautious"]["retreat"] = 7
+	dict.beast.courage["coward"] = {}
+	dict.beast.courage["coward"]["continue"] = 1
+	dict.beast.courage["coward"]["retreat"] = 9
+
+
 func init_subaspects() -> void:
 	dict.aspect = {}
 	dict.aspect.subaspect = {}
@@ -876,6 +894,54 @@ func init_skeletons() -> void:
 		dict.skeleton.title[skeleton["Title"].to_lower()] = data
 
 
+func init_circumstances() -> void:
+	dict.circumstance = {}
+	dict.circumstance.title = {}
+	dict.circumstance.climate = {}
+	dict.circumstance.prevalent = []
+	dict.circumstance.unique = []
+	
+	for climate in arr.climate:
+		dict.circumstance.climate[climate] = {}
+		dict.circumstance.climate[climate].total = 0
+	
+	var path = "res://asset/json/circumstance_data.json"
+	var array = load_data(path)
+	
+	for circumstance in array:
+		var data = {}
+
+		for key in circumstance.keys():
+			if key != "Title":
+				data[key.to_lower()] = circumstance[key]
+			
+				if arr.climate.has(key.to_lower()):
+					var climate = key.to_lower()
+					var value = data[climate] * circumstance["Rarity"]
+					
+					if value > 0:
+						dict.circumstance.climate[climate][circumstance["Title"].to_lower()] = value
+						dict.circumstance.climate[climate].total += value
+		
+		if circumstance["Rarity"] >= num.size.circumstance.separator:
+			dict.circumstance.prevalent.append(circumstance["Title"].to_lower())
+		else:
+			dict.circumstance.unique.append(circumstance["Title"].to_lower())
+		
+		dict.circumstance.title[circumstance["Title"].to_lower()] = data
+	
+	for climate in dict.circumstance.climate:
+		var value = num.size.circumstance.total - dict.circumstance.climate[climate].total
+		dict.circumstance.climate[climate]["typical"] = value
+		dict.circumstance.climate[climate].erase("total")
+		#print([climate, dict.circumstance.climate[climate]])
+	
+	dict.circumstance.size = {}
+	dict.circumstance.size["small"] = 9
+	dict.circumstance.size["medium"] = 4
+	dict.circumstance.size["large"] = 1
+
+
 func init_bushs() -> void:
 	dict.bush = {}
 	dict.bush.title = {}
@@ -946,11 +1012,95 @@ func init_woods() -> void:
 	
 	dict.wood.accumulation = {}
 	dict.wood.accumulation["root"] = 3
-	dict.wood.accumulation["branch"] = 6
+	dict.wood.accumulation["twig"] = 6
+	
+	dict.impact = {}
+	dict.impact.accumulation = {}
+	dict.impact.accumulation["beneficial"] = 1.25
+	dict.impact.accumulation["harmful"] = 0.75
+	
+	dict.impact.ascension = {}
+	dict.impact.ascension["beneficial"] = 5.0 / 6.0
+	dict.impact.ascension["harmful"] = 7.0 / 6.0
 	
 	dict.wood.day = {}
 	dict.wood.rarity = {}
 	dict.wood.rarity.limit  = null
+	
+	set_wood_preference()
+
+
+func set_wood_preference() -> void:
+	var combos = []
+	combos.append([["prevalent"], ["prevalent"]])
+	combos.append([["unique", "unique"], ["unique", "unique"]])
+	combos.append([["prevalent"], ["unique", "unique"]])
+	combos.append([["unique", "unique"], ["prevalent"]])
+	combos.append([["prevalent", "unique"], ["unique", "unique", "unique"]])
+	combos.append([["unique", "unique", "unique"], ["prevalent", "unique"]])
+	
+	for title in dict.wood.title:
+		var description = dict.wood.title[title]
+		var biomes = []
+		var climates = {}
+		
+		if description.biome != "all":
+			biomes.append(description.biome)
+		else:
+			biomes.append_array(dict.breed.biome[description.breed])
+		
+		var max = 0
+		
+		for biome in biomes:
+			for climate in dict.biome.climate[biome]:
+				if !climates.has(climate):
+					climates[climate] = 0
+				
+				climates[climate] += 1
+				
+				if max < climates[climate]:
+					max = climates[climate]
+		
+		for climate in climates:
+			climates[climate] = max - climates[climate]
+		
+		dict.wood.title[title].harmful = {}
+		dict.wood.title[title].beneficial = {}
+		dict.wood.title[title].harmful.climate = Global.get_random_key(climates)
+		dict.wood.title[title].beneficial.climate = dict.wood.title[title].harmful.climate
+		
+		while dict.wood.title[title].beneficial.climate == dict.wood.title[title].harmful.climate:
+			dict.wood.title[title].beneficial.climate = climates.keys().pick_random()
+		
+			
+		var combo = combos.pick_random()
+		
+		for _i in arr.impact.size():
+			var impact = arr.impact[_i]
+			dict.wood.title[title][impact].circumstance = []
+			var circumstances = {}
+			circumstances.total = []
+			circumstances.prevalent = []
+			circumstances.unique = []
+			var climate = dict.wood.title[title][impact].climate
+			
+			for circumstance in dict.circumstance.climate[climate]:
+				if !circumstances.total.has(circumstance):
+					circumstances.total.append(circumstance)
+					
+					if dict.circumstance.prevalent.has(circumstance):
+						circumstances.prevalent.append(circumstance)
+					
+					if dict.circumstance.unique.has(circumstance):
+						circumstances.unique.append(circumstance)
+			
+			for _j in combo[_i].size():
+				var rarity = combo[_i][_j]
+				var circumstance = circumstances[rarity].pick_random()
+				circumstances[rarity].erase(circumstance)
+				dict.wood.title[title][impact].circumstance.append(circumstance)
+			
+			#print([title, climate, impact, dict.wood.title[title][impact]])
 
 
 func init_rarities() -> void:
@@ -970,49 +1120,6 @@ func init_rarities() -> void:
 		dict.wood.rarity.limit = rarity["Title"].to_lower()
 	
 	#print(dict.rarity.title)
-
-
-func init_circumstances() -> void:
-	dict.circumstance = {}
-	dict.circumstance.title = {}
-	dict.circumstance.climate = {}
-	
-	for climate in arr.climate:
-		dict.circumstance.climate[climate] = {}
-		dict.circumstance.climate[climate].total = 0
-	
-	var path = "res://asset/json/circumstance_data.json"
-	var array = load_data(path)
-	
-	for circumstance in array:
-		var data = {}
-
-		for key in circumstance.keys():
-			if key != "Title":
-				data[key.to_lower()] = circumstance[key]
-			
-				if arr.climate.has(key.to_lower()):
-					var climate = key.to_lower()
-					var value = data[climate] * circumstance["Rarity"]
-					
-					if value > 0:
-						dict.circumstance.climate[climate][circumstance["Title"].to_lower()] = value
-						dict.circumstance.climate[climate].total += value
-		
-		dict.circumstance.title[circumstance["Title"].to_lower()] = data
-	
-	for climate in dict.circumstance.climate:
-		var value = num.size.circumstance.total - dict.circumstance.climate[climate].total
-		dict.circumstance.climate[climate]["typical"] = value
-		dict.circumstance.climate[climate].erase("total")
-		#print([climate, dict.circumstance.climate[climate]])
-	
-	dict.circumstance.size = {}
-	dict.circumstance.size["small"] = 9
-	dict.circumstance.size["medium"] = 4
-	dict.circumstance.size["large"] = 1
-
-
 
 
 func init_skills() -> void:

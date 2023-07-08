@@ -13,3 +13,4 @@ res://scene/11/occasion.tscn
 res://script/Global.gd
 res://script/Classes_11.gd
 res://script/Classes_15.gd
+res://asset/json/circumstance_data.json

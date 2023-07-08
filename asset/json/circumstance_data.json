@@ -68,7 +68,7 @@
   "Small": 4,
   "Medium": 6,
   "Large": 9,
-  "Influence": "Branch",
+  "Influence": "Twing",
   "Rarity": 1
  },
  {
@@ -140,7 +140,7 @@
   "Small": -2,
   "Medium": -3,
   "Large": -4,
-  "Influence": "Branch",
+  "Influence": "Twing",
   "Rarity": 6
  },
  {
@@ -152,7 +152,7 @@
   "Small": 3,
   "Medium": 4,
   "Large": 5,
-  "Influence": "Branch",
+  "Influence": "Twing",
   "Rarity": 6
  }
 ]

@@ -118,7 +118,6 @@ class Location:
 		word.breed = null
 		word.climate = null
 		word.circumstance = {}
-		
 
 
 	func init_scene() -> void:
