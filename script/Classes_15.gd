@@ -39,9 +39,11 @@ class Wood:
 	func _init(input_: Dictionary) -> void:
 		obj.greenhouse = input_.greenhouse
 		obj.location = input_.location
+		obj.spot = input_.spot
 		word.title = input_.title
 		word.rarity = "common"
 		#word.stage = Global.arr.plant.stage.front()
+		obj.spot.set_content("wood")
 		init_dices()
 		init_nums()
 
@@ -110,9 +112,6 @@ class Wood:
 					"ascension":
 						if description[impact].circumstance.has(obj.location.word.circumstance.title):
 							num.impact[action] = Global.dict.impact[action][impact]
-			
-				if num.impact[action] != 1.0:
-					print([action, impact, num.impact[action]])
 
 
 	func growth() -> void:
@@ -187,4 +186,4 @@ class Wood:
 		
 		if !Global.dict.wood.day.has(word.rarity):
 			Global.dict.wood.day[word.rarity] = Global.num.index.day
-			print([word.rarity, Global.num.index.day])
+			#print([word.rarity, Global.num.index.day])

@@ -1,5 +1,6 @@
 res://scene/0/planet.tscn
 res://scene/3/tool.gd
+res://script/Classes_11.gd
 res://scene/10/forest.tscn
 res://scene/10/sequoia.tscn
 res://scene/10/glade.tscn
@@ -10,7 +11,6 @@ res://scene/12/beast.tscn
 res://scene/13/chain.tscn
 res://scene/13/link.tscn
 res://scene/11/occasion.tscn
+res://script/Classes_10.gd
 res://script/Global.gd
-res://script/Classes_11.gd
 res://script/Classes_15.gd
-res://asset/json/circumstance_data.json

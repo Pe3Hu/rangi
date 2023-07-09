@@ -136,7 +136,12 @@ func init_num() -> void:
 	num.size.location.offset = {}
 	num.size.location.offset.center = num.size.location.r.center - num.size.beast.r 
 	num.size.location.offset.suburb = num.size.location.r.suburb - num.size.beast.r
-	num.size.location.wood = 13
+	num.size.location.spot = 13
+	
+	num.size.wood = {}
+	num.size.wood.area = {}
+	num.size.wood.area.min = 75
+	num.size.wood.area.max = 125
 	
 	num.size.circumstance = {}
 	num.size.circumstance.total = 140
@@ -296,6 +301,12 @@ func init_dict() -> void:
 	dict.biome.breed["east"] = ["leafy", "exotic"]
 	dict.biome.breed["south"] = ["leafy", "exotic"]
 	dict.biome.breed["west"] = ["conifer", "leafy", "exotic"]
+	
+	dict.content = {}
+	dict.content.weight = {}
+	dict.content.weight["bush"] = 4
+	dict.content.weight["first aid kit"] = 2
+	dict.content.weight["extractor"] = 1
 	
 	#dict.biome = {}
 	#dict.biome.direction = {}

@@ -95,6 +95,18 @@ class Habitat:
 				location.set_circumstance()
 
 
+	func host_forge() -> void:
+		var spots = []
+		
+		for type in arr.location:
+			for location in arr.location[type]:
+				spots.append_array(location.arr.spot.booty)
+		
+		if spots.size() > 0:
+			var spot = spots.pick_random()
+			spot.set_content("forge")
+
+
 #Локация location
 class Location:
 	var arr = {}
@@ -141,9 +153,57 @@ class Location:
 		scene.myself.update_color_based_on_breed()
 
 
-	func init_woods() -> void:
+	func init_spots() -> void:
+		arr.spot = {}
+		arr.spot.all = []
+		arr.spot.blank = []
+		arr.spot.booty = []
+		
 		if word.biome != null:
 			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
+			for _i in Global.num.size.location.spot:
+				arr.spot.all.append([])
+				
+				for _j in Global.num.size.location.spot:
+					var input = {}
+					input.status = "blank"
+					
+					if _i % num.narrowness == 0 and _j % num.narrowness == 0:
+						input.status = "booty"
+					
+					input.grid = Vector2(_j, _i)
+					input.location = self
+					var spot = Classes_11.Spot.new(input)
+					arr.spot.all[_i].append(spot)
+					arr.spot[input.status].append(spot)
+		
+			init_spot_neighbors()
+			init_woods()
+
+
+	func init_spot_neighbors() -> void:
+		var directions = []
+		directions.append_array(Global.dict.neighbor.linear2)
+		directions.append_array(Global.dict.neighbor.diagonal)
+		
+		for spots in arr.spot.all:
+			for spot in spots:
+				for direction in directions:
+					var grid = spot.vec.grid + direction
+					
+					if Global.boundary_of_array_check(arr.spot.all, grid):
+						var neighbor = arr.spot.all[grid.y][grid.x]
+						spot.dict.neighbor[direction] = neighbor
+		
+		print(arr.spot.all[1][1].dict.neighbor.size())
+
+
+	func init_woods() -> void:
+		if word.biome != null:
+			var spots = []
+			spots.append_array(arr.spot.booty)
+			var area = 0
+			var limit = Global.num.size.wood.area
 			arr.wood = []
 			var titles = []
 			
@@ -154,16 +214,28 @@ class Location:
 				for title in Global.dict.wood.biome[word.biome]:
 					titles.append(title)
 			
-			for _i in Global.num.size.location.wood:
-				for _j in Global.num.size.location.wood:
-					if _i % num.narrowness == 0 and _j % num.narrowness == 0:
-						var input = {}
-						input.location = self
-						input.greenhouse = obj.greenhouse
-						input.title = titles.pick_random()
-						var wood = Classes_15.Wood.new(input)
-						arr.wood.append(wood)
-						obj.greenhouse.arr.wood.append(wood)
+			while area < num.area and spots.size() > 0:
+				var input = {}
+				input.location = self
+				input.greenhouse = obj.greenhouse
+				input.title = titles.pick_random()
+				input.spot = spots.pick_random()
+				Global.rng.randomize()
+				input.area = Global.rng.randi_range(limit.min, limit.max)
+				var wood = Classes_15.Wood.new(input)
+				arr.wood.append(wood)
+				obj.greenhouse.arr.wood.append(wood)
+				area += input.area
+				spots.erase(input.spot)
+
+
+	func fill_spots() -> void:
+		#var spots = []
+		for spot in arr.spot.booty:
+			if spot.word.content == null:
+				#spots.append(spot)
+				var content = Global.get_random_key(Global.dict.content.weight)
+				spot.set_content(content)
 
 
 	func set_circumstance() -> void:
@@ -180,6 +252,31 @@ class Location:
 			result.accumulation = Global.dict.circumstance.title[word.circumstance.title][word.circumstance.size]
 		
 		return result
+
+
+#Место spot
+class Spot:
+	var obj = {}
+	var vec = {}
+	var dict = {}
+	var word = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.location = input_.location
+		vec.grid = input_.grid
+		dict.neighbor = {}
+		word.status = input_.status
+		word.content = null
+
+
+	func set_content(content_: String) -> void:
+		word.content = content_
+		
+		if word.status == "blank":
+			word.status = "booty"
+			obj.location.arr.spot.blank.erase(self)
+			obj.location.arr.spot.booty.append(self)
 
 
 #Событие occasion

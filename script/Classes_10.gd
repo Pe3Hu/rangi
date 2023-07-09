@@ -24,7 +24,7 @@ class Sanctuary:
 		init_habitats()
 		init_biomes()
 		init_breeds()
-		init_woods()
+		init_spots()
 		paint_someone()
 		#set_locations()
 		place_beast_in_locations()
@@ -416,18 +416,16 @@ class Sanctuary:
 			for habitat in dict.habitat[ring]:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
-						locations.append(location)
+						if location.word.biome != null:
+							locations.append(location)
 		
 		while locations.size() > 0:
 			var location = locations.pick_random()
 			locations.erase(location)
 			var breeds = {}
 			
-			for breed in Global.dict.breed.weight:
+			for breed in Global.dict.biome.breed[location.word.biome]:
 				breeds[breed] = Global.dict.breed.weight[breed]
-			
-			if location.word.biome == "north":
-				breeds.erase("exotic")
 			
 			for type in location.obj.habitat.arr.location:
 				for neighbor in location.obj.habitat.arr.location[type]:
@@ -438,12 +436,18 @@ class Sanctuary:
 			location.set_breed(breed)
 
 
-	func init_woods() -> void:
+	func init_spots() -> void:
 		for ring in dict.habitat:
 			for habitat in dict.habitat[ring]:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
-						location.init_woods()
+						location.init_spots()
+				
+				habitat.host_forge()
+				
+				for type in habitat.arr.location:
+					for location in habitat.arr.location[type]:
+						location.fill_spots()
 
 
 	func set_locations() -> void:
@@ -563,36 +567,6 @@ class Sanctuary:
 			beast.get_new_task()
 			beast.scene.myself.perform_task()
 
-
-	func calc_total_area() -> void:
-		var area = 0
-		
-		for ring in dict.forest:
-			for forest in dict.forest[ring]:
-				forest.calculate_area()
-				area += forest.num.area.total
-		
-		print(area)
-
-
-	func calc_location_area() -> void:
-		var area = {}
-		area.total = 0
-		#area.center = 0
-		#area.suburb = 0
-		area.location = 0
-		
-		for ring in dict.habitat:
-			for habitat in dict.habitat[ring]:
-				for type in habitat.arr.location:
-					for location in habitat.arr.location[type]:
-						area.location += location.num.area
-				
-				for forest in habitat.arr.forest:
-					area.total += forest.num.area.total
-					#area.suburb += forest.num.area.suburb
-		
-		print(area)
 
 
 	func paint_someone() -> void:
