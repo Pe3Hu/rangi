@@ -450,11 +450,6 @@ class Sanctuary:
 						location.fill_spots()
 
 
-	func set_locations() -> void:
-		var habitat = dict.habitat[0].front()
-		#habitat.select_to_show()
-
-
 	func place_beast_in_locations() -> void:
 		var locations = []
 		
@@ -468,6 +463,7 @@ class Sanctuary:
 			var location = locations.pick_random()
 			locations.erase(location)
 			beast.step_into_location(location)
+			location.select_spots_to_show()
 
 
 	func place_beast_in_harvest_locations() -> void:

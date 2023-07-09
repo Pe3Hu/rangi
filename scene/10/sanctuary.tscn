@@ -39,3 +39,7 @@ color = Color(0.811765, 1, 0.733333, 1)
 [node name="Habitat" type="VBoxContainer" parent="HBox"]
 layout_mode = 2
 alignment = 1
+
+[node name="Spots" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+alignment = 1

@@ -44,6 +44,7 @@ class Wood:
 		word.rarity = "common"
 		#word.stage = Global.arr.plant.stage.front()
 		obj.spot.set_content("wood")
+		obj.spot.obj.plant = self
 		init_dices()
 		init_nums()
 
@@ -187,3 +188,10 @@ class Wood:
 		if !Global.dict.wood.day.has(word.rarity):
 			Global.dict.wood.day[word.rarity] = Global.num.index.day
 			#print([word.rarity, Global.num.index.day])
+
+
+	func reduce_accumulation(value_: int) -> void:
+		num.accumulation -= value_
+		
+		if num.accumulation < 0:
+			num.accumulation = 0

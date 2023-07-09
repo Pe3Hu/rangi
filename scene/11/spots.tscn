@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://dflo21e2j04t5"]
+
+[ext_resource type="Script" path="res://scene/11/spots.gd" id="1_n3pih"]
+
+[node name="Spots" type="MarginContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_n3pih")
+
+[node name="BG" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0.678431, 0.678431, 0.678431, 1)
+
+[node name="Spot" type="GridContainer" parent="."]
+layout_mode = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0

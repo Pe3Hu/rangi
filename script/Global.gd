@@ -147,6 +147,9 @@ func init_num() -> void:
 	num.size.circumstance.total = 140
 	num.size.circumstance.separator = 5
 	
+	num.size.spot = {}
+	num.size.spot.r = 6
+	
 	num.time = {}
 	num.time.compression = 0.01
 
@@ -1166,6 +1169,12 @@ func init_node() -> void:
 func init_vec():
 	vec.size = {}
 	init_window_size()
+	
+	vec.size.node = {}
+	vec.size.node.spielkarte = Vector2.ONE * num.size.spielkarte.r * 2
+	vec.size.node.sanctuary = Vector2.ONE * 560
+	vec.size.node.habitat = Vector2.ONE * (num.size.location.r.center + num.size.location.gap) * 2
+	vec.size.node.spot = Vector2.ONE * num.size.spot.r
 
 
 func init_window_size():
@@ -1173,11 +1182,6 @@ func init_window_size():
 	vec.size.window.width = ProjectSettings.get_setting("display/window/size/viewport_width")
 	vec.size.window.height = ProjectSettings.get_setting("display/window/size/viewport_height")
 	vec.size.window.center = Vector2(vec.size.window.width/2, vec.size.window.height/2)
-	
-	vec.size.node = {}
-	vec.size.node.spielkarte = Vector2.ONE * num.size.spielkarte.r * 2
-	vec.size.node.sanctuary = Vector2.ONE * 560
-	vec.size.node.habitat = Vector2.ONE * (num.size.location.r.center + num.size.location.gap) * 2
 
 
 func init_scene() -> void:
@@ -1211,6 +1215,8 @@ func init_scene() -> void:
 	scene.habitat = load("res://scene/11/habitat.tscn")
 	scene.location = load("res://scene/11/location.tscn")
 	scene.occasion = load("res://scene/11/occasion.tscn")
+	scene.spots = load("res://scene/11/spots.tscn")
+	scene.spot = load("res://scene/11/spot.tscn")
 	scene.beast = load("res://scene/12/beast.tscn")
 	scene.chain = load("res://scene/13/chain.tscn")
 	scene.link = load("res://scene/13/link.tscn")

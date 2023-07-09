@@ -1,10 +1,10 @@
-Timer
+VBoxContainer
+Control
 ColorRect
 MarginContainer
+GridContainer
+Timer
 HBoxContainer
-VBoxContainer
 Node2D
 Polygon2D
 Label
-GridContainer
-Control

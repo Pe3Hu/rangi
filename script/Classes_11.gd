@@ -140,6 +140,8 @@ class Location:
 		scene.myself = Global.scene.location.instantiate()
 		scene.myself.set_parent(self)
 		obj.habitat.scene.myself.get_node("Location").add_child(scene.myself)
+		scene.spots = Global.scene.spots.instantiate()
+		scene.spots.set_parent(self)
 
 
 	func get_assessment_based_on_goal(goal_: String) -> int:
@@ -194,8 +196,6 @@ class Location:
 					if Global.boundary_of_array_check(arr.spot.all, grid):
 						var neighbor = arr.spot.all[grid.y][grid.x]
 						spot.dict.neighbor[direction] = neighbor
-		
-		print(arr.spot.all[1][1].dict.neighbor.size())
 
 
 	func init_woods() -> void:
@@ -230,12 +230,14 @@ class Location:
 
 
 	func fill_spots() -> void:
-		#var spots = []
 		for spot in arr.spot.booty:
 			if spot.word.content == null:
-				#spots.append(spot)
 				var content = Global.get_random_key(Global.dict.content.weight)
 				spot.set_content(content)
+		
+		for spots in arr.spot.all:
+			for spot in spots:
+				spot.scene.myself.update_color_based_on_content()
 
 
 	func set_circumstance() -> void:
@@ -254,20 +256,39 @@ class Location:
 		return result
 
 
+	func select_spots_to_show() -> void:
+		var node = obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots")
+		node.add_child(scene.spots)
+
+
+	func hide_spots() -> void:
+		var node = obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots")
+		node.remove_child(scene.spots)
+
+
 #Место spot
 class Spot:
 	var obj = {}
 	var vec = {}
 	var dict = {}
 	var word = {}
+	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
 		obj.location = input_.location
+		obj.plant = null
 		vec.grid = input_.grid
 		dict.neighbor = {}
 		word.status = input_.status
 		word.content = null
+		init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.spot.instantiate()
+		scene.myself.set_parent(self)
+		obj.location.scene.spots.get_node("Spot").add_child(scene.myself)
 
 
 	func set_content(content_: String) -> void:
@@ -277,6 +298,28 @@ class Spot:
 			word.status = "booty"
 			obj.location.arr.spot.blank.erase(self)
 			obj.location.arr.spot.booty.append(self)
+		
+		match word.content:
+			"extractor":
+				reduce_adjacent_plant_accumulation()
+
+
+	func reduce_adjacent_plant_accumulation() -> void:
+		var n = obj.location.num.narrowness
+		var grid = {}
+		grid.start = vec.grid - Vector2.ONE * n
+		var m = n * 2 + 1
+		
+		for _i in m:
+			for _j in m:
+				grid.current = Vector2(_j, _i) + grid.start
+				
+				if Global.boundary_of_array_check(obj.location.arr.spot.all, grid.current):
+					var neighbor = obj.location.arr.spot.all[grid.current.y][grid.current.x]
+					
+					if neighbor.obj.plant != null:
+						var value = 1
+						neighbor.obj.plant.reduce_accumulation(value)
 
 
 #Событие occasion
