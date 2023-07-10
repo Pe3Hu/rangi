@@ -2,36 +2,43 @@
  {
   "Title": "Common",
   "Color": "White",
-  "Wood ascension": 32
+  "Wood resin": 32,
+  "Bush resin": 50
  },
  {
   "Title": "Uncommon",
   "Color": "Green",
-  "Wood ascension": 64
+  "Wood resin": 64,
+  "Bush resin": 70
  },
  {
   "Title": "Rare",
   "Color": "Blue",
-  "Wood ascension": 128
+  "Wood resin": 128,
+  "Bush resin": 100
  },
  {
   "Title": "Mythical",
   "Color": "Purple",
-  "Wood ascension": 256
+  "Wood resin": 256,
+  "Bush resin": 150
  },
  {
   "Title": "Ancient",
   "Color": "Red",
-  "Wood ascension": 512
+  "Wood resin": 512,
+  "Bush resin": 220
  },
  {
   "Title": "Legendary",
   "Color": "Orange",
-  "Wood ascension": 1024
+  "Wood resin": 1024,
+  "Bush resin": 330
  },
  {
   "Title": "Immortal",
   "Color": "Yellow",
-  "Wood ascension": 2048
+  "Wood resin": 2048,
+  "Bush resin": 460
  }
 ]

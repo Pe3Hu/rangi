@@ -55,7 +55,7 @@ class Dice:
 								input.gist = gist
 								var edge = Classes_14.Edge.new(input)
 								add_edge(edge)
-			"wood":
+			"plant":
 				match word.type:
 					"ascension":
 						var edges = {}

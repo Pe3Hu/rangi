@@ -339,6 +339,7 @@ class Sanctuary:
 
 
 	func init_biomes() -> void:
+		dict.habitat[0].front().set_biome(Global.arr.biome.pick_random())
 		var biomes = {}
 		biomes.habitat = []
 		biomes.forest = {}
@@ -562,7 +563,6 @@ class Sanctuary:
 		for beast in obj.zoo.arr.beast:
 			beast.get_new_task()
 			beast.scene.myself.perform_task()
-
 
 
 	func paint_someone() -> void:

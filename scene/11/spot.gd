@@ -23,16 +23,23 @@ func update_color_based_on_content() -> void:
 		null:
 			s = 0.1
 			v = 0.75
-		"wood":
-			h = 120.0 /max_h
-		"bush":
-			h = 180.0 /max_h
 		"first aid kit":
 			h = 0.0 /max_h
 		"extractor":
 			h = 60.0 /max_h
-		"forge":
+		"bush":
+			h = 80.0 /max_h
+		"wood":
+			h = 120.0 /max_h
+		"spring":
+			h = 200.0 /max_h
+		"natural gas source":
 			h = 270.0 /max_h
+		"mineral deposit":
+			h = 320.0 /max_h
+		"forge":
+			s = 0.1
+			v = 0.1
 	
 	var color_ = Color.from_hsv(h, s, v)
 	$BG.set_color(color_)

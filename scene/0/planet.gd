@@ -20,5 +20,6 @@ func _on_day_timeout():
 
 
 func wood_accumulation_per_day():
-	for wood in parent.obj.sanctuary.obj.greenhouse.arr.wood:
-		wood.accumulation_per_day()
+	for kind in parent.obj.sanctuary.obj.greenhouse.arr.plant:
+		for plant in parent.obj.sanctuary.obj.greenhouse.arr.plant[kind]:
+			plant.accumulation_per_day()

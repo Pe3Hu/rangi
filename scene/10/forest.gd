@@ -73,7 +73,7 @@ func update_color_based_on_forest_index() -> void:
 
 
 func update_color_based_on_biome() -> void:
-	if parent.word.biome != null:
+	if parent.word.biome != null and parent.num.ring != 0:
 		var max_h = 360.0
 		var h = null
 		var s = 0.6 

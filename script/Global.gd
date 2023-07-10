@@ -137,11 +137,19 @@ func init_num() -> void:
 	num.size.location.offset.center = num.size.location.r.center - num.size.beast.r 
 	num.size.location.offset.suburb = num.size.location.r.suburb - num.size.beast.r
 	num.size.location.spot = 13
+	num.size.location.humidity = {}
+	num.size.location.humidity.min = 50
+	num.size.location.humidity.max = 150
 	
 	num.size.wood = {}
 	num.size.wood.area = {}
 	num.size.wood.area.min = 75
 	num.size.wood.area.max = 125
+	
+	num.size.bush = {}
+	num.size.bush.moisture = {}
+	num.size.bush.moisture.min = 5
+	num.size.bush.moisture.max = 15
 	
 	num.size.circumstance = {}
 	num.size.circumstance.total = 140
@@ -307,7 +315,9 @@ func init_dict() -> void:
 	
 	dict.content = {}
 	dict.content.weight = {}
-	dict.content.weight["bush"] = 4
+	dict.content.weight["spring"] = 4
+	dict.content.weight["mineral deposit"] = 2
+	dict.content.weight["natural gas source"] = 1
 	dict.content.weight["first aid kit"] = 2
 	dict.content.weight["extractor"] = 1
 	
@@ -957,19 +967,38 @@ func init_circumstances() -> void:
 
 
 func init_bushs() -> void:
+	var preferences = {}
+	preferences.weight = {}
+	preferences.weight["symbiote"] = 2
+	preferences.weight["isolationist"] = 2
+	preferences.weight["standard"] = 8
+	preferences.total = []
+	
 	dict.bush = {}
 	dict.bush.title = {}
+	dict.bush.preference = {}
+	
 	var path = "res://asset/json/bush_data.json"
 	var array = load_data(path)
 	
+	for preference in preferences.weight:
+		dict.bush.preference[preference] = []
+		
+		for _i in preferences.weight[preference]:
+			preferences.total.append(preference)
+	
 	for bush in array:
 		var data = {}
-
+		data.preference = preferences.total.pick_random()
+		preferences.total.erase(data.preference)
+		
 		for key in bush.keys():
 			if key != "Title":
 				data[key.to_lower()] = bush[key]
 		
 		dict.bush.title[bush["Title"].to_lower()] = data
+		dict.bush.preference[data.preference].append(bush["Title"].to_lower())
+	
 
 
 func init_woods() -> void:
@@ -1344,7 +1373,7 @@ func get_remission(wound_: Variant) -> Variant:
 	return null
 
 
-func get_wood_ascend(rarity_: String) -> String:
+func get_rarity_ascend(rarity_: String) -> String:
 	var index = dict.rarity.title.keys().find(rarity_)
 	#print(dict.rarity.title.keys()[index + 1])
 	return dict.rarity.title.keys()[index + 1]

@@ -11,11 +11,12 @@ class Habitat:
 
 
 	func _init(input_: Dictionary) -> void:
+		arr.forest = []
 		num.ring = input_.ring
 		num.index = Global.num.index.habitat
 		Global.num.index.habitat += 1
-		arr.forest = []
 		obj.sanctuary = input_.sanctuary
+		obj.forge = null
 		dict.neighbor = {}
 		init_scene()
 
@@ -103,8 +104,15 @@ class Habitat:
 				spots.append_array(location.arr.spot.booty)
 		
 		if spots.size() > 0:
-			var spot = spots.pick_random()
+			var spot = null
+			
+			while spot == null:
+				spot = spots.pick_random()
+				if spot.word.content != null:
+					spot = null
+			
 			spot.set_content("forge")
+			obj.forge = spot
 
 
 #Локация location
@@ -122,6 +130,7 @@ class Location:
 		arr.beast = []
 		num.area = input_.area
 		num.order = input_.order
+		num.humidity = null
 		obj.habitat = input_.habitat
 		obj.greenhouse = obj.habitat.obj.sanctuary.obj.greenhouse
 		dict.footprint = {}
@@ -153,6 +162,14 @@ class Location:
 		word.breed = breed_
 		obj.greenhouse.arr.breed[breed_].append(self)
 		scene.myself.update_color_based_on_breed()
+
+
+	func set_circumstance() -> void:
+		word.circumstance.title = Global.get_random_key(Global.dict.circumstance.climate[word.climate])
+		word.circumstance.size = Global.get_random_key(Global.dict.circumstance.size)
+		
+		var limit = Global.num.size.location.humidity
+		num.humidity = Global.rng.randi_range(limit.min, limit.max)
 
 
 	func init_spots() -> void:
@@ -195,7 +212,7 @@ class Location:
 					
 					if Global.boundary_of_array_check(arr.spot.all, grid):
 						var neighbor = arr.spot.all[grid.y][grid.x]
-						spot.dict.neighbor[direction] = neighbor
+						spot.dict.neighbor[neighbor] = direction
 
 
 	func init_woods() -> void:
@@ -222,27 +239,85 @@ class Location:
 				input.spot = spots.pick_random()
 				Global.rng.randomize()
 				input.area = Global.rng.randi_range(limit.min, limit.max)
-				var wood = Classes_15.Wood.new(input)
+				input.content = "wood"
+				var wood = Classes_15.Plant.new(input)
 				arr.wood.append(wood)
-				obj.greenhouse.arr.wood.append(wood)
+				obj.greenhouse.arr.plant.wood.append(wood)
 				area += input.area
 				spots.erase(input.spot)
 
 
 	func fill_spots() -> void:
-		for spot in arr.spot.booty:
-			if spot.word.content == null:
-				var content = Global.get_random_key(Global.dict.content.weight)
-				spot.set_content(content)
+		if num.narrowness != 1:
+			for spot in arr.spot.booty:
+				if spot.word.content == null:
+					var content = Global.get_random_key(Global.dict.content.weight)
+					spot.set_content(content)
+		
+			init_bushes("blank")
+		else:
+			init_bushes("booty")
 		
 		for spots in arr.spot.all:
 			for spot in spots:
 				spot.scene.myself.update_color_based_on_content()
 
 
-	func set_circumstance() -> void:
-		word.circumstance.title = Global.get_random_key(Global.dict.circumstance.climate[word.climate])
-		word.circumstance.size = Global.get_random_key(Global.dict.circumstance.size)
+	func init_bushes(layer_: String) -> void:
+		if arr.spot[layer_].size() > 0:
+			var spots = []
+			spots.append_array(arr.spot[layer_])
+			arr.bush = []
+			
+			if layer_ == "booty":
+				num.humidity = 0
+				
+				for spot in arr.spot[layer_]:
+					if spot.word.content != null:
+						spots.erase(spot)
+			
+			while spots.size() > 0:
+				if layer_ == "blank" and num.humidity <= 0:
+					return
+				
+				var spot = spots.pick_random()
+				var bush = sow_bush(spot)
+				
+				if layer_ == "blank":
+					num.humidity -= bush.num.moisture
+				else:
+					num.humidity += bush.num.moisture
+				
+				spots.erase(spot)
+
+
+	func sow_bush(spot_: Spot) -> Classes_15.Plant:
+		var limit = Global.num.size.bush.moisture
+		var input = {}
+		input.location = self
+		input.greenhouse = obj.greenhouse
+		input.spot = spot_
+		
+		var preference = "isolationist"
+		
+		for neighbor in input.spot.dict.neighbor:
+			if neighbor.word.content == "wood":
+				preference = "symbiote"
+				break
+	
+		var titles = []
+		titles.append_array(Global.dict.bush.preference["standard"])
+		titles.append_array(Global.dict.bush.preference[preference])
+		input.title = titles.pick_random()
+		var max = min(limit.max, num.humidity)
+		Global.rng.randomize()
+		input.moisture = Global.rng.randi_range(limit.min, max)
+		input.content = "bush"
+		var bush = Classes_15.Plant.new(input)
+		arr.bush.append(bush)
+		obj.greenhouse.arr.plant.bush.append(bush)
+		spot_.scene.myself.update_color_based_on_content()
+		return bush
 
 
 	func get_circumstance_influence() -> Variant:
