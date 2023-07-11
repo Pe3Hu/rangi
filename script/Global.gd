@@ -128,6 +128,9 @@ func init_num() -> void:
 	num.size.beast = {}
 	num.size.beast.r = 8
 	
+	num.size.flock = {}
+	num.size.flock.r = 4
+	
 	num.size.location = {}
 	num.size.location.r = {}
 	num.size.location.r.center = 32
@@ -337,6 +340,8 @@ func init_dict() -> void:
 	init_subaspects()
 	init_links()
 	init_skeletons()
+	init_preys()
+	init_totems()
 	
 	#greenhouse
 	init_circumstances()
@@ -918,6 +923,83 @@ func init_skeletons() -> void:
 		dict.skeleton.title[skeleton["Title"].to_lower()] = data
 
 
+func init_preys() -> void:
+	dict.prey = {}
+	dict.prey.title = {}
+	dict.prey.biome = {}
+	dict.prey.totem = {}
+	
+	var path = "res://asset/json/prey_data.json"
+	var array = load_data(path)
+	
+	for prey in array:
+		var data = {}
+		
+		for key in prey.keys():
+			if key != "Title":
+				var flag = true
+				
+				if key.contains("Group"):
+					var words = key.to_lower().split(" ")
+					
+					if !data.has(words[1]):
+						data[words[1]] = {}
+					
+					data[words[1]][words[0]] = prey[key]
+					flag = false
+					
+				if key.contains("Biome"):
+					flag = false
+					
+					if prey[key] == 1:
+						var words = key.to_lower().split(" ")
+						
+						if !data.has(words[0]):
+							data[words[0]] = []
+						
+						if !dict.prey.biome.has(words[1]):
+							dict.prey.biome[words[1]] = []
+						
+						data[words[0]].append(words[1])
+						dict.prey.biome[words[1]].append(prey["Title"].to_lower())
+					
+				if key.contains("Totem"):
+					flag = false
+					
+					if prey[key] > 0:
+						var words = key.to_lower().split(" ")
+						
+						if !data.has(words[1]):
+							data[words[1]] = {}
+						
+						if !dict.prey.totem.has(words[0]):
+							dict.prey.totem[words[0]] = []
+						
+						data[words[1]][words[0]] = prey[key]
+						dict.prey.totem[words[0]].append(prey["Title"].to_lower())
+				
+				if flag:
+					data[key.to_lower()] = prey[key].to_lower()
+		
+		dict.prey.title[prey["Title"].to_lower()] = data
+
+
+func init_totems() -> void:
+	dict.totem = {}
+	dict.totem.title = {}
+	var path = "res://asset/json/totem_data.json"
+	var array = load_data(path)
+	
+	for totem in array:
+		var data = {}
+
+		for key in totem.keys():
+			if key != "Title":
+				data[key.to_lower()] = totem[key]
+		
+		dict.totem.title[totem["Title"].to_lower()] = data
+
+
 func init_circumstances() -> void:
 	dict.circumstance = {}
 	dict.circumstance.title = {}
@@ -998,7 +1080,6 @@ func init_bushs() -> void:
 		
 		dict.bush.title[bush["Title"].to_lower()] = data
 		dict.bush.preference[data.preference].append(bush["Title"].to_lower())
-	
 
 
 func init_woods() -> void:
@@ -1161,8 +1242,6 @@ func init_rarities() -> void:
 		
 		dict.rarity.title[rarity["Title"].to_lower()] = data
 		dict.wood.rarity.limit = rarity["Title"].to_lower()
-	
-	#print(dict.rarity.title)
 
 
 func init_skills() -> void:
@@ -1204,6 +1283,7 @@ func init_vec():
 	vec.size.node.sanctuary = Vector2.ONE * 560
 	vec.size.node.habitat = Vector2.ONE * (num.size.location.r.center + num.size.location.gap) * 2
 	vec.size.node.spot = Vector2.ONE * num.size.spot.r
+	vec.size.node.timeflow = Vector2.ONE * 50
 
 
 func init_window_size():
@@ -1217,6 +1297,7 @@ func init_scene() -> void:
 	scene.cosmos = load("res://scene/0/cosmos.tscn")
 	scene.planet = load("res://scene/0/planet.tscn")
 	scene.continent = load("res://scene/0/continent.tscn")
+	scene.timeflow = load("res://scene/0/timeflow.tscn")
 	scene.director = load("res://scene/1/director.tscn")
 	scene.factory = load("res://scene/2/factory.tscn")
 	scene.stamp = load("res://scene/2/stamp.tscn")
@@ -1249,6 +1330,7 @@ func init_scene() -> void:
 	scene.beast = load("res://scene/12/beast.tscn")
 	scene.chain = load("res://scene/13/chain.tscn")
 	scene.link = load("res://scene/13/link.tscn")
+	scene.flock = load("res://scene/15/flock.tscn")
 
 
 func test() -> void:

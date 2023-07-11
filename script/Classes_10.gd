@@ -25,6 +25,7 @@ class Sanctuary:
 		init_biomes()
 		init_breeds()
 		init_spots()
+		init_flocks()
 		paint_someone()
 		#set_locations()
 		place_beast_in_locations()
@@ -48,7 +49,7 @@ class Sanctuary:
 	func init_greenhouse() -> void:
 		var input = {}
 		input.sanctuary = self
-		obj.greenhouse = Classes_15.Greenhouse.new(input)
+		obj.greenhouse = Classes_16.Greenhouse.new(input)
 
 
 	func init_occasions() -> void:
@@ -449,6 +450,12 @@ class Sanctuary:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
 						location.fill_spots()
+						#print(location.scene.spots.get_node("Spot").get_child_count())
+
+
+	func init_flocks() -> void:
+		for habitat in dict.habitat[num.ring]:
+			obj.zoo.unleash_flock(habitat) 
 
 
 	func place_beast_in_locations() -> void:
@@ -464,7 +471,6 @@ class Sanctuary:
 			var location = locations.pick_random()
 			locations.erase(location)
 			beast.step_into_location(location)
-			location.select_spots_to_show()
 
 
 	func place_beast_in_harvest_locations() -> void:
@@ -536,10 +542,10 @@ class Sanctuary:
 			for habitat in dict.habitat[ring]:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
-						if location.arr.beast.size() > 1:
+						if location.arr.subject.size() > 1:
 							var flag = false
-							for beast in location.arr.beast:
-								if beast.num.index == 0:
+							for subject in location.arr.subject:
+								if subject.num.index == 0:
 									flag = true
 							
 							if flag:
@@ -549,8 +555,8 @@ class Sanctuary:
 								var occasion = Classes_11.Occasion.new(input)
 								dict.occasion[input.type].append(occasion)
 								
-								for beast in location.arr.beast:
-									occasion.add_beast(beast)
+								for subject in location.arr.subject:
+									occasion.add_beast(subject)
 		
 		for occasion in dict.occasion[title]:
 			occasion.prepare()
@@ -579,7 +585,8 @@ class Sanctuary:
 			for habitat_ in dict.habitat[ring]:
 				for forest in habitat_.arr.forest:
 					forest.scene.myself.update_color_based_on_biome()
-		pass
+		
+		#select_next_habitat()
 
 
 	func paint_next_forest() -> void:
@@ -632,6 +639,25 @@ class Sanctuary:
 		for neighbor in habitat.dict.neighbor:
 			for forest in neighbor.arr.forest:
 				forest.scene.myself.paint_black()
+
+
+	func select_next_habitat() -> void:
+		var habitat = dict.habitat[num.paint.habitat.ring][num.paint.habitat.index]
+		habitat.hide()
+		habitat.arr.location.suburb.front().hide_spots()
+		
+		num.paint.habitat.index += 1
+		
+		if dict.habitat[num.paint.habitat.ring].size() == num.paint.habitat.index:
+			num.paint.habitat.index = 0
+			num.paint.habitat.ring += 1
+			
+			if !dict.habitat.has(num.paint.habitat.ring):
+				num.paint.habitat.ring = 0
+		
+		habitat = dict.habitat[num.paint.habitat.ring][num.paint.habitat.index]
+		habitat.show()
+		habitat.arr.location.suburb.front().show_spots()
 
 
 #Лес forest

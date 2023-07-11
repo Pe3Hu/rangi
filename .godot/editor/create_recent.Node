@@ -1,10 +1,11 @@
-VBoxContainer
+TextureProgressBar
 Control
+HBoxContainer
+VBoxContainer
 ColorRect
+Timer
 MarginContainer
 GridContainer
-Timer
-HBoxContainer
 Node2D
 Polygon2D
 Label

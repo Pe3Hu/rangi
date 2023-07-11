@@ -1,0 +1,44 @@
+[
+ {
+  "Title": "Fang",
+  "Offensive": 20,
+  "Resilience": 0,
+  "Sensory": 5,
+  "Mobility": 0
+ },
+ {
+  "Title": "Claw",
+  "Offensive": 15,
+  "Resilience": 0,
+  "Sensory": 0,
+  "Mobility": 10
+ },
+ {
+  "Title": "Fur",
+  "Offensive": 0,
+  "Resilience": 20,
+  "Sensory": 5,
+  "Mobility": 0
+ },
+ {
+  "Title": "Spear",
+  "Offensive": 0,
+  "Resilience": 5,
+  "Sensory": 0,
+  "Mobility": 20
+ },
+ {
+  "Title": "Horn",
+  "Offensive": 0,
+  "Resilience": 10,
+  "Sensory": 15,
+  "Mobility": 0
+ },
+ {
+  "Title": "Tail",
+  "Offensive": 5,
+  "Resilience": 5,
+  "Sensory": 5,
+  "Mobility": 10
+ }
+]

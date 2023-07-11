@@ -250,5 +250,53 @@
   "Cast": 4,
   "Accuracy": "Critical Hindrance",
   "Notability": "Hindrance"
+ },
+ {
+  "Title": "Low Blow",
+  "Subclass": "Fang",
+  "Energy": 15,
+  "Overload": 0,
+  "Overheat": 0,
+  "Wound": "Minor ",
+  "Preparation": 0,
+  "Cast": 30,
+  "Accuracy": "Advantage",
+  "Notability": "Standard"
+ },
+ {
+  "Title": "Faint Bite",
+  "Subclass": "Claw",
+  "Energy": 15,
+  "Overload": 0,
+  "Overheat": 0,
+  "Wound": "Minor ",
+  "Preparation": 0,
+  "Cast": 20,
+  "Accuracy": "Hindrance",
+  "Notability": "Standard"
+ },
+ {
+  "Title": "Hoof Kick",
+  "Subclass": "Hoof",
+  "Energy": 30,
+  "Overload": 0,
+  "Overheat": 0,
+  "Wound": "Severe",
+  "Preparation": 0,
+  "Cast": 40,
+  "Accuracy": "Hindrance",
+  "Notability": "Standard"
+ },
+ {
+  "Title": "Short Takeoff Run",
+  "Subclass": "Horn",
+  "Energy": 30,
+  "Overload": 0,
+  "Overheat": 0,
+  "Wound": "Severe",
+  "Preparation": 0,
+  "Cast": 50,
+  "Accuracy": "Advantage",
+  "Notability": "Standard"
  }
 ]

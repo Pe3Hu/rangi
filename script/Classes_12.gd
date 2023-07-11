@@ -9,6 +9,7 @@ class Zoo:
 
 	func _init(input_: Dictionary) -> void:
 		obj.sanctuary = input_.sanctuary
+		arr.flock = []
 		init_beasts()
 
 
@@ -33,6 +34,23 @@ class Zoo:
 			input.courage = Global.dict.beast.courage.keys()[2]
 			var beast = Classes_12.Beast.new(input)
 			arr.beast.append(beast)
+
+
+	func unleash_flock(habitat_: Classes_11.Habitat) -> void:
+		var titles = []
+		
+		for title in Global.dict.prey.title:
+			if true:
+				titles.append(title)
+		
+		var input = {}
+		input.zoo = self
+		input.subclass = titles.pick_random()
+		var flock = Classes_15.Flock.new(input)
+		arr.flock.append(flock)
+		var location = habitat_.arr.location.suburb.front()
+		flock.step_into_location(location)
+
 
 
 #Зверь beast
@@ -109,15 +127,15 @@ class Beast:
 		if location_ != null and obj.location != location_:
 			leave_current_location()
 			obj.location = location_
-			location_.obj.habitat.select_to_show()
-			location_.scene.myself.add_beast(self)
+			#location_.obj.habitat.select_to_show()
+			location_.scene.myself.add_subject(self)
 			location_.dict.footprint[self] = true
 
 
 	func leave_current_location() -> void:
 		if obj.location != null:
-			obj.location.obj.habitat.hide()
-			obj.location.scene.myself.remove_beast(self)
+			#obj.location.obj.habitat.hide()
+			obj.location.scene.myself.remove_subject(self)
 			obj.location = null
 
 
@@ -452,4 +470,5 @@ class Beast:
 
 	func find_place_to_harvest() -> void:
 		pass
+
 

@@ -11,15 +11,3 @@ func set_parent(parent_) -> void:
 
 func update_rec_size() -> void:
 	custom_minimum_size = Vector2(Global.vec.size.node.spielkarte) * 2
-
-
-func _on_day_timeout():
-	Global.num.index.day += 1
-	wood_accumulation_per_day()
-	#print("End day ", Global.num.index.day)
-
-
-func wood_accumulation_per_day():
-	for kind in parent.obj.sanctuary.obj.greenhouse.arr.plant:
-		for plant in parent.obj.sanctuary.obj.greenhouse.arr.plant[kind]:
-			plant.accumulation_per_day()

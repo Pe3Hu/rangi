@@ -19,8 +19,13 @@ theme_override_constants/margin_bottom = 20
 
 [node name="BG" type="ColorRect" parent="."]
 layout_mode = 2
+color = Color(0.835294, 0.835294, 0.835294, 1)
 
-[node name="Planet" type="Control" parent="."]
+[node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+
+[node name="Timeflow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Planet" type="HBoxContainer" parent="VBox"]
+layout_mode = 2

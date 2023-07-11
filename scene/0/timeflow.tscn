@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmn5qptoa7e8p"]
+
+[ext_resource type="Script" path="res://scene/0/timeflow.gd" id="1_e7yvk"]
+[ext_resource type="Texture2D" uid="uid://o0e0sqvb0ufh" path="res://asset/png/ring.png" id="2_ya4s2"]
+
+[node name="Timeflow" type="MarginContainer"]
+offset_right = 240.0
+offset_bottom = 240.0
+script = ExtResource("1_e7yvk")
+
+[node name="BG" type="ColorRect" parent="."]
+visible = false
+layout_mode = 2
+color = Color(0.32549, 0.458824, 0.964706, 1)
+
+[node name="3Hours" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="DayProgressBar" type="TextureProgressBar" parent="."]
+layout_mode = 2
+max_value = 24.0
+step = 3.0
+fill_mode = 4
+nine_patch_stretch = true
+texture_under = ExtResource("2_ya4s2")
+texture_progress = ExtResource("2_ya4s2")
+tint_under = Color(1, 0.0392157, 0.568627, 1)
+tint_over = Color(0.87451, 1, 0.0509804, 1)
+tint_progress = Color(0.0313726, 1, 0.529412, 1)
+
+[connection signal="timeout" from="3Hours" to="." method="_on_3hours_timeout"]

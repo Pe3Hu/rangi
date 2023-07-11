@@ -68,7 +68,7 @@ class Habitat:
 				location.init_scene()
 
 
-	func select_to_show() -> void:
+	func show() -> void:
 		scene.myself.visible = true
 		
 		for forest in arr.forest:
@@ -79,7 +79,7 @@ class Habitat:
 		scene.myself.visible = false
 		
 		for forest in arr.forest:
-			forest.scene.myself.update_color_based_on_habitat_index()
+			forest.scene.myself.update_color_based_on_biome()
 
 
 	func set_biome(biome_: String) -> void:
@@ -127,7 +127,7 @@ class Location:
 
 
 	func _init(input_: Dictionary) -> void:
-		arr.beast = []
+		arr.subject = []
 		num.area = input_.area
 		num.order = input_.order
 		num.humidity = null
@@ -151,6 +151,7 @@ class Location:
 		obj.habitat.scene.myself.get_node("Location").add_child(scene.myself)
 		scene.spots = Global.scene.spots.instantiate()
 		scene.spots.set_parent(self)
+		obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots").add_child(scene.spots)
 
 
 	func get_assessment_based_on_goal(goal_: String) -> int:
@@ -195,7 +196,7 @@ class Location:
 					var spot = Classes_11.Spot.new(input)
 					arr.spot.all[_i].append(spot)
 					arr.spot[input.status].append(spot)
-		
+			
 			init_spot_neighbors()
 			init_woods()
 
@@ -240,11 +241,14 @@ class Location:
 				Global.rng.randomize()
 				input.area = Global.rng.randi_range(limit.min, limit.max)
 				input.content = "wood"
-				var wood = Classes_15.Plant.new(input)
+				var wood = Classes_16.Plant.new(input)
 				arr.wood.append(wood)
 				obj.greenhouse.arr.plant.wood.append(wood)
 				area += input.area
 				spots.erase(input.spot)
+				
+				for neighbor in input.spot.dict.neighbor:
+					spots.erase(neighbor)
 
 
 	func fill_spots() -> void:
@@ -291,7 +295,7 @@ class Location:
 				spots.erase(spot)
 
 
-	func sow_bush(spot_: Spot) -> Classes_15.Plant:
+	func sow_bush(spot_: Spot) -> Classes_16.Plant:
 		var limit = Global.num.size.bush.moisture
 		var input = {}
 		input.location = self
@@ -313,7 +317,7 @@ class Location:
 		Global.rng.randomize()
 		input.moisture = Global.rng.randi_range(limit.min, max)
 		input.content = "bush"
-		var bush = Classes_15.Plant.new(input)
+		var bush = Classes_16.Plant.new(input)
 		arr.bush.append(bush)
 		obj.greenhouse.arr.plant.bush.append(bush)
 		spot_.scene.myself.update_color_based_on_content()
@@ -331,14 +335,13 @@ class Location:
 		return result
 
 
-	func select_spots_to_show() -> void:
-		var node = obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots")
-		node.add_child(scene.spots)
+	func show_spots() -> void:
+		scene.spots.visible = true
+		print(scene.spots.get_node("Spot").get_child_count())
 
 
 	func hide_spots() -> void:
-		var node = obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots")
-		node.remove_child(scene.spots)
+		scene.spots.visible = false
 
 
 #Место spot

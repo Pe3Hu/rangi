@@ -60,7 +60,7 @@ func _input(event) -> void:
 			KEY_SPACE:
 				if event.is_pressed() && !event.is_echo():
 					#branch.obj.factory.press_stamps()
-					Global.obj.cosmos.obj.planet.obj.sanctuary.paint_next_habitat()#paint_next_forest()
+					Global.obj.cosmos.obj.planet.obj.sanctuary.select_next_habitat()#paint_next_forest()
 
 
 func _process(delta_) -> void:

@@ -143,7 +143,6 @@ class Chain:
 		
 		update_indicators()
 		update_aspects()
-		#print(num.aspect)
 
 
 	func update_indicators() -> void:

@@ -50,6 +50,7 @@ class Planet:
 	func _init(input_: Dictionary) -> void:
 		obj.cosmos = input_.cosmos
 		init_scene()
+		init_timeflow()
 		init_bureau()
 		init_orbit()
 		init_sanctuary()
@@ -60,7 +61,13 @@ class Planet:
 	func init_scene() -> void:
 		scene.myself = Global.scene.planet.instantiate()
 		scene.myself.set_parent(self)
-		obj.cosmos.scene.myself.get_node("Planet").add_child(scene.myself)
+		obj.cosmos.scene.myself.get_node("VBox/Planet").add_child(scene.myself)
+
+
+	func init_timeflow() -> void:
+		var input = {}
+		input.planet = self
+		obj.timeflow = Classes_0.Timeflow.new(input)
 
 
 	func init_bureau() -> void:
@@ -103,7 +110,7 @@ class Planet:
 				branch.obj.director.scene.myself.update_color()
 
 
-#континент continent
+#Континент continent
 class Continent:
 	var arr = {}
 	var num = {}
@@ -291,3 +298,21 @@ class Continent:
 				var neighbors = cluster.dict.neighbor.keys().size()
 				cluster.num.breath -= (cluster.num.breath - neighbors)
 				#cluster.paint_breath()
+
+
+#Время timeflow
+class Timeflow:
+	var num = {}
+	var obj = {}
+	var scene = {}
+
+
+	func _init(input_: Dictionary) -> void:
+		obj.planet = input_.planet
+		init_scene()
+
+
+	func init_scene() -> void:
+		scene.myself = Global.scene.timeflow.instantiate()
+		scene.myself.set_parent(self)
+		obj.planet.obj.cosmos.scene.myself.get_node("VBox/Timeflow").add_child(scene.myself)
