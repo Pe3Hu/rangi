@@ -7,6 +7,8 @@ var parent = null
 func set_parent(parent_) -> void:
 	parent = parent_
 	parent.num.start = Time.get_unix_time_from_system()
+	var timer = get_node("3Hours")
+	timer.wait_time = Global.num.time.threehours
 	update_rec_size()
 
 

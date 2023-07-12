@@ -16,7 +16,7 @@ func _ready() -> void:
 #	outpost.obj.conveyor.establish_starter_schematics()
 #	outpost.arr.branch.front().obj.director.prioritize()
 	
-	Global.obj.cosmos.obj.planet.obj.sanctuary.init_clashes()
+	#Global.obj.cosmos.obj.planet.obj.sanctuary.init_clashes()
 
 
 func _input(event) -> void:
@@ -28,14 +28,16 @@ func _input(event) -> void:
 			KEY_D:
 				if event.is_pressed() && !event.is_echo():
 					#branch.obj.factory.shift_selected_stamp(Vector2(1, 0))
-					beast.obj.chain.expend_resource("overheat", 10)
+					#beast.obj.chain.expend_resource("overheat", 10)
+					Global.obj.cosmos.obj.planet.obj.sanctuary.select_next_habitat(1)
 			KEY_S:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.factory.shift_selected_stamp(Vector2(0, 1))
 			KEY_A:
 				if event.is_pressed() && !event.is_echo():
 					#branch.obj.factory.shift_selected_stamp(Vector2(-1, 0))
-					beast.obj.chain.expend_resource("overheat", -10)
+					#beast.obj.chain.expend_resource("overheat", -10)
+					Global.obj.cosmos.obj.planet.obj.sanctuary.select_next_habitat(-1)#paint_next_forest()
 			KEY_W:
 				if event.is_pressed() && !event.is_echo():
 					branch.obj.factory.shift_selected_stamp(Vector2(0, -1))

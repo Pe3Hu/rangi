@@ -50,6 +50,7 @@ class Zoo:
 		arr.flock.append(flock)
 		var location = habitat_.arr.location.suburb.front()
 		flock.step_into_location(location)
+		flock.obj.grazing = flock.obj.spot
 
 
 
@@ -125,14 +126,14 @@ class Beast:
 
 	func step_into_location(location_: Classes_11.Location) -> void:
 		if location_ != null and obj.location != location_:
-			leave_current_location()
+			leave_location()
 			obj.location = location_
-			#location_.obj.habitat.select_to_show()
+			#location_.obj.habitat.show()
 			location_.scene.myself.add_subject(self)
 			location_.dict.footprint[self] = true
 
 
-	func leave_current_location() -> void:
+	func leave_location() -> void:
 		if obj.location != null:
 			#obj.location.obj.habitat.hide()
 			obj.location.scene.myself.remove_subject(self)

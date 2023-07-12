@@ -1,50 +1,86 @@
 [
  {
   "Title": "Henbane",
-  "Effect": "Increase Onslaught"
+  "Effect": "Increase Onslaught",
+  "Fecundity": 40,
+  "Caloric": 30,
+  "Imperceptibility": 10
  },
  {
   "Title": "Amanita",
-  "Effect": "Increase Onslaught"
+  "Effect": "Increase Onslaught",
+  "Fecundity": 60,
+  "Caloric": 20,
+  "Imperceptibility": 5
  },
  {
   "Title": "Nettle",
-  "Effect": "Increase Resilience"
+  "Effect": "Increase Resilience",
+  "Fecundity": 120,
+  "Caloric": 10,
+  "Imperceptibility": 5
  },
  {
   "Title": "Yarrow",
-  "Effect": "Increase Resilience"
+  "Effect": "Increase Resilience",
+  "Fecundity": 30,
+  "Caloric": 40,
+  "Imperceptibility": 10
  },
  {
   "Title": "Lavanda",
-  "Effect": "Increase Sensory"
+  "Effect": "Increase Sensory",
+  "Fecundity": 40,
+  "Caloric": 30,
+  "Imperceptibility": 20
  },
  {
   "Title": "Ginseng",
-  "Effect": "Increase Sensory"
+  "Effect": "Increase Sensory",
+  "Fecundity": 20,
+  "Caloric": 60,
+  "Imperceptibility": 20
  },
  {
   "Title": "Rhodiola",
-  "Effect": "Increase Mobility"
+  "Effect": "Increase Mobility",
+  "Fecundity": 20,
+  "Caloric": 60,
+  "Imperceptibility": 15
  },
  {
   "Title": "Hawthorn",
-  "Effect": "Increase Mobility"
+  "Effect": "Increase Mobility",
+  "Fecundity": 60,
+  "Caloric": 20,
+  "Imperceptibility": 5
  },
  {
   "Title": "Echinacea",
-  "Effect": "Increase Balance"
+  "Effect": "Increase Balance",
+  "Fecundity": 30,
+  "Caloric": 40,
+  "Imperceptibility": 10
  },
  {
   "Title": "Fennel",
-  "Effect": "Increase Balance"
+  "Effect": "Increase Balance",
+  "Fecundity": 10,
+  "Caloric": 120,
+  "Imperceptibility": 15
  },
  {
   "Title": "Melissa",
-  "Effect": "Reduce Rot"
+  "Effect": "Reduce Rot",
+  "Fecundity": 10,
+  "Caloric": 120,
+  "Imperceptibility": 15
  },
  {
   "Title": "Chamomile",
-  "Effect": "Reduce Rot"
+  "Effect": "Reduce Rot",
+  "Fecundity": 120,
+  "Caloric": 10,
+  "Imperceptibility": 5
  }
 ]

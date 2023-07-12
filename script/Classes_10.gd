@@ -25,6 +25,7 @@ class Sanctuary:
 		init_biomes()
 		init_breeds()
 		init_spots()
+		boost_plants()
 		init_flocks()
 		paint_someone()
 		#set_locations()
@@ -450,12 +451,24 @@ class Sanctuary:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
 						location.fill_spots()
-						#print(location.scene.spots.get_node("Spot").get_child_count())
+
+
+	func boost_plants() -> void:
+		for kind in obj.greenhouse.arr.plant:
+			for plant in obj.greenhouse.arr.plant[kind]:
+				for _i in Global.num.size.plant.boost:
+					plant.accumulation_per_day()
 
 
 	func init_flocks() -> void:
-		for habitat in dict.habitat[num.ring]:
-			obj.zoo.unleash_flock(habitat) 
+		#for habitat in dict.habitat[num.ring]:
+		#	obj.zoo.unleash_flock(habitat)
+		
+		var habitat = dict.habitat[num.ring].back()
+		obj.zoo.unleash_flock(habitat)
+		
+		for flock in obj.zoo.arr.flock:
+			flock.grazing()
 
 
 	func place_beast_in_locations() -> void:
@@ -545,8 +558,9 @@ class Sanctuary:
 						if location.arr.subject.size() > 1:
 							var flag = false
 							for subject in location.arr.subject:
-								if subject.num.index == 0:
-									flag = true
+								if subject.num.has("index"):
+									if subject.num.index == 0:
+										flag = true
 							
 							if flag:
 								var input = {}
@@ -580,13 +594,12 @@ class Sanctuary:
 		num.paint.habitat.ring = 2
 		num.paint.habitat.index = 0
 		
-		
 		for ring in dict.habitat:
 			for habitat_ in dict.habitat[ring]:
 				for forest in habitat_.arr.forest:
 					forest.scene.myself.update_color_based_on_biome()
 		
-		#select_next_habitat()
+		#select_next_habitat(0)
 
 
 	func paint_next_forest() -> void:
@@ -641,12 +654,16 @@ class Sanctuary:
 				forest.scene.myself.paint_black()
 
 
-	func select_next_habitat() -> void:
+	func select_next_habitat(shift_: int) -> void:
 		var habitat = dict.habitat[num.paint.habitat.ring][num.paint.habitat.index]
 		habitat.hide()
 		habitat.arr.location.suburb.front().hide_spots()
 		
-		num.paint.habitat.index += 1
+		num.paint.habitat.index += shift_
+		
+		if num.paint.habitat.index < 0:
+			num.paint.habitat.ring = Global.num.size.sanctuary.ring
+			num.paint.habitat.index = dict.habitat[num.paint.habitat.ring].size() - 1
 		
 		if dict.habitat[num.paint.habitat.ring].size() == num.paint.habitat.index:
 			num.paint.habitat.index = 0

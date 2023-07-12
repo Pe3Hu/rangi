@@ -178,13 +178,15 @@ class Location:
 		arr.spot.all = []
 		arr.spot.blank = []
 		arr.spot.booty = []
+		arr.spot.frontier = []
+		var n = Global.num.size.location.spot
 		
 		if word.biome != null:
 			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
-			for _i in Global.num.size.location.spot:
+			for _i in n:
 				arr.spot.all.append([])
 				
-				for _j in Global.num.size.location.spot:
+				for _j in n:
 					var input = {}
 					input.status = "blank"
 					
@@ -192,10 +194,20 @@ class Location:
 						input.status = "booty"
 					
 					input.grid = Vector2(_j, _i)
+					var distances = [_i, _j, n - _i, n - _j]
+					input.remoteness = n
+					
+					for distance in distances:
+						if input.remoteness > distance:
+							input.remoteness = distance
+					
 					input.location = self
 					var spot = Classes_11.Spot.new(input)
 					arr.spot.all[_i].append(spot)
 					arr.spot[input.status].append(spot)
+					
+					if _i == 0 or _j == 0 or _i == n - 1 or _j == n - 1:
+						arr.spot.frontier.append(spot)
 			
 			init_spot_neighbors()
 			init_woods()
@@ -337,7 +349,6 @@ class Location:
 
 	func show_spots() -> void:
 		scene.spots.visible = true
-		print(scene.spots.get_node("Spot").get_child_count())
 
 
 	func hide_spots() -> void:
@@ -346,6 +357,8 @@ class Location:
 
 #Место spot
 class Spot:
+	var arr = {}
+	var num = {}
 	var obj = {}
 	var vec = {}
 	var dict = {}
@@ -354,10 +367,15 @@ class Spot:
 
 
 	func _init(input_: Dictionary) -> void:
+		arr.subject = []
+		num.area = floor(input_.location.num.area / pow(Global.num.size.location.spot, 2)) * Global.num.size.spot.compactness
+		num.boundary = floor(sqrt(num.area))
+		num.remoteness = input_.remoteness
 		obj.location = input_.location
 		obj.plant = null
 		vec.grid = input_.grid
 		dict.neighbor = {}
+		dict.footprint = {}
 		word.status = input_.status
 		word.content = null
 		init_scene()

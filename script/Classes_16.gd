@@ -42,6 +42,7 @@ class Plant:
 	func _init(input_: Dictionary) -> void:
 		if input_.content == "bush":
 			num.moisture = input_.moisture
+			num.area = 0
 		
 		obj.greenhouse = input_.greenhouse
 		obj.location = input_.location
@@ -139,7 +140,12 @@ class Plant:
 					num[key].count += 1
 					num.accumulation += num[key].accumulation
 				"bush":
-					obj.thicket.growth()
+					if num.area < obj.spot.num.area:
+						var fecundity = Global.dict.bush.title[word.title].fecundity
+						var area = min(fecundity, obj.spot.num.area - num.area)
+						num.area += area
+					else:
+						obj.thicket.growth()
 
 
 	func accumulation_per_day() -> void:
@@ -256,6 +262,14 @@ class Plant:
 						thickets.append(plant.obj.thicket)
 		
 		return thickets
+
+
+	func roll_stealth_value() -> int:
+		var imperceptibility = Global.dict.bush.title[word.title].imperceptibility
+		Global.rng.randomize()
+		var value = Global.rng.randi_range(0, imperceptibility)
+		return value
+
 
 
 #Заросли thicket

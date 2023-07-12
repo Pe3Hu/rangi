@@ -46,6 +46,9 @@ func init_arr() -> void:
 	arr.beast.mentality = ["careful", "balanced", "aggressive"]
 	arr.beast.roll = {}
 	
+	arr.prey = {}
+	arr.prey.aspect = ["offensive", "resilience", "sensory", "mobility"]
+	
 	arr.beast.roll["modify time"] = "offensive"
 	arr.beast.roll["modify wound"] = "resilience"
 	arr.beast.roll["modify intention"] = "sensory"
@@ -130,6 +133,10 @@ func init_num() -> void:
 	
 	num.size.flock = {}
 	num.size.flock.r = 4
+	num.size.flock.purposefulness = {}
+	num.size.flock.purposefulness.min = 3
+	num.size.flock.purposefulness.max = 7
+	num.size.flock.leader = 2.0
 	
 	num.size.location = {}
 	num.size.location.r = {}
@@ -143,6 +150,9 @@ func init_num() -> void:
 	num.size.location.humidity = {}
 	num.size.location.humidity.min = 50
 	num.size.location.humidity.max = 150
+	
+	num.size.plant = {}
+	num.size.plant.boost = 90
 	
 	num.size.wood = {}
 	num.size.wood.area = {}
@@ -160,9 +170,13 @@ func init_num() -> void:
 	
 	num.size.spot = {}
 	num.size.spot.r = 6
+	num.size.spot.compactness = 100
 	
 	num.time = {}
 	num.time.compression = 0.01
+	num.time.threehours = 0.05
+	num.time.day = num.time.threehours * 8
+	num.time.chewing = 0.1
 
 
 func init_dict() -> void:
@@ -948,22 +962,7 @@ func init_preys() -> void:
 					data[words[1]][words[0]] = prey[key]
 					flag = false
 					
-				if key.contains("Biome"):
-					flag = false
-					
-					if prey[key] == 1:
-						var words = key.to_lower().split(" ")
-						
-						if !data.has(words[0]):
-							data[words[0]] = []
-						
-						if !dict.prey.biome.has(words[1]):
-							dict.prey.biome[words[1]] = []
-						
-						data[words[0]].append(words[1])
-						dict.prey.biome[words[1]].append(prey["Title"].to_lower())
-					
-				if key.contains("Totem"):
+				if key.contains("Biome") or key.contains("Aspect") or key.contains("Totem"):
 					flag = false
 					
 					if prey[key] > 0:
@@ -979,9 +978,15 @@ func init_preys() -> void:
 						dict.prey.totem[words[0]].append(prey["Title"].to_lower())
 				
 				if flag:
-					data[key.to_lower()] = prey[key].to_lower()
+					data[key.to_lower()] = prey[key]
+					
+					if typeof(prey[key]) == TYPE_STRING:
+						data[key.to_lower()] = prey[key].to_lower()
 		
 		dict.prey.title[prey["Title"].to_lower()] = data
+		dict.prey.bonus = {}
+		dict.prey.bonus["small"] = 2
+		dict.prey.bonus["big"] = 4
 
 
 func init_totems() -> void:
@@ -1077,6 +1082,9 @@ func init_bushs() -> void:
 		for key in bush.keys():
 			if key != "Title":
 				data[key.to_lower()] = bush[key]
+				
+				if typeof(bush[key]) == TYPE_STRING:
+					data[key.to_lower()] = bush[key].to_lower()
 		
 		dict.bush.title[bush["Title"].to_lower()] = data
 		dict.bush.preference[data.preference].append(bush["Title"].to_lower())
