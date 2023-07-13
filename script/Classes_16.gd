@@ -129,6 +129,29 @@ class Plant:
 								num.impact[action] = Global.dict.impact[action][impact]
 
 
+	func init_thicket() -> void:
+		if word.kind == "bush":
+			var thickets = get_neighbor_thickets()
+			
+			if thickets.size() == 0:
+				var input = {}
+				input.greenhouse = obj.greenhouse
+				input.location = obj.location
+				input.title = word.title
+				obj.thicket = Classes_16.Thicket.new(input)
+				obj.greenhouse.arr.thicket.append(obj.thicket)
+				obj.thicket.add_bush(self)
+			if thickets.size() == 1:
+				obj.thicket = thickets.front()
+				obj.thicket.add_bush(self)
+			if thickets.size() > 1:
+				obj.thicket = thickets.front()
+				
+				for thicket in thickets:
+					if thicket != obj.thicket:
+						obj.thicket.merge_with(thicket)
+
+
 	func growth() -> void:
 		obj.dice.growth.roll()
 		var count = obj.dice.growth.obj.edge.get_value()
@@ -153,9 +176,12 @@ class Plant:
 		var accumulation = Global.rng.randi_range(0, num.accumulation)
 		
 		if word.kind == "bush":
-			accumulation -= floor(sqrt(obj.thicket.arr.bush.size()))
+			accumulation -= obj.thicket.arr.bush.size()#floor(sqrt(obj.thicket.arr.bush.size()))
 		
 		num.resin.current += accumulation
+		
+		if num.resin.current < 0:
+			num.resin.current = 0
 		
 		if num.resin.current >= num.resin.limit:
 			num.resin.current -= num.resin.limit
@@ -224,30 +250,6 @@ class Plant:
 		if num.accumulation < 0:
 			num.accumulation = 0
 
-
-	func init_thicket() -> void:
-		if word.kind == "bush":
-			var thickets = get_neighbor_thickets()
-			
-			if thickets.size() == 0:
-				var input = {}
-				input.greenhouse = obj.greenhouse
-				input.location = obj.location
-				input.title = word.title
-				obj.thicket = Classes_16.Thicket.new(input)
-				obj.greenhouse.arr.thicket.append(obj.thicket)
-				obj.thicket.add_bush(self)
-			if thickets.size() == 1:
-				obj.thicket = thickets.front()
-				obj.thicket.add_bush(self)
-			if thickets.size() > 1:
-				obj.thicket = thickets.front()
-				
-				for thicket in thickets:
-					if thicket != obj.thicket:
-						obj.thicket.merge_with(thicket)
-
-
 	func get_neighbor_thickets() -> Array:
 		var thickets = []
 		
@@ -270,6 +272,17 @@ class Plant:
 		var value = Global.rng.randi_range(0, imperceptibility)
 		return value
 
+
+	func fade() -> void:
+		obj.greenhouse.arr.plant[word.kind].erase(self)
+		
+		if word.kind == "bush":
+			obj.thicket.arr.bush.erase(self)
+			
+			if obj.thicket.arr.bush.size() == 0:
+				obj.thicket.fade()
+		
+		obj.spot.clean()
 
 
 #Заросли thicket
@@ -311,3 +324,7 @@ class Thicket:
 			var spot = spots.pick_random()
 			var bush = obj.location.sow_bush(spot)
 			obj.location.num.humidity -= bush.num.moisture
+
+
+	func fade() -> void:
+		obj.greenhouse.arr.thicket.erase(self)

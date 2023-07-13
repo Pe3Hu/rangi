@@ -152,7 +152,7 @@ func init_num() -> void:
 	num.size.location.humidity.max = 150
 	
 	num.size.plant = {}
-	num.size.plant.boost = 90
+	num.size.plant.boost = 1#90
 	
 	num.size.wood = {}
 	num.size.wood.area = {}
@@ -177,6 +177,12 @@ func init_num() -> void:
 	num.time.threehours = 0.05
 	num.time.day = num.time.threehours * 8
 	num.time.chewing = 0.1
+	num.time.footprint = {}
+	num.time.footprint.spot = 30
+	num.time.footprint.location = 90
+	num.time.migration = 10
+	num.time.exhaustion = 30
+	num.time.death = 60
 
 
 func init_dict() -> void:

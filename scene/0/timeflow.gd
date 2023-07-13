@@ -38,3 +38,6 @@ func wood_accumulation_per_day():
 	for kind in parent.obj.planet.obj.sanctuary.obj.greenhouse.arr.plant:
 		for plant in parent.obj.planet.obj.sanctuary.obj.greenhouse.arr.plant[kind]:
 			plant.accumulation_per_day()
+	
+	for flock in parent.obj.planet.obj.sanctuary.obj.zoo.arr.flock:
+		flock.consumption_per_day()

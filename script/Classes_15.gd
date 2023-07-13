@@ -27,6 +27,7 @@ class Flock:
 		obj.migrate = {}
 		obj.migrate.spot = null
 		obj.migrate.location = null
+		obj.migrate.habitat = null
 		obj.moving = null
 		obj.grazing = null
 
@@ -40,6 +41,8 @@ class Flock:
 		var limit = Global.num.size.flock.purposefulness
 		Global.rng.randomize()
 		num.purposefulness = Global.rng.randi_range(limit.min, limit.max)
+		num.hunger = 0
+		num.migration = 0
 
 
 	func init_preys() -> void:
@@ -73,6 +76,12 @@ class Flock:
 			num.speed = min(num.speed, prey.num.speed)
 
 
+	func step_into_habitat() -> void:
+		leave_location()
+		var location = obj.migrate.habitat.arr.location.suburb.front()
+		step_into_location(location)
+
+
 	func step_into_location(location_: Classes_11.Location) -> void:
 		if location_ != null and obj.location != location_:
 			leave_location()
@@ -83,6 +92,13 @@ class Flock:
 			step_on_spot(spot)
 			location_.obj.habitat.show()
 			location_.show_spots()
+			
+			if obj.migrate.location != null or obj.migrate.habitat != null:
+				obj.migrate.spot = null
+				obj.migrate.location = null
+				obj.migrate.habitat = null
+				obj.grazing = obj.spot
+				grazing()
 
 
 	func step_on_spot(spot_: Classes_11.Spot) -> void:
@@ -99,24 +115,34 @@ class Flock:
 	func leave_location() -> void:
 		if obj.location != null:
 			obj.location.scene.myself.remove_subject(self)
+			obj.location.obj.habitat.hide()
+			obj.location.hide_spots()
 			obj.location = null
 			obj.spot.arr.subject.erase(self)
 			obj.spot.scene.myself.update_color_based_on_content()
 			obj.spot = null
+			num.migration = 0
 
 
 	func grazing() -> void:
 		if obj.grazing == obj.spot:
-			if obj.spot.obj.plant == null:
-				scene.myself.start_grazing()
-			else:
+			#if obj.spot.obj.plant != null and obj.spot.word.content == "bush":
+			if obj.spot.word.content == "bush":
+				#print("grazing start_chewing_bush")
 				scene.myself.start_chewing_bush()
+			else:
+				#print("not start_chewing_bush")
+				scene.myself.start_grazing()
 		else:
+			#if obj.spot.obj.plant != null and obj.spot.word.content == "bush":
 			if obj.spot.word.content == "bush":
 				if recognize_bush():
+					#print("recognize_bush start_chewing_bush")
 					scene.myself.start_chewing_bush()
-			else:
-				scene.myself.start_grazing()
+					return
+			
+			#print("not recognize_bush start_chewing_bush")
+			scene.myself.start_grazing()
 
 
 	func set_grazing_spot() -> void:
@@ -125,7 +151,9 @@ class Flock:
 		var spots = []
 		var nourishment = Global.dict.prey.title[word.subclass].nourishment
 		
-		for neighbor in obj.spot.dict.neighbor:
+		for neighbor in obj.spot.dict.linear2:
+			neighbor.update_footprints()
+			
 			if !neighbor.dict.footprint.has(self):
 				match nourishment:
 					"herbivore":
@@ -140,17 +168,15 @@ class Flock:
 			obj.moving = obj.grazing
 			return
 		
-		print("___")
-		for neighbor in obj.spot.dict.neighbor:
+		for neighbor in obj.spot.dict.linear2:
 			if !neighbor.dict.footprint.has(self):
 				spots.append(neighbor)
-			else:
-				print(neighbor)
 		
+		#print(spots)
 		if spots.size() > 0:
 			obj.moving = spots.pick_random()
 		else:
-			obj.moving = obj.spot.dict.neighbor.keys().pick_random()
+			obj.moving = obj.spot.dict.linear2.keys().pick_random()
 
 
 	func recognize_bush() -> bool:
@@ -165,6 +191,8 @@ class Flock:
 
 
 	func set_spot_to_migrate() -> void:
+		#print(["remoteness" ,obj.spot.num.remoteness])
+		
 		if obj.spot.num.remoteness == 0:
 			set_location_to_migrate()
 		else:
@@ -175,19 +203,53 @@ class Flock:
 				if neighbor.num.remoteness < remoteness:
 					remoteness = neighbor.num.remoteness
 					obj.migrate.spot = neighbor
+			
+			obj.moving = obj.migrate.spot
 
 
 	func set_location_to_migrate() -> void:
 		var locations = []
+		var center = obj.location.obj.habitat.arr.location.center.front()
+		var suburb = obj.location.obj.habitat.arr.location.suburb.front()
 		
-		for neighbor in obj.spot.obj.location.dict.neighbor:
-			if !neighbor.dict.footprint.has(self):
-				locations.append(neighbor)
+		for type in obj.location.obj.habitat.arr.location:
+			for neighbor in obj.location.obj.habitat.arr.location[type]:
+				neighbor.update_footprints()
+				
+				if obj.location != neighbor and !neighbor.dict.footprint.has(self):
+					locations.append(neighbor)
 		
 		obj.migrate.location = locations.pick_random()
 		
 		if obj.migrate.location == null:
-			obj.spot.obj.location.dict.neighbor.pick_random()
+			set_location_to_habitat()
+
+
+	func set_location_to_habitat() -> void:
+		obj.migrate.habitat = obj.location.obj.habitat.dict.neighbor.keys().pick_random()
+
+
+	func consumption_per_day() -> void:
+		var hunger = false
+		
+		for prey in arr.prey:
+			if prey.consumption_per_day():
+				hunger = true
+		
+		if hunger:
+			num.hunger += 1
+			num.migration += 1
+		
+			if num.hunger == Global.num.time.death:
+				die()
+		print([Global.num.index.day, num.migration])
+
+
+	func die() -> void:
+		for prey in arr.prey:
+			prey.die()
+		
+		obj.zoo.arr.flock.erase(self)
 
 
 #Добыча prey
@@ -226,6 +288,7 @@ class Prey:
 		num.dust = {}
 		num.dust.total = 100
 		num.dust.current = 0
+		num.nourishment = Global.dict.prey.title[word.subclass].nourishment
 
 
 	func init_dices() -> void:
@@ -280,3 +343,17 @@ class Prey:
 
 	func chew(throughput_: int) -> void:
 		num.dust.current += throughput_
+
+
+	func consumption_per_day() -> bool:
+		var hunger = false
+		num.dust.current -= num.nourishment
+		
+		if num.dust.current < 0:
+			hunger = true
+		
+		return hunger
+
+
+	func die() -> void:
+		pass

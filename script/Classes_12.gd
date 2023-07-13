@@ -48,9 +48,8 @@ class Zoo:
 		input.subclass = titles.pick_random()
 		var flock = Classes_15.Flock.new(input)
 		arr.flock.append(flock)
-		var location = habitat_.arr.location.suburb.front()
-		flock.step_into_location(location)
-		flock.obj.grazing = flock.obj.spot
+		flock.obj.migrate.habitat = habitat_
+		flock.step_into_habitat()
 
 
 
@@ -130,7 +129,7 @@ class Beast:
 			obj.location = location_
 			#location_.obj.habitat.show()
 			location_.scene.myself.add_subject(self)
-			location_.dict.footprint[self] = true
+			location_.dict.footprint[self] = Time.get_unix_time_from_system()
 
 
 	func leave_location() -> void:

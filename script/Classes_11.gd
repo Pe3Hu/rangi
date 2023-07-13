@@ -194,7 +194,7 @@ class Location:
 						input.status = "booty"
 					
 					input.grid = Vector2(_j, _i)
-					var distances = [_i, _j, n - _i, n - _j]
+					var distances = [_i, _j, n - 1 - _i, n - 1 - _j]
 					input.remoteness = n
 					
 					for distance in distances:
@@ -226,6 +226,9 @@ class Location:
 					if Global.boundary_of_array_check(arr.spot.all, grid):
 						var neighbor = arr.spot.all[grid.y][grid.x]
 						spot.dict.neighbor[neighbor] = direction
+						
+						if Global.dict.neighbor.linear2.has(direction):
+							spot.dict.linear2[neighbor] = direction
 
 
 	func init_woods() -> void:
@@ -355,6 +358,16 @@ class Location:
 		scene.spots.visible = false
 
 
+	func update_footprints() -> void:
+		var time = Time.get_unix_time_from_system()
+		
+		for _i in range(dict.footprint.keys().size()-1,-1,-1):
+			var footprint = dict.footprint.keys()[_i]
+			
+			if time - dict.footprint[footprint] > Global.num.time.footprint.location:
+				dict.footprint.erase(footprint)
+
+
 #Место spot
 class Spot:
 	var arr = {}
@@ -375,6 +388,7 @@ class Spot:
 		obj.plant = null
 		vec.grid = input_.grid
 		dict.neighbor = {}
+		dict.linear2 = {}
 		dict.footprint = {}
 		word.status = input_.status
 		word.content = null
@@ -416,6 +430,22 @@ class Spot:
 					if neighbor.obj.plant != null:
 						var value = 1
 						neighbor.obj.plant.reduce_accumulation(value)
+
+
+	func update_footprints() -> void:
+		var time = Time.get_unix_time_from_system()
+		
+		for _i in range(dict.footprint.keys().size()-1,-1,-1):
+			var footprint = dict.footprint.keys()[_i]
+			
+			if time - dict.footprint[footprint] > Global.num.time.footprint.spot:
+				dict.footprint.erase(footprint)
+
+
+	func clean() -> void:
+		obj.plant = null
+		word.content = null
+		scene.myself.update_color_based_on_content()
 
 
 #Событие occasion
