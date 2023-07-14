@@ -2,6 +2,7 @@ extends Node
 
 
 func _ready() -> void:
+	#Global.node.spots_stock = Global.scene.packed_spots_stock.instantiate()
 	Global.obj.cosmos = Classes_0.Cosmos.new()
 	
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
@@ -17,6 +18,8 @@ func _ready() -> void:
 #	outpost.arr.branch.front().obj.director.prioritize()
 	
 	#Global.obj.cosmos.obj.planet.obj.sanctuary.init_clashes()
+	#Global.pack_scene(Global.obj.cosmos.scene.myself, "cosmos")
+	Global.init_spots_stock()
 
 
 func _input(event) -> void:

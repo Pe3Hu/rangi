@@ -15,7 +15,7 @@ class Cosmos:
 
 
 	func init_scene() -> void:
-		scene.myself = Global.scene.cosmos.instantiate()
+		scene.myself = Global.scene.packed_cosmos.instantiate()
 		Global.node.game.get_node("Layer0").add_child(scene.myself)
 
 
@@ -35,9 +35,6 @@ class Cosmos:
 			var corporation = Classes_1.Corporation.new(input)
 			arr.corporation.append(corporation)
 
-
-	func get_time() -> float:
-		return obj.planet.scene.myself.get_node("Time").get_time_left()
 
 
 #Планета planet  

@@ -110,11 +110,11 @@ func init_num() -> void:
 	num.size.continent.row = num.size.continent.col
 	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 2
+	num.size.sanctuary.ring = 7
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
-	num.size.forest.r = 32*3
+	num.size.forest.r = 24
 	num.size.forest.k = 1 + sqrt(2)
 	num.size.forest.t = num.size.forest.r / sqrt(num.size.forest.k / (num.size.forest.k - 1))
 	
@@ -180,7 +180,7 @@ func init_num() -> void:
 	num.time.footprint = {}
 	num.time.footprint.spot = 30
 	num.time.footprint.location = 90
-	num.time.migration = 10
+	num.time.migration = 15
 	num.time.exhaustion = 30
 	num.time.death = 60
 
@@ -1341,10 +1341,91 @@ func init_scene() -> void:
 	scene.occasion = load("res://scene/11/occasion.tscn")
 	scene.spots = load("res://scene/11/spots.tscn")
 	scene.spot = load("res://scene/11/spot.tscn")
+	scene.spots_stock = load("res://scene/11/spots_stock.tscn")
 	scene.beast = load("res://scene/12/beast.tscn")
 	scene.chain = load("res://scene/13/chain.tscn")
 	scene.link = load("res://scene/13/link.tscn")
 	scene.flock = load("res://scene/15/flock.tscn")
+	
+	#packed
+	scene.packed_cosmos = load("res://scene/packed/cosmos.tscn")
+	scene.packed_spots_stock = load("res://scene/packed/spots_stock.tscn")
+
+
+func pack_scene(node_: Variant, name_: String) -> void:
+	var scene = PackedScene.new()
+	var result = scene.pack(node_)
+	var path = "res://scene/packed/"+name_+".tscn"
+	
+	if result == OK:
+		var error = ResourceSaver.save(scene, path) 
+
+
+func init_spots_stock() -> void:
+	var directions = []
+	directions.append_array(Global.dict.neighbor.linear2)
+	directions.append_array(Global.dict.neighbor.diagonal)
+	
+	var n = num.size.location.spot
+	var spots_stock = scene.spots_stock.instantiate()
+	
+	for _h in num.index.habitat:
+		for _k in 7:
+			var spots = scene.spots.instantiate()
+			var all = []
+			var index = 0
+			
+			for _i in n:
+				all.append([])
+				
+				for _j in n:
+					var spot = scene.spot.instantiate()
+					spot.word.status = "blank"
+					
+					spot.vec.grid = Vector2(_j, _i)
+					var distances = [_i, _j, n - 1 - _i, n - 1 - _j]
+					spot.num.remoteness = n
+					
+					for distance in distances:
+						if spot.num.remoteness > distance:
+							spot.num.remoteness = distance
+					
+					spot.flag.frontier = false
+					
+					if _i == 0 or _j == 0 or _i == n - 1 or _j == n - 1:
+						spot.flag.frontier = true
+					
+					spots.get_node("Spot").add_child(spot)
+					all[_i].append(index)
+					index += 1
+			
+			for indexs in all:
+				for index_ in indexs:
+					for direction in directions:
+						var spot = spots.get_node("Spot").get_children()[index_]
+						var grid = spot.vec.grid + direction
+						spot.dict.neighbor = {}
+						spot.dict.linear2 = {}
+						
+						if Global.boundary_of_array_check(all, grid):
+							var neighbor = {}
+							neighbor.index = grid.y * n + grid.x
+							neighbor.spot = spots.get_node("Spot").get_children()[neighbor.index]
+							spot.dict.neighbor[neighbor.spot] = direction
+							
+							if Global.dict.neighbor.linear2.has(direction):
+								spot.dict.linear2[neighbor.spot] = direction
+			
+			spots_stock.add_child(spots)
+	
+	pack_scene(Global.obj.cosmos.scene.myself, "spots_stock")
+
+
+func get_next_spots() -> Variant:
+	var spots = Global.node.spots_stock.children().front()
+	Global.node.spots_stock.remove_child(spots)
+	
+	return spots
 
 
 func test() -> void:

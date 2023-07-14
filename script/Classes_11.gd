@@ -149,9 +149,9 @@ class Location:
 		scene.myself = Global.scene.location.instantiate()
 		scene.myself.set_parent(self)
 		obj.habitat.scene.myself.get_node("Location").add_child(scene.myself)
-		scene.spots = Global.scene.spots.instantiate()
-		scene.spots.set_parent(self)
-		obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots").add_child(scene.spots)
+		#scene.spots = Global.scene.spots.instantiate()
+		#scene.spots.set_parent(self)
+		#obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots").add_child(scene.spots)
 
 
 	func get_assessment_based_on_goal(goal_: String) -> int:
@@ -173,7 +173,7 @@ class Location:
 		num.humidity = Global.rng.randi_range(limit.min, limit.max)
 
 
-	func init_spots() -> void:
+	func get_spots() -> void:
 		arr.spot = {}
 		arr.spot.all = []
 		arr.spot.blank = []
@@ -183,6 +183,33 @@ class Location:
 		
 		if word.biome != null:
 			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
+			
+			scene.spots = Global.get_next_spots()
+			scene.spots.set_parent(self)
+			obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots").add_child(scene.spots)
+			
+			
+			for _i in n:
+				for _j in n:
+					
+					if _i % num.narrowness == 0 and _j % num.narrowness == 0:
+						pass
+			
+			init_woods()
+
+
+
+	func init_spots_old() -> void:
+		arr.spot = {}
+		arr.spot.all = []
+		arr.spot.blank = []
+		arr.spot.booty = []
+		arr.spot.frontier = []
+		var n = Global.num.size.location.spot
+		
+		if word.biome != null:
+			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
+			
 			for _i in n:
 				arr.spot.all.append([])
 				

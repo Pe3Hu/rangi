@@ -1,5 +1,7 @@
 res://scene/0/planet.tscn
 res://scene/3/tool.gd
+res://script/Global.gd
+res://scene/Game.gd
 res://scene/10/sanctuary.tscn
 res://scene/11/habitat.tscn
 res://scene/11/location.tscn
@@ -10,10 +12,9 @@ res://scene/0/timeflow.tscn
 res://scene/0/cosmos.tscn
 res://scene/15/flock.tscn
 res://scene/12/beast.tscn
+res://script/Classes_0.gd
+res://script/Classes_10.gd
+res://scene/11/spots.gd
+res://scene/11/spots_stock.tscn
+res://scene/11/spot.gd
 res://script/Classes_11.gd
-res://script/Classes_16.gd
-res://scene/15/flock.gd
-res://script/Classes_15.gd
-res://script/Global.gd
-res://scene/0/timeflow.gd
-res://script/Classes_12.gd
