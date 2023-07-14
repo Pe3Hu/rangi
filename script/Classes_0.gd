@@ -15,7 +15,7 @@ class Cosmos:
 
 
 	func init_scene() -> void:
-		scene.myself = Global.scene.packed_cosmos.instantiate()
+		scene.myself = Global.scene.cosmos.instantiate()
 		Global.node.game.get_node("Layer0").add_child(scene.myself)
 
 

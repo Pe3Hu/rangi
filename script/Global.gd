@@ -56,6 +56,8 @@ func init_arr() -> void:
 	
 	arr.wood = {}
 	arr.wood.attribute = ["hardness", "density"]
+	
+	init_spots()
 
 
 func init_num() -> void:
@@ -1284,6 +1286,11 @@ func init_skills() -> void:
 		dict.skill.subclass[skill["Subclass"].to_lower()].append(skill["Title"].to_lower())
 
 
+func init_spots() -> void:
+	var path = "res://asset/json/spot_map.json"
+	arr.spot = load_data(path)
+
+
 func init_node() -> void:
 	node.game = get_node("/root/Game")
 
@@ -1348,83 +1355,111 @@ func init_scene() -> void:
 	scene.flock = load("res://scene/15/flock.tscn")
 	
 	#packed
-	scene.packed_cosmos = load("res://scene/packed/cosmos.tscn")
-	scene.packed_spots_stock = load("res://scene/packed/spots_stock.tscn")
+	#scene.packed_cosmos = load("res://scene/packed/cosmos.tscn")
+	scene.packed_spots = load("res://scene/packed/spots.tscn")
+	#scene.packed_spots_stock = load("res://scene/packed/spots_stock.tscn")
 
 
 func pack_scene(node_: Variant, name_: String) -> void:
 	var scene = PackedScene.new()
 	var result = scene.pack(node_)
 	var path = "res://scene/packed/"+name_+".tscn"
-	
+#	var a = scene.instantiate()
+#	Global.node.game.get_node("Layer0").add_child(a)
 	if result == OK:
 		var error = ResourceSaver.save(scene, path) 
 
 
-func init_spots_stock() -> void:
+func set_spots_map() -> void:
 	var directions = []
 	directions.append_array(Global.dict.neighbor.linear2)
 	directions.append_array(Global.dict.neighbor.diagonal)
 	
 	var n = num.size.location.spot
+	var all = []
+	var datas = []
+	var index = 0
+	
+	for _i in n:
+		all.append([])
+		
+		for _j in n:
+			var data = {}
+			data.dict = {}
+			data.num = {}
+			data.vec = {}
+			data.dict = {}
+			data.dict.neighbor = {}
+			data.dict.linear2 = {}
+			data.flag = {}
+			data.word = {}
+			data.word.status = "blank"
+			
+			data.vec.grid = Vector2(_j, _i)
+			var distances = [_i, _j, n - 1 - _i, n - 1 - _j]
+			data.num.remoteness = n
+			
+			for distance in distances:
+				if data.num.remoteness > distance:
+					data.num.remoteness = distance
+			
+			data.flag.frontier = false
+			
+			if _i == 0 or _j == 0 or _i == n - 1 or _j == n - 1:
+				data.flag.frontier = true
+			
+			datas.append(data)
+			all[_i].append(index)
+			index += 1
+	
+	for indexs in all:
+		for index_ in indexs:
+			for direction in directions:
+				var data = datas[index_]
+				var grid = data.vec.grid + direction
+
+				if Global.boundary_of_array_check(all, grid):
+					var neighbor = {}
+					neighbor.index = grid.y * n + grid.x
+					#neighbor.data = datas[neighbor.index]
+					data.dict.neighbor[neighbor.index] = direction
+
+					if Global.dict.neighbor.linear2.has(direction):
+						data.dict.linear2[neighbor.index] = direction
+
+	var path = "res://asset/json/spot_map"
+	var data = JSON.stringify(datas)
+	save(path, data)
+	
+
+func pack_spots() -> void:
+	var n = num.size.location.spot
+	var spots = scene.spots.instantiate()
+	
+	for _i in n:
+		for _j in n:
+			var spot = scene.spot.instantiate()
+			spots.add_child(spot)
+			spot.owner = spots
+	
+	pack_scene(spots, "spots")
+
+
+func pack_spots_stock() -> void:
 	var spots_stock = scene.spots_stock.instantiate()
 	
-	for _h in num.index.habitat:
-		for _k in 7:
-			var spots = scene.spots.instantiate()
-			var all = []
-			var index = 0
-			
-			for _i in n:
-				all.append([])
-				
-				for _j in n:
-					var spot = scene.spot.instantiate()
-					spot.word.status = "blank"
-					
-					spot.vec.grid = Vector2(_j, _i)
-					var distances = [_i, _j, n - 1 - _i, n - 1 - _j]
-					spot.num.remoteness = n
-					
-					for distance in distances:
-						if spot.num.remoteness > distance:
-							spot.num.remoteness = distance
-					
-					spot.flag.frontier = false
-					
-					if _i == 0 or _j == 0 or _i == n - 1 or _j == n - 1:
-						spot.flag.frontier = true
-					
-					spots.get_node("Spot").add_child(spot)
-					all[_i].append(index)
-					index += 1
-			
-			for indexs in all:
-				for index_ in indexs:
-					for direction in directions:
-						var spot = spots.get_node("Spot").get_children()[index_]
-						var grid = spot.vec.grid + direction
-						spot.dict.neighbor = {}
-						spot.dict.linear2 = {}
-						
-						if Global.boundary_of_array_check(all, grid):
-							var neighbor = {}
-							neighbor.index = grid.y * n + grid.x
-							neighbor.spot = spots.get_node("Spot").get_children()[neighbor.index]
-							spot.dict.neighbor[neighbor.spot] = direction
-							
-							if Global.dict.neighbor.linear2.has(direction):
-								spot.dict.linear2[neighbor.spot] = direction
-			
-			spots_stock.add_child(spots)
+	for _h in 2000:
+		var spots = load("res://scene/packed/spots.tscn").instantiate()
+		
+		spots_stock.add_child(spots)
+		spots.owner = spots_stock
 	
-	pack_scene(Global.obj.cosmos.scene.myself, "spots_stock")
+	pack_scene(spots_stock, "spots_stock")
 
 
 func get_next_spots() -> Variant:
-	var spots = Global.node.spots_stock.children().front()
+	var spots = Global.node.spots_stock.get_children().front()
 	Global.node.spots_stock.remove_child(spots)
-	
 	return spots
 
 
@@ -1478,14 +1513,14 @@ func get_random_key(dict_: Dictionary):
 
 
 func save(path_: String, data_: String):
-	var path = path_+".json"
-	var file = FileAccess.open(path,FileAccess.WRITE)
-	file.save(data_)
-	file.close()
+	var path = path_ + ".json"
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(data_)
+	#file.close()
 
 
 func load_data(path_: String):
-	var file = FileAccess.open(path_,FileAccess.READ)
+	var file = FileAccess.open(path_, FileAccess.READ)
 	var text = file.get_as_text()
 	var json_object = JSON.new()
 	var parse_err = json_object.parse(text)

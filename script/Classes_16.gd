@@ -37,6 +37,7 @@ class Plant:
 	var num = {}
 	var obj = {}
 	var word = {}
+	var scene = {}
 
 
 	func _init(input_: Dictionary) -> void:
@@ -46,9 +47,9 @@ class Plant:
 		
 		obj.greenhouse = input_.greenhouse
 		obj.location = input_.location
-		obj.spot = input_.spot
-		obj.spot.set_content(input_.content)
-		obj.spot.obj.plant = self
+		scene.spot = input_.spot
+		scene.spot.set_content(input_.content)
+		scene.spot.obj.plant = self
 		obj.thicket = null
 		
 		word.title = input_.title
@@ -163,9 +164,9 @@ class Plant:
 					num[key].count += 1
 					num.accumulation += num[key].accumulation
 				"bush":
-					if num.area < obj.spot.num.area:
+					if num.area < scene.spot.num.area:
 						var fecundity = Global.dict.bush.title[word.title].fecundity
-						var area = min(fecundity, obj.spot.num.area - num.area)
+						var area = min(fecundity, scene.spot.num.area - num.area)
 						num.area += area
 					else:
 						obj.thicket.growth()
@@ -250,11 +251,12 @@ class Plant:
 		if num.accumulation < 0:
 			num.accumulation = 0
 
+
 	func get_neighbor_thickets() -> Array:
 		var thickets = []
 		
-		for neighbor in obj.spot.dict.neighbor:
-			var direction = obj.spot.dict.neighbor[neighbor]
+		for neighbor in scene.spot.dict.neighbor:
+			var direction = scene.spot.dict.neighbor[neighbor]
 			
 			if Global.dict.neighbor.linear2.has(direction) and neighbor.obj.plant != null:
 				var plant = neighbor.obj.plant
@@ -282,7 +284,7 @@ class Plant:
 			if obj.thicket.arr.bush.size() == 0:
 				obj.thicket.fade()
 		
-		obj.spot.clean()
+		scene.spot.clean()
 
 
 #Заросли thicket
@@ -316,7 +318,7 @@ class Thicket:
 		var spots = []
 		
 		for bush in arr.bush:
-			for neighbor in bush.obj.spot.dict.neighbor:
+			for neighbor in bush.scene.spot.dict.neighbor:
 				if neighbor.word.content == null:
 					spots.append(neighbor)
 		

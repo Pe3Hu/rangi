@@ -8,10 +8,52 @@ var vec = {}
 var dict = {}
 var flag = {}
 var word = {}
+var scene = {}
+
+
+func set_data(data_: Dictionary) -> void:
+	for key in data_:
+		if key == "dict":
+			for subkey in data_[key]:
+				self[key][subkey] = {}
+				
+				for neighbor in data_[key][subkey]:
+					var value = data_[key][subkey][neighbor]
+					var vector = Vector2(int(value[1]), int(value[4]))
+					self[key][subkey][int(neighbor)] = vector
+		else:
+			for subkey in data_[key]:
+				var value = data_[key][subkey]
+				
+				if subkey == "grid":
+					value = Vector2(int(value[1]), int(value[4]))
+				
+				self[key][subkey] = value
+	
+	word.content = null
+	obj.plant = null
+	arr.subject = []
+	update_rec_size()
 
 
 func update_rec_size() -> void:
 	custom_minimum_size = Vector2(Global.vec.size.node.spot)
+
+
+func update_neighbors() -> void:
+	for type in dict:
+		for index in dict[type]:
+			if typeof(index) == TYPE_INT:
+				var neighbor = scene.spots.get_children()[int(index)]
+				dict[type][neighbor] = dict[type][index]
+	
+	for type in dict:
+		for _i in range(dict[type].keys().size()-1,-1,-1):
+			var key = dict[type].keys()[_i]
+
+			if typeof(key) == TYPE_INT:
+				dict[type].erase(key)
+	
 
 
 func update_color_based_on_content() -> void:
@@ -55,8 +97,8 @@ func set_content(content_: String) -> void:
 	
 	if word.status == "blank":
 		word.status = "booty"
-		obj.location.arr.spot.blank.erase(self)
-		obj.location.arr.spot.booty.append(self)
+		scene.spots.arr.blank.erase(self)
+		scene.spots.arr.booty.append(self)
 	
 	match word.content:
 		"extractor":
@@ -64,7 +106,7 @@ func set_content(content_: String) -> void:
 
 
 func reduce_adjacent_plant_accumulation() -> void:
-	var n = obj.location.num.narrowness
+	var n = scene.spots.parent.num.narrowness
 	var grid = {}
 	grid.start = vec.grid - Vector2.ONE * n
 	var m = n * 2 + 1
@@ -73,8 +115,8 @@ func reduce_adjacent_plant_accumulation() -> void:
 		for _j in m:
 			grid.current = Vector2(_j, _i) + grid.start
 			
-			if Global.boundary_of_array_check(obj.location.arr.spot.all, grid.current):
-				var neighbor = obj.location.arr.spot.all[grid.current.y][grid.current.x]
+			if Global.boundary_of_array_check(scene.spots.arr.all, grid.current):
+				var neighbor = scene.spots.arr.all[grid.current.y][grid.current.x]
 				
 				if neighbor.obj.plant != null:
 					var value = 1

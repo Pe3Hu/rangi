@@ -22,9 +22,9 @@ class Sanctuary:
 		set_following_forest_rings()
 		split_glades()
 		init_habitats()
-#		init_biomes()
-#		init_breeds()
-#		init_spots()
+		init_biomes()
+		init_breeds()
+		init_spots()
 #		boost_plants()
 #		init_flocks()
 #		paint_someone()
@@ -444,13 +444,13 @@ class Sanctuary:
 			for habitat in dict.habitat[ring]:
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
-						location.init_spots()
+						location.get_spots()
 				
 				habitat.host_forge()
 				
 				for type in habitat.arr.location:
 					for location in habitat.arr.location[type]:
-						location.fill_spots()
+						location.scene.spots.fill_spots()
 
 
 	func boost_plants() -> void:

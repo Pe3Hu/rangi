@@ -101,13 +101,14 @@ class Habitat:
 		
 		for type in arr.location:
 			for location in arr.location[type]:
-				spots.append_array(location.arr.spot.booty)
+				spots.append_array(location.scene.spots.arr.booty)
 		
 		if spots.size() > 0:
 			var spot = null
 			
 			while spot == null:
 				spot = spots.pick_random()
+				
 				if spot.word.content != null:
 					spot = null
 			
@@ -174,196 +175,15 @@ class Location:
 
 
 	func get_spots() -> void:
-		arr.spot = {}
-		arr.spot.all = []
-		arr.spot.blank = []
-		arr.spot.booty = []
-		arr.spot.frontier = []
 		var n = Global.num.size.location.spot
 		
 		if word.biome != null:
 			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
 			
-			scene.spots = Global.get_next_spots()
+			scene.spots = Global.scene.packed_spots.instantiate()
 			scene.spots.set_parent(self)
 			obj.habitat.obj.sanctuary.scene.myself.get_node("HBox/Spots").add_child(scene.spots)
-			
-			
-			for _i in n:
-				for _j in n:
-					
-					if _i % num.narrowness == 0 and _j % num.narrowness == 0:
-						pass
-			
-			init_woods()
-
-
-
-	func init_spots_old() -> void:
-		arr.spot = {}
-		arr.spot.all = []
-		arr.spot.blank = []
-		arr.spot.booty = []
-		arr.spot.frontier = []
-		var n = Global.num.size.location.spot
-		
-		if word.biome != null:
-			num.narrowness = Global.dict.biome.narrowness[word.biome].pick_random()
-			
-			for _i in n:
-				arr.spot.all.append([])
-				
-				for _j in n:
-					var input = {}
-					input.status = "blank"
-					
-					if _i % num.narrowness == 0 and _j % num.narrowness == 0:
-						input.status = "booty"
-					
-					input.grid = Vector2(_j, _i)
-					var distances = [_i, _j, n - 1 - _i, n - 1 - _j]
-					input.remoteness = n
-					
-					for distance in distances:
-						if input.remoteness > distance:
-							input.remoteness = distance
-					
-					input.location = self
-					var spot = Classes_11.Spot.new(input)
-					arr.spot.all[_i].append(spot)
-					arr.spot[input.status].append(spot)
-					
-					if _i == 0 or _j == 0 or _i == n - 1 or _j == n - 1:
-						arr.spot.frontier.append(spot)
-			
-			init_spot_neighbors()
-			init_woods()
-
-
-	func init_spot_neighbors() -> void:
-		var directions = []
-		directions.append_array(Global.dict.neighbor.linear2)
-		directions.append_array(Global.dict.neighbor.diagonal)
-		
-		for spots in arr.spot.all:
-			for spot in spots:
-				for direction in directions:
-					var grid = spot.vec.grid + direction
-					
-					if Global.boundary_of_array_check(arr.spot.all, grid):
-						var neighbor = arr.spot.all[grid.y][grid.x]
-						spot.dict.neighbor[neighbor] = direction
-						
-						if Global.dict.neighbor.linear2.has(direction):
-							spot.dict.linear2[neighbor] = direction
-
-
-	func init_woods() -> void:
-		if word.biome != null:
-			var spots = []
-			spots.append_array(arr.spot.booty)
-			var area = 0
-			var limit = Global.num.size.wood.area
-			arr.wood = []
-			var titles = []
-			
-			if word.breed != "exotic":
-				for title in Global.dict.wood.breed[word.breed]:
-					titles.append(title)
-			else:
-				for title in Global.dict.wood.biome[word.biome]:
-					titles.append(title)
-			
-			while area < num.area and spots.size() > 0:
-				var input = {}
-				input.location = self
-				input.greenhouse = obj.greenhouse
-				input.title = titles.pick_random()
-				input.spot = spots.pick_random()
-				Global.rng.randomize()
-				input.area = Global.rng.randi_range(limit.min, limit.max)
-				input.content = "wood"
-				var wood = Classes_16.Plant.new(input)
-				arr.wood.append(wood)
-				obj.greenhouse.arr.plant.wood.append(wood)
-				area += input.area
-				spots.erase(input.spot)
-				
-				for neighbor in input.spot.dict.neighbor:
-					spots.erase(neighbor)
-
-
-	func fill_spots() -> void:
-		if num.narrowness != 1:
-			for spot in arr.spot.booty:
-				if spot.word.content == null:
-					var content = Global.get_random_key(Global.dict.content.weight)
-					spot.set_content(content)
-		
-			init_bushes("blank")
-		else:
-			init_bushes("booty")
-		
-		for spots in arr.spot.all:
-			for spot in spots:
-				spot.scene.myself.update_color_based_on_content()
-
-
-	func init_bushes(layer_: String) -> void:
-		if arr.spot[layer_].size() > 0:
-			var spots = []
-			spots.append_array(arr.spot[layer_])
-			arr.bush = []
-			
-			if layer_ == "booty":
-				num.humidity = 0
-				
-				for spot in arr.spot[layer_]:
-					if spot.word.content != null:
-						spots.erase(spot)
-			
-			while spots.size() > 0:
-				if layer_ == "blank" and num.humidity <= 0:
-					return
-				
-				var spot = spots.pick_random()
-				var bush = sow_bush(spot)
-				
-				if layer_ == "blank":
-					num.humidity -= bush.num.moisture
-				else:
-					num.humidity += bush.num.moisture
-				
-				spots.erase(spot)
-
-
-	func sow_bush(spot_: Spot) -> Classes_16.Plant:
-		var limit = Global.num.size.bush.moisture
-		var input = {}
-		input.location = self
-		input.greenhouse = obj.greenhouse
-		input.spot = spot_
-		
-		var preference = "isolationist"
-		
-		for neighbor in input.spot.dict.neighbor:
-			if neighbor.word.content == "wood":
-				preference = "symbiote"
-				break
-	
-		var titles = []
-		titles.append_array(Global.dict.bush.preference["standard"])
-		titles.append_array(Global.dict.bush.preference[preference])
-		input.title = titles.pick_random()
-		var max = min(limit.max, num.humidity)
-		Global.rng.randomize()
-		input.moisture = Global.rng.randi_range(limit.min, max)
-		input.content = "bush"
-		var bush = Classes_16.Plant.new(input)
-		arr.bush.append(bush)
-		obj.greenhouse.arr.plant.bush.append(bush)
-		spot_.scene.myself.update_color_based_on_content()
-		return bush
+			scene.spots.init_woods()
 
 
 	func get_circumstance_influence() -> Variant:
