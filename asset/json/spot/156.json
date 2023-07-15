@@ -1,1 +1,1 @@
-{"filename":"res://scene/11/spot.tscn","footprint":{},"frontier":true,"grid":"(0, 12)","index":156,"linear2":{"143":"(0, -1)","157":"(1, 0)"},"neighbor":{"143":"(0, -1)","144":"(1, -1)","157":"(1, 0)"},"parent":null,"plant":null,"remoteness":0,"status":"blank","subjects":[]}
+{"grid":"(0, 12)","linear2":{"143":"(0, -1)","157":"(1, 0)"},"neighbor":{"143":"(0, -1)","144":"(1, -1)","157":"(1, 0)"},"remoteness":0}

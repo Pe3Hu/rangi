@@ -24,9 +24,9 @@ func _ready() -> void:
 	#Global.set_spots_map()
 	
 	
-	for _i in 1000:
-		var a = Global.scene.packed_spots.instantiate(0)
-		Global.node.game.get_node("Layer0").add_child(a)
+#	for _i in 1000:
+#		var a = Global.scene.packed_spots.instantiate(0)
+#		Global.node.game.get_node("Layer0").add_child(a)
 	pass
 
 

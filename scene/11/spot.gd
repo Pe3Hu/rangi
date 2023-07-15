@@ -137,14 +137,14 @@ func get_save_dict() -> Dictionary:
 	var save_dict = {
 		#"filename" : "res://scene/11/spot.tscn",#get_scene_file_path(),
 		#"parent" : get_parent().get_path(),
-		"index": index,
+		#"index": index,
 		"remoteness": remoteness,
 		"grid": grid,
-		"frontier": frontier,
 		"linear2": linear2,
 		"neighbor": neighbor,
-		"status": status,
 		}
+	
+	Global.arr.save_spot.append(save_dict)
 	return save_dict
 
 

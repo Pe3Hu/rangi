@@ -60,6 +60,60 @@ func init_arr() -> void:
 	init_spots()
 
 
+func init_spots() -> void:
+	var path = "res://asset/json/spot_map.json"
+	var array = load_data(path)
+	arr.spot = []
+	
+	for spot in array:
+		var data = {}
+		
+		for key in spot.keys():
+			data[key] = spot[key]
+			
+			if key == "linear2" or key == "neighbor":
+				data[key] = {}
+				
+				for _i in range(spot[key].keys().size()-1,-1,-1):
+					var subkey = spot[key].keys()[_i]
+					var index = int(subkey)
+					data[key][index] = from_str_to_vector2(spot[key][subkey])
+			
+			if key == "grid":
+				data[key] = from_str_to_vector2(spot[key])
+		
+		arr.spot.append(data)
+	
+	print(arr.spot[162])
+
+
+func from_str_to_vector2(str_: String) -> Vector2:
+	var index = Vector2(1, 4)
+	var sign = Vector2(1, 1)
+	
+	if str_[index.x] == "-":
+		index += Vector2.ONE
+		sign.x = -1
+	
+	if str_[index.y] == "-":
+		index.y += 1
+		sign.y = -1
+	
+	var vector = Vector2()
+	var keys = ["x", "y"]
+	
+	for key in keys:
+		var value = sign[key] * int(str_[index[key]])
+		index[key] += 1
+		vector[key] += value
+		
+		while str_[index[key]] != "," and index[key] != str_.length() - 1:
+			vector[key] = vector[key] * 10 + sign[key] * int(str_[index[key]])
+			index[key] += 1
+	
+	return vector
+
+
 func init_num() -> void:
 	init_index()
 	init_size()
@@ -677,7 +731,6 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 
 
 func init_beast() -> void:
-	
 	dict.wound = {}
 	dict.wound.check = {}
 	dict.wound.check["on attack"] = {}
@@ -1157,7 +1210,7 @@ func init_woods() -> void:
 	#print(dict.wood.breed)
 	
 	dict.wood.growth = {}
-	dict.wood.growth["single growth"] = 1
+	dict.wood.growth["signle growth"] = 1
 	dict.wood.growth["double growth"] = 2
 	dict.wood.growth["triple growth"] = 3
 	
@@ -1297,10 +1350,6 @@ func init_skills() -> void:
 		dict.skill.subclass[skill["Subclass"].to_lower()].append(skill["Title"].to_lower())
 
 
-func init_spots() -> void:
-	var path = "res://asset/json/spot_map.json"
-	arr.spot = load_data(path)
-
 
 func init_node() -> void:
 	node.game = get_node("/root/Game")
@@ -1369,8 +1418,6 @@ func init_scene() -> void:
 	#scene.packed_cosmos = load("res://scene/packed/cosmos.tscn")
 	scene.packed_spots = load("res://scene/packed/spots.tscn")
 	#scene.packed_spots_stock = load("res://scene/packed/spots_stock.tscn")
-	
-	
 
 
 func pack_scene(node_: Variant, name_: String) -> void:
@@ -1450,6 +1497,7 @@ func set_spots_map() -> void:
 	#var data = JSON.stringify(datas)
 	#save(path, data)'
 	
+	arr.save_spot = []
 	var spots = scene.spots.instantiate()
 	
 	for _i in n:
@@ -1458,18 +1506,21 @@ func set_spots_map() -> void:
 			var data = datas[_k]
 			var spot = scene.spot.instantiate()
 			
-			spot.index = _i
+			spot.index = _k
 			spot.remoteness = data.num.remoteness
 			spot.grid = data.vec.grid
-			spot.frontier = data.flag.frontier
 			spot.linear2 = data.dict.linear2
 			spot.neighbor = data.dict.neighbor
-			spot.status = data.word.status
 			spots.add_child(spot)
 			spot.owner = spots
 			spot.save()
 	
 	pack_scene(spots, "spots")
+	
+	
+	var path = "res://asset/json/spot_map"
+	var data = JSON.stringify(arr.save_spot)
+	save(path, data)
 
 
 func pack_spots() -> void:
