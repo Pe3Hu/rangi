@@ -4,7 +4,7 @@ extends Node
 func _ready() -> void:
 	#Global.node.spots_stock = Global.scene.packed_spots_stock.instantiate()
 	#Global.node.game.get_node("Layer0").add_child(Global.node.spots_stock)
-	Global.obj.cosmos = Classes_0.Cosmos.new()
+	#Global.obj.cosmos = Classes_0.Cosmos.new()
 	
 	#datas.sort_custom(func(a, b): return a.value < b.value) 
 	#012
@@ -22,6 +22,11 @@ func _ready() -> void:
 	#Global.pack_scene(Global.obj.cosmos.scene.myself, "cosmos")
 	
 	#Global.set_spots_map()
+	
+	
+	for _i in 1000:
+		var a = Global.scene.packed_spots.instantiate(0)
+		Global.node.game.get_node("Layer0").add_child(a)
 	pass
 
 

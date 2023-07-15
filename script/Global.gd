@@ -61,13 +61,9 @@ func init_arr() -> void:
 
 
 func init_num() -> void:
-	num.index = {}
-	num.index.branch = 0
-	num.index.schematic = 0
-	num.index.forest = 0
-	num.index.habitat = 0
-	num.index.beast = 0
-	num.index.day = 0
+	init_index()
+	init_size()
+	init_time()
 	
 	num.factory = {}
 	num.factory.count = {}
@@ -86,9 +82,19 @@ func init_num() -> void:
 	num.separation = {}
 	num.separation.croupier = 5
 	num.separation.spielkarte = 5
-	
-	num.spielkarte = {}
-	
+
+
+func init_index() -> void:
+	num.index = {}
+	num.index.branch = 0
+	num.index.schematic = 0
+	num.index.forest = 0
+	num.index.habitat = 0
+	num.index.beast = 0
+	num.index.day = 0
+
+
+func init_size() -> void:
 	num.size = {}
 	num.size.spielkarte = {}
 	num.size.spielkarte.a = 12
@@ -112,7 +118,7 @@ func init_num() -> void:
 	num.size.continent.row = num.size.continent.col
 	
 	num.size.sanctuary = {}
-	num.size.sanctuary.ring = 7
+	num.size.sanctuary.ring = 2
 	
 	num.size.forest = {}
 	num.size.forest.n = 8
@@ -173,7 +179,9 @@ func init_num() -> void:
 	num.size.spot = {}
 	num.size.spot.r = 6
 	num.size.spot.compactness = 100
-	
+
+
+func init_time() -> void:
 	num.time = {}
 	num.time.compression = 0.01
 	num.time.threehours = 0.05
@@ -232,6 +240,34 @@ func init_dict() -> void:
 		]
 	]
 	
+	init_branch()
+	init_habitat()
+	
+	init_windrose()
+	init_corner()
+	
+	#branch
+	init_compartment()
+	init_drone()
+	init_schematic()
+	
+	#zoo
+	init_beast()
+	init_subaspects()
+	init_links()
+	init_skeletons()
+	init_preys()
+	init_totems()
+	
+	#greenhouse
+	init_circumstances()
+	init_bushs()
+	init_woods()
+	init_rarities()
+	init_skills()
+
+
+func init_branch() -> void:
 	dict.indicator = {}
 	dict.indicator["energy"] = ["power generator"]
 	dict.indicator["knowledge"] = ["research station"]
@@ -251,63 +287,9 @@ func init_dict() -> void:
 	dict.priority.avg = 5
 	dict.priority.title = ["finish construction", "pursuit of incentive", "take on hardest"]
 	dict.priority.total = dict.priority.avg * dict.priority.title.size()
-	
-	dict.wound = {}
-	dict.wound.check = {}
-	dict.wound.check["on attack"] = {}
-	dict.wound.check["on attack"]["minor"] = "lightness"
-	dict.wound.check["on attack"]["severe"] = "heaviness"
-	dict.wound.check["on attack"]["lethal"] = "lethality"
-	dict.wound.check["on attack"]["debuff"] = "lethality"
-	dict.wound.check["on defense"] = {}
-	dict.wound.check["on defense"]["minor"] = "armor"
-	dict.wound.check["on defense"]["severe"] = "armor"
-	dict.wound.check["on defense"]["lethal"] = "instinct"
-	dict.wound.check["on defense"]["debuff"] = "instinct"
-	
-	dict.wound.weight = {}
-	dict.wound.weight["minor"] = 1
-	dict.wound.weight["severe"] = 4
-	dict.wound.weight["debuff"] = 6
-	dict.wound.weight["lethal"] = 9
-	dict.wound.weight["max"] = 10
-	
-	dict.subclass = {}
-	dict.subclass.debuff = {}
-	dict.subclass.debuff["bird"] = ["interference"]
-	dict.subclass.debuff["fish"] = ["misfire"]
-	dict.subclass.debuff["hydra"] = ["rust"]
-	dict.subclass.debuff["serpent"] = ["desynchronization"]
-	dict.subclass.debuff["spider"] = ["misfire", "rust", "interference", "desynchronization"]   
-	
-	dict.trigger = {}
-	dict.trigger.condition = {}
-	dict.trigger.condition["overheat"] = [[], ["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
-	dict.trigger.condition["overload"] = [[], ["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
-	dict.trigger.debuff = {}
-	dict.trigger.debuff["overheat"] = [[], ["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
-	dict.trigger.debuff["overload"] = [[], ["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
-	
-	dict.gist = {}
-	dict.gist.attempt = {}
-	dict.gist.attempt["standard"] = 1
-	dict.gist.attempt["advantage"] = 2
-	dict.gist.attempt["critical advantage"] = 3
-	dict.gist.attempt["hindrance"] = -2
-	dict.gist.attempt["critical hindrance"] = -3
-	
-	dict.modifier = {}
-	dict.modifier.attempt = {}
-	dict.modifier.attempt["standard"] = 0
-	dict.modifier.attempt["advantage"] = 1
-	dict.modifier.attempt["critical advantage"] = 2
-	dict.modifier.attempt["fundamental advantage"] = 3
-	dict.modifier.attempt["hindrance"] = -3
-	dict.modifier.attempt["critical hindrance"] = -4
-	dict.modifier.attempt["fundamental hindrance"] = -5
-	#dict.threat = {}
-	#dict.threat.weight = {}
-	
+
+
+func init_habitat() -> void:
 	dict.breed = {}
 	dict.breed.weight = {}
 	dict.breed.weight["conifer"] = 5
@@ -345,32 +327,6 @@ func init_dict() -> void:
 	dict.content.weight["natural gas source"] = 1
 	dict.content.weight["first aid kit"] = 2
 	dict.content.weight["extractor"] = 1
-	
-	#dict.biome = {}
-	#dict.biome.direction = {}
-	
-	init_windrose()
-	init_corner()
-	
-	#branch
-	init_compartment()
-	init_drone()
-	init_schematic()
-	
-	#zoo
-	init_beast()
-	init_subaspects()
-	init_links()
-	init_skeletons()
-	init_preys()
-	init_totems()
-	
-	#greenhouse
-	init_circumstances()
-	init_bushs()
-	init_woods()
-	init_rarities()
-	init_skills()
 
 
 func init_windrose() -> void:
@@ -721,6 +677,27 @@ func compare_title_with_markers(title_: String, markers_: Dictionary) -> bool:
 
 
 func init_beast() -> void:
+	
+	dict.wound = {}
+	dict.wound.check = {}
+	dict.wound.check["on attack"] = {}
+	dict.wound.check["on attack"]["minor"] = "lightness"
+	dict.wound.check["on attack"]["severe"] = "heaviness"
+	dict.wound.check["on attack"]["lethal"] = "lethality"
+	dict.wound.check["on attack"]["debuff"] = "lethality"
+	dict.wound.check["on defense"] = {}
+	dict.wound.check["on defense"]["minor"] = "armor"
+	dict.wound.check["on defense"]["severe"] = "armor"
+	dict.wound.check["on defense"]["lethal"] = "instinct"
+	dict.wound.check["on defense"]["debuff"] = "instinct"
+	
+	dict.wound.weight = {}
+	dict.wound.weight["minor"] = 1
+	dict.wound.weight["severe"] = 4
+	dict.wound.weight["debuff"] = 6
+	dict.wound.weight["lethal"] = 9
+	dict.wound.weight["max"] = 10
+	
 	dict.beast = {}
 	dict.beast.resource = {}
 	dict.beast.resource["offensive"] = "overheat"
@@ -801,6 +778,40 @@ func init_beast() -> void:
 	dict.beast.courage["coward"] = {}
 	dict.beast.courage["coward"]["continue"] = 1
 	dict.beast.courage["coward"]["retreat"] = 9
+	
+	dict.subclass = {}
+	dict.subclass.debuff = {}
+	dict.subclass.debuff["bird"] = ["interference"]
+	dict.subclass.debuff["fish"] = ["misfire"]
+	dict.subclass.debuff["hydra"] = ["rust"]
+	dict.subclass.debuff["serpent"] = ["desynchronization"]
+	dict.subclass.debuff["spider"] = ["misfire", "rust", "interference", "desynchronization"]   
+	
+	dict.trigger = {}
+	dict.trigger.condition = {}
+	dict.trigger.condition["overheat"] = [[], ["on attack"], ["on defense"], ["on attack", "on defense"], ["on attack"]]
+	dict.trigger.condition["overload"] = [[], ["on defense"], ["on attack"], ["on attack", "on defense"], ["on defense"]]
+	dict.trigger.debuff = {}
+	dict.trigger.debuff["overheat"] = [[], ["misfire"], ["rust"], ["misfire"], ["misfire", "misfire"]]
+	dict.trigger.debuff["overload"] = [[], ["desynchronization"], ["interference"], ["interference"], ["desynchronization", "desynchronization"]]
+	
+	dict.gist = {}
+	dict.gist.attempt = {}
+	dict.gist.attempt["standard"] = 1
+	dict.gist.attempt["advantage"] = 2
+	dict.gist.attempt["critical advantage"] = 3
+	dict.gist.attempt["hindrance"] = -2
+	dict.gist.attempt["critical hindrance"] = -3
+	
+	dict.modifier = {}
+	dict.modifier.attempt = {}
+	dict.modifier.attempt["standard"] = 0
+	dict.modifier.attempt["advantage"] = 1
+	dict.modifier.attempt["critical advantage"] = 2
+	dict.modifier.attempt["fundamental advantage"] = 3
+	dict.modifier.attempt["hindrance"] = -3
+	dict.modifier.attempt["critical hindrance"] = -4
+	dict.modifier.attempt["fundamental hindrance"] = -5
 
 
 func init_subaspects() -> void:
@@ -1358,14 +1369,18 @@ func init_scene() -> void:
 	#scene.packed_cosmos = load("res://scene/packed/cosmos.tscn")
 	scene.packed_spots = load("res://scene/packed/spots.tscn")
 	#scene.packed_spots_stock = load("res://scene/packed/spots_stock.tscn")
+	
+	
 
 
 func pack_scene(node_: Variant, name_: String) -> void:
 	var scene = PackedScene.new()
 	var result = scene.pack(node_)
 	var path = "res://scene/packed/"+name_+".tscn"
-#	var a = scene.instantiate()
-#	Global.node.game.get_node("Layer0").add_child(a)
+	
+	var a = scene.instantiate(1)
+	Global.node.game.get_node("Layer0").add_child(a)
+	
 	if result == OK:
 		var error = ResourceSaver.save(scene, path) 
 
@@ -1417,20 +1432,45 @@ func set_spots_map() -> void:
 			for direction in directions:
 				var data = datas[index_]
 				var grid = data.vec.grid + direction
-
+				
 				if Global.boundary_of_array_check(all, grid):
 					var neighbor = {}
 					neighbor.index = grid.y * n + grid.x
 					#neighbor.data = datas[neighbor.index]
 					data.dict.neighbor[neighbor.index] = direction
-
+					
 					if Global.dict.neighbor.linear2.has(direction):
 						data.dict.linear2[neighbor.index] = direction
-
-	var path = "res://asset/json/spot_map"
-	var data = JSON.stringify(datas)
-	save(path, data)
 	
+#	for _i in datas.size():
+#		var spot = scene.spot.instantiate()
+#		spot.save()
+	
+	#var path = "res://asset/json/spot_map"
+	#var data = JSON.stringify(datas)
+	#save(path, data)'
+	
+	var spots = scene.spots.instantiate()
+	
+	for _i in n:
+		for _j in n:
+			var _k = _i * n + _j
+			var data = datas[_k]
+			var spot = scene.spot.instantiate()
+			
+			spot.index = _i
+			spot.remoteness = data.num.remoteness
+			spot.grid = data.vec.grid
+			spot.frontier = data.flag.frontier
+			spot.linear2 = data.dict.linear2
+			spot.neighbor = data.dict.neighbor
+			spot.status = data.word.status
+			spots.add_child(spot)
+			spot.owner = spots
+			spot.save()
+	
+	pack_scene(spots, "spots")
+
 
 func pack_spots() -> void:
 	var n = num.size.location.spot
